@@ -50,6 +50,8 @@ public class Main {
     how it works
      */
 
+
+
     public static final Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
 
     public static CameraController camController;
