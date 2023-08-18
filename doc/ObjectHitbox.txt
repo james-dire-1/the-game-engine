@@ -1,0 +1,16 @@
+package com.james.world;
+
+public class ObjectHitbox {
+
+    public final PhysicalObject object;
+    public float radius;
+    public float secondsTillEndCollision = 1;
+    public boolean reactWhenPushed;
+
+    public ObjectHitbox(PhysicalObject object, float radius, boolean reactWhenPushed) {
+        this.object = object;
+        this.radius = radius;
+        this.reactWhenPushed = reactWhenPushed;
+    }
+
+}

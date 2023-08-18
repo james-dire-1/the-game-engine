@@ -1,0 +1,54 @@
+package com.james.world;
+
+import com.james.tools.ModelLoader;
+import com.james.tools.Time;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.Arrays;
+
+public class LevelInitializer implements Runnable {
+
+    public volatile boolean shouldRun = true;
+
+    private final Level level;
+
+    public LevelInitializer(ServerPacketSendEvents events) {
+        this.level = new Level(events);
+        Thread thread = new Thread(this);
+        thread.start();
+    }
+
+    @Override
+    public void run() {
+        MovableObject movableObject = new MovableObject(level, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1);
+        level.add(movableObject);
+        level.events.sendPhysicalObjectAddedToLevel(movableObject.id, movableObject.type, movableObject.getPosition(), movableObject.getRotation(), movableObject.getScale());
+
+        ModelLoader wallModelLoader = new ModelLoader("res/one-sided-wall5.dae");
+        TriangleMesh triangleMesh = new TriangleMesh(wallModelLoader.vertexPositions(), wallModelLoader.indices());
+
+        for (int i = 0; i < 10; i++) {
+            PhysicalObject wall = new PhysicalObject(PhysicalObjectType.Wall, new Vector3f(-i*2, 0, -10),
+                    new Vector3f(0, 0, 0), 1);
+            level.add(wall);
+            level.events.sendPhysicalObjectAddedToLevel(wall.id, wall.type, wall.getPosition(), wall.getRotation(), wall.getScale());
+            MeshHitbox wallHitbox = new MeshHitbox(wall, triangleMesh);
+            level.collisionHandler.walls.addAll(Arrays.asList(wallHitbox.wallTriangles));
+            level.events.sendWallTrianglesAdded(wallHitbox.wallTriangles);
+        }
+
+        float lastTime = Time.getCurrentTime();
+        while (shouldRun) {
+            if (Time.getCurrentTime() - lastTime >= level.secondsPerGameTick) {
+                lastTime = Time.getCurrentTime();
+
+                //wall.setPosition(wall.getPosition().x, wall.getPosition().y + 0.05f, wall.getPosition().z);
+                //level.events.sendPhysicalObjectMoved(wall.id, wall.getPosition().x, wall.getPosition().y,
+                //        wall.getPosition().z);
+
+                level.update();
+            }
+        }
+    }
+
+}

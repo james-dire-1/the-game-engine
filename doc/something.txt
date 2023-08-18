@@ -1,0 +1,868 @@
+-- Main Oct 25 2022
+
+package com.james.main;
+
+import com.james.gameObjects.Camera;
+import com.james.gameObjects.GameObject;
+import com.james.input.KeyInput;
+import com.james.renderEngine.models.RawModel;
+import com.james.renderEngine.models.TexturedModel;
+import com.james.renderEngine.models.Model;
+import com.james.renderEngine.rendering.MasterRenderer;
+import com.james.renderEngine.texturing.ImageTexture;
+import com.james.renderEngine.texturing.TextureBank;
+import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.renderEngine.utilities.GLUtilities;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static org.lwjgl.opengl.GL30.*;
+
+public class Main {
+
+    private static final Random r = new Random();
+    private static long lastTime;
+
+    private static final float[] positions = {
+            -0.5f, -0.5f, 0.0f,      // bottom left vertex
+            0.0f,  0.5f, 0.0f,      // top vertex
+            0.5f, -0.5f, 0.0f      // bottom right vertex
+    };
+
+    private static final float[] textureCoords = {
+            0, 0,
+            0, 1,
+            1, 1
+    };
+
+    private static final int[] indices = {
+            1, 0, 2
+    };
+
+    public static void main(String[] args) {
+        TextureBank.init();
+        GLFWUtilities.init();
+
+        /*RawModel rawModel = new RawModel(GLUtilities.createAndBindVAO(), indices.length);
+        GLUtilities.storeIndicesDataInVAO(indices);
+        GLUtilities.storeDataInVAO(0, 3, positions);
+        GLUtilities.storeDataInVAO(1, 2, textureCoords);
+        GLUtilities.unbindBoundVAO();*/
+
+        Model model = new Model(positions, indices);
+        model.setTextureAndTextureCoords("/hello.png", textureCoords);
+
+        //ModelTexture texture = new ModelTexture("/hello.png");
+        //TexturedModel model = new TexturedModel(rawModel, texture);
+
+        List<GameObject> gameObjects = new ArrayList<>();
+        //GameObject gameObject = new GameObject(model, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1);
+        GameObject gameObject = new GameObject(model, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1);
+        gameObjects.add(gameObject);
+
+        Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
+
+        Renderer.prepare();
+
+        while (!GLFWUtilities.shouldClose) {
+            GLFWUtilities.pollEvents();
+            Renderer.render(gameObjects);
+            GLFWUtilities.render();
+
+            gameObject.translate(new Vector3f(0, 0, -0.002f));
+            gameObject.rotate(new Vector3f(0, 1, 0));
+
+            if (KeyInput.isKeyDown(GLFW.GLFW_KEY_LEFT)) {
+                Camera.defaultCamera.increaseRoll(-1);
+            }
+            if (KeyInput.isKeyDown(GLFW.GLFW_KEY_RIGHT)) {
+                Camera.defaultCamera.increaseRoll(1);
+            }
+
+            if (System.nanoTime()/1000000 - lastTime > 1000) {
+                lastTime = System.nanoTime()/1000000;
+                glClearColor(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
+            }
+        }
+
+        Renderer.cleanUp();
+        GLUtilities.cleanUp();
+        GLFWUtilities.cleanUp();
+    }
+
+}
+
+-- Renderer Oct 25 2022
+
+package com.james.renderEngine.rendering;
+
+import com.james.gameObjects.Camera;
+import com.james.gameObjects.GameObject;
+import com.james.input.WindowResizeInput;
+import com.james.math.Mth;
+import com.james.renderEngine.models.RawModel;
+import com.james.renderEngine.models.Model;
+import com.james.renderEngine.shaders.BasicShader;
+import com.james.tools.BatchedGameObjectsList;
+import org.lwjgl.util.vector.Matrix4f;
+
+import static org.lwjgl.opengl.GL30.*;
+
+public class Renderer {
+
+    private static boolean newProjectionMatrix = false;
+
+    private static BasicShader basicShader = new BasicShader();
+
+    public static void prepare() {
+//        glEnable(GL_CULL_FACE);
+//        glCullFace(GL_BACK);
+
+        basicShader.start();
+        Matrix4f projectionMatrix = Mth.createProjectionMatrix(800, 600);
+        basicShader.loadProjectionMatrix(projectionMatrix);
+        basicShader.stop();
+
+        WindowResizeInput.addListener(Renderer::onWindowResize);
+    }
+
+    private static void onWindowResize() {
+        newProjectionMatrix = true;
+    }
+
+    public static void render(BatchedGameObjectsList batchedGameObjectsList) {
+        glClear(GL_COLOR_BUFFER_BIT);
+        basicShader.start();
+
+        if (newProjectionMatrix) {
+            newProjectionMatrix = false;
+            Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+            basicShader.loadProjectionMatrix(projectionMatrix);
+        }
+
+        basicShader.loadViewMatrix(Camera.defaultCamera.getViewMatrix());
+
+        basicShader.loadTime();
+
+        for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
+            RawModel rawModel = model.rawModel;
+
+            glBindVertexArray(rawModel.vaoId);
+            glEnableVertexAttribArray(0);
+            glEnableVertexAttribArray(1);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
+
+            for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
+                Matrix4f transformationMatrix = Mth.createTransformationMatrix(gameObject.position, gameObject.rotation, gameObject.scale);
+                basicShader.loadTransformationMatrix(transformationMatrix);
+
+                glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
+            }
+
+            glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
+            glBindVertexArray(0);
+        }
+
+        basicShader.stop();
+    }
+
+    public static void cleanUp() {
+        basicShader.cleanUp();
+    }
+}
+
+            /*if (ClickInput.isLeftClickPressed()) {
+                Vector3f position = Vector3f.add(Camera.defaultCamera.getPosition(), Mth.multiply(MousePicker.getCurrentRay(), 5), null);
+                batchedGameObjectsList.addGameObject(new GameObject(triangleModel, position, new Vector3f(0, 0, 0), 1));
+            }*/
+
+
+
+
+
+package com.james.renderEngine.models;
+
+import com.james.renderEngine.rendering.AbstractRenderer;
+import com.james.renderEngine.texturing.ImageTexture;
+import com.james.renderEngine.utilities.GLUtilities;
+
+/**
+ * Represents a model with enough information for rendering. Includes the vertex positions (RawModel),
+ * and any optional data including indices, textures, texture coordinates, colors, normals, etc.
+ */
+public class Model {
+
+    public final RawModel rawModel;
+
+    private ImageTexture texture;
+    private float[] textureCoords;
+    public boolean hasTexture() { return texture != null; }
+    public ImageTexture getTexture() { return texture; }
+
+    private float[] colors;
+    public boolean hasColors() { return colors != null; }
+
+    private float[] normals;
+    public boolean hasNormals() { return normals != null; }
+
+    // unlike vertexCount in RawModel, this counts NON-REPEATING vertices. only for debugging
+    private final int uniqueVertexCount;
+
+    private boolean hasRendererBeenSet = false;
+
+    /**
+     * Create a new Model with specified vertex positions and indices. Assumes that any other per-vertex
+     * data supplied to this model later (ex. texture coords) will use the indices buffer.
+     */
+    public Model(float[] vertexPositions, int[] indices) {
+        this.rawModel = new RawModel(vertexPositions, indices);
+        this.uniqueVertexCount = vertexPositions.length / 3;
+    }
+
+    /**
+     * Create a new Model with specified vertex positions without indices buffer. Assumes that any other
+     * per-vertex data supplied to this model later (ex. texture coords) will not need an indices buffer either.
+     */
+    public Model(float[] vertexPositions) {
+        this.rawModel = new RawModel(vertexPositions);
+        this.uniqueVertexCount = vertexPositions.length / 3;
+    }
+
+    public void setTextureAndTextureCoords(String path, float[] textureCoords) {
+        this.texture = new ImageTexture(path);
+        this.textureCoords = textureCoords;
+
+        GLUtilities.bindVAO(rawModel.vaoId);
+        GLUtilities.storeDataInVAO(1, 2, textureCoords);
+        GLUtilities.unbindBoundVAO();
+
+        errorChecking(DataType.TEXTURE_COORDS);
+    }
+
+    public void setColors(float[] colors) {
+        this.colors = colors;
+
+        GLUtilities.bindVAO(rawModel.vaoId);
+        GLUtilities.storeDataInVAO(1, 3, colors);
+        GLUtilities.unbindBoundVAO();
+
+        errorChecking(DataType.COLORS);
+    }
+
+    public void setNormals(float[] normals) {
+        this.normals = normals;
+
+        GLUtilities.bindVAO(rawModel.vaoId);
+        GLUtilities.storeDataInVAO(2, 3, normals);
+        GLUtilities.unbindBoundVAO();
+
+        errorChecking(DataType.NORMALS);
+    }
+
+    /**
+     * Sets the renderer that this model should be rendered with. This should be called after all
+     * modifications to the model have already been made, since this method checks that all necessary
+     * criteria are met to use the requested renderer. Calling this method is necessary for your model to
+     * appear on the screen
+     */
+    public void setRenderer(AbstractRenderer renderer) {
+        if (hasRendererBeenSet) throw new RuntimeException();
+
+        hasRendererBeenSet = true;
+
+        if (!renderer.satisfiesModelCriteria(this)) throw new RuntimeException("Model doesn't satisfy the renderer's criteria!");
+
+        renderer.models.add(this);
+    }
+
+    private enum DataType { TEXTURE_COORDS, COLORS, NORMALS }
+
+    /**
+     * Makes sure nothing out of the ordinary occurs
+     */
+    private void errorChecking(DataType floatType) {
+        if (floatType == DataType.TEXTURE_COORDS) {
+            if ((float) textureCoords.length / 2 != (float) uniqueVertexCount) {
+                throw new RuntimeException();
+            }
+        }
+        else if (floatType == DataType.COLORS) {
+            if ((float) colors.length / 3 != (float) uniqueVertexCount) {
+                throw new RuntimeException();
+            }
+        }
+        else if (floatType == DataType.NORMALS) {
+            if ((float) normals.length / 3 != (float) uniqueVertexCount) {
+                throw new RuntimeException();
+            }
+        }
+    }
+
+}
+
+    private int addTextQuadAndAdvanceCursor(FontInfo font, int fontSize, Character character, List<Gui> guis, ScreenPosition position, int currentCursorPosition) {
+        ScreenPosition positionForCharacter = new ScreenPosition(position.x + currentCursorPosition + character.xOffset*fontSize, position.y - character.yOffset*fontSize);
+        ScreenSize sizeForCharacter = new ScreenSize(character.width*fontSize, character.height*fontSize);
+
+        Gui guiForCharacter = new Gui(positionForCharacter, sizeForCharacter, null, UiUtils.textQuadVertexPositions, UiUtils.defaultIndices);
+        guiForCharacter.setTextureAndSamplingData(font.textureAtlasPath, character.x, character.y, character.width, character.height, false);
+        guiForCharacter.apply();
+        guis.add(guiForCharacter);
+
+        return character.xAdvance*fontSize;
+    }
+
+
+package com.james.renderEngine.particles.olde;
+
+import com.james.renderEngine.particles.dataTypes.ConstantValue;
+import com.james.renderEngine.particles.dataTypes.ConstantVector3f;
+import com.james.renderEngine.particles.dataTypes.FloatValue;
+import com.james.renderEngine.particles.dataTypes.Vector3fValue;
+
+public class ParticleKeyframe {
+
+    private Vector3fValue offset;
+    private FloatValue rotation;
+    private FloatValue scale;
+    private FloatValue gravityMultiplier;
+
+    private Vector3fValue velocity;
+    private FloatValue rotationChange;
+    private FloatValue scaleChange;
+    private FloatValue gravityMultiplierChange;
+
+    public void setValueByType(FloatType type, FloatValue value) {
+        if (type == FloatType.Rotation) {
+            rotation = value;
+        } else if (type == FloatType.Scale) {
+            scale = value;
+        } else if (type == FloatType.GravityMultiplier) {
+            gravityMultiplier = value;
+        } else if (type == FloatType.RotationChange) {
+            rotationChange = value;
+        } else if (type == FloatType.ScaleChange) {
+            scaleChange = value;
+        } else if (type == FloatType.GravityMultiplierChange) {
+            gravityMultiplierChange = value;
+        }
+    }
+
+    public void setValueByType(Vector3fType type, Vector3fValue value) {
+        if (type == Vector3fType.Offset) {
+            offset = value;
+        } else if (type == Vector3fType.Velocity) {
+            velocity = value;
+        }
+    }
+
+    public FloatValue getValueByType(FloatType type) {
+        FloatValue valueToReturn = null;
+
+        if (type == FloatType.Rotation) {
+            valueToReturn = rotation;
+        } else if (type == FloatType.Scale) {
+            valueToReturn = scale;
+        } else if (type == FloatType.GravityMultiplier) {
+            valueToReturn = gravityMultiplier;
+        } else if (type == FloatType.RotationChange) {
+            valueToReturn = rotationChange;
+        } else if (type == FloatType.ScaleChange) {
+            valueToReturn = scaleChange;
+        } else if (type == FloatType.GravityMultiplierChange) {
+            valueToReturn = gravityMultiplierChange;
+        }
+
+        return valueToReturn;
+    }
+
+    public Vector3fValue getValueByType(Vector3fType type) {
+        Vector3fValue valueToReturn = null;
+
+        if (type == Vector3fType.Offset) {
+            valueToReturn = offset;
+        } else if (type == Vector3fType.Velocity) {
+            valueToReturn = velocity;
+        }
+
+        return valueToReturn;
+    }
+
+    private static ParticleKeyframe defaultStartKeyframe;
+
+    public static ParticleKeyframe getDefaultStartKeyframe() {
+        if (defaultStartKeyframe == null) {
+            defaultStartKeyframe = new ParticleKeyframe();
+            defaultStartKeyframe.offset = new ConstantVector3f(0, 0, 0);
+            defaultStartKeyframe.rotation = new ConstantValue(0);
+            defaultStartKeyframe.scale = new ConstantValue(1);
+            defaultStartKeyframe.gravityMultiplier = new ConstantValue(1);
+
+            defaultStartKeyframe.velocity = new ConstantVector3f(0, 1, 0);
+            defaultStartKeyframe.rotationChange = new ConstantValue(0);
+            defaultStartKeyframe.scaleChange = new ConstantValue(0);
+            defaultStartKeyframe.gravityMultiplierChange = new ConstantValue(0);
+        }
+
+        return defaultStartKeyframe;
+    }
+
+    public enum FloatType {
+        Rotation, Scale, GravityMultiplier
+    }
+
+    public enum Vector3fType {
+        Offset, Velocity
+    }
+
+}
+
+package com.james.renderEngine.particles.olde;
+
+import com.james.renderEngine.particles.dataTypes.FloatValue;
+import com.james.renderEngine.particles.dataTypes.Vector3fValue;
+
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+public class ParticleKeyframeCollection {
+
+    private final SortedMap<Float, ParticleKeyframe> particleKeyframes = new TreeMap<>();
+
+    public ParticleKeyframeCollection() {
+        particleKeyframes.put(0f, ParticleKeyframe.getDefaultStartKeyframe());
+    }
+
+    public void setKeyframeData(float elapsedSeconds, ParticleKeyframe.FloatType type, FloatValue value) {
+        ParticleKeyframe keyframe = getOrCreateParticleKeyframe(elapsedSeconds);
+        keyframe.setValueByType(type, value);
+    }
+
+    public void setKeyframeData(float elapsedSeconds, ParticleKeyframe.Vector3fType type, Vector3fValue value) {
+        ParticleKeyframe keyframe = getOrCreateParticleKeyframe(elapsedSeconds);
+        keyframe.setValueByType(type, value);
+    }
+
+    public float getValueUsingKeyframeInfo(float elapsedSeconds, ParticleKeyframe.FloatType type, FloatValue value) {
+        Float[] timestamps = particleKeyframes.keySet().toArray(new Float[0]);
+
+        ParticleKeyframe lowerBoundKeyframe = null;
+        ParticleKeyframe upperBoundKeyframe = null;
+        for (int i = 0; i < timestamps.length; i++) {
+            if (elapsedSeconds >= timestamps[i]) {
+                lowerBoundKeyframe = particleKeyframes.get(timestamps[i]);
+                upperBoundKeyframe = particleKeyframes.get(timestamps[i + 1]);
+                break;
+            }
+        }
+
+        float lowerBoundValue = lowerBoundKeyframe.getValueByType(type).get();
+        float upperBoundValue = upperBoundKeyframe.getValueByType(type).get();
+    }
+
+    private ParticleKeyframe getOrCreateParticleKeyframe(float elapsedSeconds) {
+        ParticleKeyframe keyframe;
+        if (!particleKeyframes.containsKey(elapsedSeconds)) {
+            keyframe = new ParticleKeyframe();
+            particleKeyframes.put(elapsedSeconds, keyframe);
+        } else {
+            keyframe = particleKeyframes.get(elapsedSeconds);
+        }
+
+        return keyframe;
+    }
+
+}
+
+private float getFinalValueForFloatType(float elapsedSeconds, FloatType type, Function<Float, Float> easingFunction) {
+        SortedMap<Float, FloatValue> keyframeData = settings.extractKeyframeData(type);
+
+        //if (keyframeData.isEmpty()) return 0;
+
+        Float[] timestamps = keyframeData.keySet().toArray(new Float[0]);
+
+        int timestampOfLowerBoundKeyframe = 0;
+        int timestampOfUpperBoundKeyframe = 0;
+        FloatValue lowerBoundVaryingValue = null;
+        FloatValue upperBoundVaryingValue = null;
+
+        for (int i = 0; i < timestamps.length; i++) {
+            if (elapsedSeconds >= timestamps[i]) {
+                timestampOfLowerBoundKeyframe = i;
+                timestampOfUpperBoundKeyframe = i + 1;
+
+                lowerBoundVaryingValue = keyframeData.get(timestamps[timestampOfLowerBoundKeyframe]);
+                if (timestampOfUpperBoundKeyframe < timestamps.length) {
+                    upperBoundVaryingValue = keyframeData.get(timestamps[timestampOfUpperBoundKeyframe]);
+                }
+
+                break;
+            }
+        }
+
+        if (lowerBoundVaryingValue == null) {
+            upperBoundVaryingValue = keyframeData.get(timestamps[0]);
+        }
+
+        float finalLowerBoundValue = (lowerBoundVaryingValue != null) ? lowerBoundVaryingValue.get(id) : 0;
+        if (upperBoundVaryingValue == null) return finalLowerBoundValue;
+        float finalUpperBoundValue = upperBoundVaryingValue.get(id);
+
+        float normalizedProgress = EasingMth.getNormalizedProgress(timestampOfLowerBoundKeyframe, timestampOfUpperBoundKeyframe, elapsedSeconds);
+        float valueAtCurrentTimeBeforeEasing = EasingMth.linearInterpolation(finalLowerBoundValue, finalUpperBoundValue, normalizedProgress);
+
+        if (easingFunction == MathFunctions.Linear) {
+            return valueAtCurrentTimeBeforeEasing;
+        }
+
+        return EasingMth.easeBetweenValuesByFunction(finalLowerBoundValue, finalUpperBoundValue, valueAtCurrentTimeBeforeEasing, easingFunction);
+    }
+
+
+   package com.james.renderEngine.particles.dataTypes;
+
+   import com.james.math.MathFunctions;
+
+   import java.util.HashMap;
+   import java.util.Map;
+   import java.util.Random;
+   import java.util.function.Function;
+
+   public class RandomFloat implements FloatValue {
+
+       private final float a;
+       private final float b;
+       private Function<Float, Float> randomizerFunction = MathFunctions.Linear;
+
+       private final Random r = new Random();
+
+       public RandomFloat(float a, float b) {
+           this.a = a;
+           this.b = b;
+       }
+
+       public void setRandomizerFunction(Function<Float, Float> function) {
+           this.randomizerFunction = function;
+       }
+
+       @Override
+       public float get(int id) {
+           if (idsToRandomValues.containsKey(id)) {
+               return idsToRandomValues.get(id);
+           }
+
+           float normalizedRandomValue = randomizerFunction.apply(r.nextFloat());
+           float gapBetweenValues = a - b;
+           float finalRandomValue = normalizedRandomValue * gapBetweenValues + a;
+           idsToRandomValues.put(id, finalRandomValue);
+           return finalRandomValue;
+       }
+
+       private static final Map<Integer, Float> idsToRandomValues = new HashMap<>();
+
+   }
+
+
+package com.james.renderEngine.particles;
+
+import com.james.math.EasingMath;
+import com.james.math.MathFunctions;
+import com.james.renderEngine.particles.dataTypes.FloatType;
+import com.james.renderEngine.particles.dataTypes.FloatValue;
+import com.james.renderEngine.particles.dataTypes.KeyframeType;
+import com.james.tools.Time;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.Map;
+import java.util.Random;
+import java.util.SortedMap;
+import java.util.function.Function;
+
+/**
+ * Represents a single particle that can change its attributes (position, velocity, rotation, scale,
+ * gravity multiplier) at specific timestamps to create more interesting particle effects that aren't
+ * seen with the generic Particle class. To achieve these effects, the complex particles uses keyframe
+ * data from an instance of the ComplexParticleSettings class, which can be reused for as many instances
+ * of this class as you desire.
+ * @see Particle
+ * @see ComplexParticleSettings
+ */
+public class ComplexParticle extends Particle {
+
+    private final ComplexParticleSettings settings;
+
+    private final Map<FloatType, SortedMap<Float, Float>> allKeyframeData;
+
+    private static final Random r = new Random();
+
+    /**
+     * Creates a new complex particle with specified lifetime and settings.
+     *
+     * @implNote It is possible that the user did not specify a value for any given attribute for the
+     * timestamp 0 seconds, as they might want the default value for that attribute (usually 0 or 1 for float
+     * attributes and (0, 0, 0) for vector attributes) to be used in the easing calculations for the timestamp
+     * 0. However, the getFinalValueForFloatType() method below requires a timestamp at 0 seconds for it to
+     * work properly. Therefore, the ComplexParticleSettings instance's finalizeParticleSettings() method
+     * is called here to add in any missing keyframes for the timestamp of 0 seconds, for all attributes
+     * that don't already have such a keyframe.
+     */
+    public ComplexParticle(float lifetime, ComplexParticleSettings settings) {
+        super(new Vector3f(), new Vector3f(), 0, 1, 1, lifetime);
+
+        settings.finalizeParticleSettings(lifetime);
+
+        this.allKeyframeData = settings.extractAllKeyframeDataAndApplyValues();
+
+        this.settings = settings;
+    }
+
+    /**
+     * Override update() method. This override is only responsible for changing the attributes of the particle.
+     * Then it transfers responsibility to the super class' update() method.
+     */
+    @Override
+    public boolean update() {
+        float elapsedSeconds = Time.getCurrentTime() - instantiationTime;
+
+        // calculate what to put in the rotation variable
+        float rotation = getFinalValueForFloatType(elapsedSeconds, FloatType.Rotation, MathFunctions.Linear);
+        KeyframeType keyframeTypeForRotation = settings.extractKeyframeType(FloatType.Rotation);
+
+        if (keyframeTypeForRotation == KeyframeType.Target) {
+            this.rotation = rotation;
+        } else if (keyframeTypeForRotation == KeyframeType.Change) {
+            this.rotation += rotation;
+        }
+
+        // calculate what to put in the scale variable
+        float scale = getFinalValueForFloatType(elapsedSeconds, FloatType.Scale, MathFunctions.Linear);
+        KeyframeType keyframeTypeForScale = settings.extractKeyframeType(FloatType.Scale);
+
+        if (keyframeTypeForScale == KeyframeType.Target) {
+            this.scale = scale;
+        } else if (keyframeTypeForScale == KeyframeType.Change) {
+            this.scale += scale;
+        }
+
+        // calculate what to put in the gravity multiplier variable
+        float gravityMultiplier = getFinalValueForFloatType(elapsedSeconds, FloatType.GravityMultiplier, MathFunctions.Linear);
+        KeyframeType keyframeTypeForGravityMultiplier = settings.extractKeyframeType(FloatType.GravityMultiplier);
+
+        if (keyframeTypeForGravityMultiplier == KeyframeType.Target) {
+            this.gravityMultiplier = gravityMultiplier;
+        } else if (keyframeTypeForGravityMultiplier == KeyframeType.Change) {
+            this.gravityMultiplier += gravityMultiplier;
+        }
+
+        return super.update();
+    }
+
+    /**
+     *
+     * @param elapsedSeconds
+     * @param type
+     * @param easingFunction
+     * @return
+     */
+    private float getFinalValueForFloatType(float elapsedSeconds, FloatType type, Function<Float, Float> easingFunction) {
+        SortedMap<Float, FloatValue> keyframeData = settings.extractKeyframeData(type);
+
+        Float[] timestamps = keyframeData.keySet().toArray(new Float[0]);
+
+        int timestampOfLowerBoundKeyframe = 0;
+        int timestampOfUpperBoundKeyframe = 0;
+        FloatValue lowerBoundVaryingValue = null;
+        FloatValue upperBoundVaryingValue = null;
+
+        for (int i = 0; i < timestamps.length; i++) {
+            if (i + 1 == timestamps.length) {
+                lowerBoundVaryingValue = keyframeData.get(timestamps[i]);
+                return lowerBoundVaryingValue.get(id);
+            }
+
+            if (elapsedSeconds >= timestamps[i] && elapsedSeconds < timestamps[i + 1]) {
+                timestampOfLowerBoundKeyframe = i;
+                timestampOfUpperBoundKeyframe = i + 1;
+
+                lowerBoundVaryingValue = keyframeData.get(timestamps[timestampOfLowerBoundKeyframe]);
+                upperBoundVaryingValue = keyframeData.get(timestamps[timestampOfUpperBoundKeyframe]);
+
+                break;
+            }
+        }
+
+        float finalLowerBoundValue = lowerBoundVaryingValue.get(id);
+        float finalUpperBoundValue = upperBoundVaryingValue.get(id);
+
+        if (type == FloatType.Rotation) {
+            System.out.println("It works");
+        }
+
+        float normalizedProgress = EasingMth.getNormalizedProgress(timestamps[timestampOfLowerBoundKeyframe], timestamps[timestampOfUpperBoundKeyframe], elapsedSeconds);
+        float valueAtCurrentTimeBeforeEasing = EasingMth.linearInterpolation(finalLowerBoundValue, finalUpperBoundValue, normalizedProgress);
+
+        if (easingFunction == MathFunctions.Linear) {
+            return valueAtCurrentTimeBeforeEasing;
+        }
+
+        return EasingMth.easeBetweenValuesByFunction(finalLowerBoundValue, finalUpperBoundValue, valueAtCurrentTimeBeforeEasing, easingFunction);
+    }
+
+}
+
+package com.james.renderEngine.particles.dataTypes;
+
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+public class RandomVector3f implements Vector3fValue {
+
+    private final RandomFloat randomX;
+    private final RandomFloat randomY;
+    private final RandomFloat randomZ;
+
+    public RandomVector3f(Vector3f a, Vector3f b) {
+        randomX = new RandomFloat(a.x, b.x);
+        randomY = new RandomFloat(a.y, b.y);
+        randomZ = new RandomFloat(a.z, b.z);
+    }
+
+    public void setRandomizerFunction(Function<Float, Float> function) {
+        randomX.setRandomizerFunction(function);
+        randomY.setRandomizerFunction(function);
+        randomZ.setRandomizerFunction(function);
+    }
+
+    @Override
+    public Vector3f get(int id) {
+        if (idsToRandomValues.containsKey(id)) {
+            return idsToRandomValues.get(id);
+        }
+
+        Vector3f finalRandomValue = new Vector3f(randomX.get(), randomY.get(), randomZ.get());
+        idsToRandomValues.put(id, finalRandomValue);
+
+        return finalRandomValue;
+    }
+
+    private static final Map<Integer, Vector3f> idsToRandomValues = new HashMap<>();
+
+
+
+}
+
+
+
+
+
+    /*public void update() {
+        camera.increasePitch((float) MouseMoveInput.getDeltaY());
+        camera.increaseYaw((float) MouseMoveInput.getDeltaX());
+
+        if (KeyInput.isKeyDown(GLFW.GLFW_KEY_UP)) {
+            camera.increasePitch(-5);
+        }
+        if (KeyInput.isKeyDown(GLFW.GLFW_KEY_DOWN)) {
+            camera.increasePitch(5);
+        }
+        if (KeyInput.isKeyDown(GLFW.GLFW_KEY_LEFT)) {
+            camera.increaseYaw(-5);
+        }
+        if (KeyInput.isKeyDown(GLFW.GLFW_KEY_RIGHT)) {
+            camera.increaseYaw(5);
+        }
+
+        float xAndZDistance = (float) Math.cos(Math.toRadians(camera.getPitch())) * distanceFromTarget;
+        float cameraY = (float) Math.sin(Math.toRadians(camera.getPitch())) * distanceFromTarget;
+
+        float cameraX = (float) -Math.sin(Math.toRadians(camera.getYaw())) * xAndZDistance;
+        float cameraZ = (float) -Math.cos(Math.toRadians(camera.getYaw())) * xAndZDistance;
+
+        Vector3f cameraOffset = new Vector3f(cameraX, cameraY, cameraZ);
+        Vector3f cameraPosition = Vector3f.add(Vector3f.add(target, cameraOffset, null), globalOffset, null);
+
+        if (KeyInput.isKeyDown(GLFW.GLFW_KEY_C)) {
+            printStuff = !printStuff;
+        }
+
+        if (printStuff) {
+
+        }
+
+        if (KeyInput.isKeyDown(GLFW_KEY_N)) {
+            camera.setPitch(0);
+            camera.setYaw(0);
+        }
+
+        if (KeyInput.isKeyDown(GLFW.GLFW_KEY_V)) {
+//            camera.setPitch(45);
+//            camera.setYaw(45);
+
+//            System.out.println("(float) Math.abs(Math.cos(Math.toRadians(180 - camera.getPitch())) * distanceFromTarget) = " + (float) Math.abs(Math.cos(Math.toRadians(180 - camera.getPitch())) * distanceFromTarget));
+//            System.out.println("xAndZDistance = " + xAndZDistance);
+//            System.out.println("cameraY = " + cameraY);
+//            System.out.println("cameraOffset = " + cameraOffset);
+            System.out.println("camera.getPitch() = " + camera.getPitch());
+            System.out.println("camera.getYaw() = " + camera.getYaw());
+        }
+
+        if (obj != null)
+            obj.setPosition(cameraPosition);
+        camera.setPosition(cameraPosition);
+    }*/
+
+
+
+/*OBJParser.ModelData stallLoader = OBJParser.parseOBJFile("/stall.obj");
+        Model stallModel = new Model(stallLoader.vertexPositions, stallLoader.indices);
+        stallModel.setTextureAndTextureCoords("/stall.png", stallLoader.textureCoords);
+        stallModel.setNormals(stallLoader.normals);
+        stallModel.setRenderer(texturedModelRenderer);
+
+        Model triangleModel = new Model(positions, indices);
+        triangleModel.setColors(colors);
+        triangleModel.setRenderer(colorModelRenderer);
+
+        Model planeModel = ModelFactory.getVerticalPlane();
+        planeModel.setTextureAndTextureCoords("/hello.png", new float[] { 0, 0, 0, 1, 1, 0, 1, 1} );
+        planeModel.setRenderer(flatRenderer);
+
+        ModelLoader abstractArtLoader = new ModelLoader("res/abstract_art.dae");
+        Model abstractArtModel = new Model(abstractArtLoader.vertexPositions(), abstractArtLoader.indices());
+        abstractArtModel.setTextureAndTextureCoords("/stall.png", abstractArtLoader.textureCoords());
+        abstractArtModel.setNormals(abstractArtLoader.normals());
+        abstractArtModel.setRenderer(texturedModelRenderer);
+
+        ModelLoader stallLoader2 = new ModelLoader("res/stall.obj");
+        Model stallModel2 = new Model(stallLoader2.vertexPositions(), stallLoader2.indices());
+        stallModel2.setTextureAndTextureCoords("/stall.png", stallLoader2.textureCoords());
+        stallModel2.setNormals(stallLoader2.normals());
+        stallModel2.setRenderer(texturedModelRenderer);
+
+        BatchedGameObjectsList batchedGameObjectsList = new BatchedGameObjectsList();
+        GameObject stallGameObject = new GameObject(stallModel2, new Vector3f(new Random().nextInt(10)-5, -5, -15), new Vector3f(0, 0, 0), 1);
+        batchedGameObjectsList.addGameObject(stallGameObject);
+        batchedGameObjectsList.addGameObject(new GameObject(triangleModel, new Vector3f(0, 0, -10), new Vector3f(0, 0, 0), 1));
+        batchedGameObjectsList.addGameObject(new GameObject(abstractArtModel, new Vector3f(0, 0, -10), new Vector3f(0, 0, 0), 1));
+        batchedGameObjectsList.addGameObject(new GameObject(planeModel, new Vector3f(0, 5, -10), new Vector3f(0, 0, 0), 1));
+
+        System.out.println(batchedGameObjectsList);*/
+
+
+
+
+        ModelLoader abstractModelLoader = new ModelLoader("res/abstract_art.dae");
+        Model abstractModel = new Model(abstractModelLoader.vertexPositions(), abstractModelLoader.indices());
+        abstractModel.setTextureAndTextureCoords("/stall.png", abstractModelLoader.textureCoords());
+        abstractModel.setNormals(abstractModelLoader.normals());
+        abstractModel.setRenderer(texturedModelRenderer);

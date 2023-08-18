@@ -1,0 +1,15 @@
+package com.james.main.clientSide;
+
+import org.lwjgl.util.vector.Vector3f;
+
+public class CachedTriangle {
+
+    public final Vector3f[] points;
+    public final Vector3f unitVector;
+
+    public CachedTriangle(Vector3f[] points, Vector3f unitVector) {
+        this.points = points;
+        this.unitVector = unitVector;
+    }
+
+}

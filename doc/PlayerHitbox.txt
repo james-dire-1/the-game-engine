@@ -1,0 +1,16 @@
+package com.james.main;
+
+import com.james.collisions.AbstractObjectHitbox;
+
+public class PlayerHitbox extends AbstractObjectHitbox {
+
+    public final Player player;
+    public float radius;
+
+    public PlayerHitbox(Player player, float radius) {
+        super(player);
+        this.player = player;
+        this.radius = radius;
+    }
+
+}
