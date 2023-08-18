@@ -41,6 +41,15 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Main {
 
+    // This is some new code that has been added.
+    /*
+    This
+    is a
+    test
+    let's see
+    how it works
+     */
+
     public static final Light light = new Light(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
 
     public static CameraController camController;

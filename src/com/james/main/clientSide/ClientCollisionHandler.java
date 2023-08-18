@@ -5,7 +5,6 @@ import com.james.main.PlayerHitbox;
 import com.james.math.Mth;
 import com.james.tools.Time;
 import com.james.world.WallTriangle;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class ClientCollisionHandler {
