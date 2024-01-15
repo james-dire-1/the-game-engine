@@ -2,6 +2,10 @@ package com.james.world;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * An extension of PhysicalObject that allows for velocity and acceleration values, which get applied in the
+ * overloaded update() method every game tick.
+ */
 public class MovableObject extends PhysicalObject {
 
     private final Level level;

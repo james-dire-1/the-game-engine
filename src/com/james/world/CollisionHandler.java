@@ -2,12 +2,16 @@ package com.james.world;
 
 import com.james.collisions.CollisionMath;
 import com.james.math.Mth;
-import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The class that handles collisions on the server side. It handles object-object collisions, as well as
+ * object-mesh collisions. This class is also where the ObjectHitboxes and WallTriangles for MeshHitboxes
+ * are stored.
+ */
 public class CollisionHandler {
 
     private final Level level;
@@ -19,6 +23,9 @@ public class CollisionHandler {
         this.level = level;
     }
 
+    /**
+     * Gets called once per game tick.
+     */
     public void update() {
         for (int i = 0; i < hitboxes.size(); i++) {
             ObjectHitbox theTester = hitboxes.get(i);

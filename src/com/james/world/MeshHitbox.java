@@ -7,11 +7,23 @@ import org.lwjgl.util.vector.Vector4f;
 
 import java.util.Arrays;
 
+/**
+ * Exactly what the name implies. Needs to know the PhysicalObject to which it belongs to, so that it can
+ * be positioned appropriately in the game world, and the TriangleMesh of the hitbox.
+ */
 public class MeshHitbox {
 
     public final PhysicalObject object;
     public final WallTriangle[] wallTriangles;
 
+    /**
+     * Constructs MeshHitbox.
+     * @param object object to which the hitbox belongs
+     * @param mesh triangle mesh in local model space
+     * @implNote The position of the object is used to convert the WallTriangles from the TriangleMesh that
+     * are in local space, into world space, so that this MeshHitbox can then be used appropriately in
+     * collision calculations.
+     */
     public MeshHitbox(PhysicalObject object, TriangleMesh mesh) {
         this.object = object;
         this.wallTriangles = getWorldSpaceWallTriangles(mesh);

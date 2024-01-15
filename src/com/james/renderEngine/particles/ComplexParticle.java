@@ -38,6 +38,7 @@ public class ComplexParticle extends Particle {
      * work properly. Therefore, the ComplexParticleSettings instance's finalizeParticleSettings() method
      * is called here to add in any missing keyframes for the timestamp of 0 seconds, for all attributes
      * that don't already have such a keyframe.
+     *
      */
     public ComplexParticle(float lifetime, ComplexParticleSettings settings) {
         super(new Vector3f(), new Vector3f(), 0, 1, 1, lifetime);

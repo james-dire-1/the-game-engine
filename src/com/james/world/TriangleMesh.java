@@ -2,6 +2,13 @@ package com.james.world;
 
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Very useful class for converting raw vertexPositions and indices from the Assimp ModelLoader into
+ * an array of WallTriangle instances. At the end, the WallTriangle array is considered to be a single
+ * TriangleMesh.
+ * @see WallTriangle
+ */
+// TODO: 2024-01-14 Consider removing this class? Maybe a class simply for collecting the WallTriangles is redundant
 public class TriangleMesh {
 
     public final WallTriangle[] wallTriangles;

@@ -7,6 +7,18 @@ import com.james.world.ServerPacketSendEvents;
 import com.james.world.WallTriangle;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A class containing methods that dictate what should happen when particular server events occur. In this case
+ * specifically, these implemented methods dictate what should happen if the server that is running is a local
+ * server (i.e. it is not an online game). In this case, we don't need to send data over a network, but rather
+ * we can call the corresponding methods in ClientPacketReceiveActions directly.
+ * @implNote These methods get called from specific LevelInitializers or other server side code, which run on
+ * different threads. Thus, to run the methods of ClientPacketReceiveActions on the main thread, ThreadManager
+ * is used.
+ * @see ClientPacketReceiveActions
+ * @see ThreadManager
+ * @see com.james.world.LevelInitializer
+ */
 public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
     @Override

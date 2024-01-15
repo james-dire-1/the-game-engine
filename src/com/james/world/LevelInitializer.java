@@ -6,6 +6,11 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.Arrays;
 
+/**
+ * Class that handles the management of a Level instance. That is, it creates a new Level when constructed,
+ * and creates a new Thread for the game loop on which the Level will be run on. Calls the Level's update()
+ * method every game tick.
+ */
 public class LevelInitializer implements Runnable {
 
     public volatile boolean shouldRun = true;

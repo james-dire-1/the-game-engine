@@ -9,6 +9,11 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.*;
 
+/**
+ * Methods that handle what should happen on the client side when particular events occur on the server side.
+ * This class also contains important variables, and cached instances of classes from the server; it contains
+ * a list of the CachedObjectHitboxes, and a list of the cached WallTriangles.
+ */
 public class ClientPacketReceiveActions {
 
     public static Player player;

@@ -5,6 +5,11 @@ import com.james.world.WallTriangle;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Utility class used by both the ClientCollisionHandler and the server CollisionHandler.
+ * @see com.james.main.clientSide.ClientCollisionHandler
+ * @see com.james.world.CollisionHandler
+ */
 public class CollisionMath {
 
     public static void collisionBetweenObjectAndWallTriangle(AbstractObjectHitbox objectHitbox, WallTriangle triangle) {

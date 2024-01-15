@@ -7,8 +7,17 @@ import com.james.tools.Time;
 import com.james.world.WallTriangle;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Client side version of CollisionHandler.
+ * @see com.james.world.CollisionHandler
+ */
 public class ClientCollisionHandler {
 
+    /**
+     * Gets called once per frame.
+     */
+    // TODO: 2024-01-15 find a way to make this get called in fixed time intervals rather than tying it to
+    // TODO: 2024-01-15 framerate, since this is technically a simulation related thing
     public static void update() {
         for (CachedObjectHitbox hitbox : ClientPacketReceiveActions.cachedLocalObjectHitboxes) {
             collisionBetweenObjects(ClientPacketReceiveActions.playerHitbox, hitbox);

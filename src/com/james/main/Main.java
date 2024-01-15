@@ -120,7 +120,6 @@ public class Main {
         batchedGameObjectsList.addGameObject(abstractGameObject);
 
         Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
-        SphereHitbox hitbox = new SphereHitbox(abstractGameObject.getPosition(), 3);
 
         MasterRenderer.prepare(Renderers.colorModelRenderer, Renderers.texturedModelRenderer, Renderers.flatRenderer);
         ParticleRenderer.prepare();

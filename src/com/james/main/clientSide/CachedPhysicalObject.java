@@ -3,6 +3,10 @@ package com.james.main.clientSide;
 import com.james.collisions.AbstractPhysicalObject;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Client side version of CachedPhysicalObject. Removes some things from the server PhysicalObject that
+ * are not needed for the client.
+ */
 public class CachedPhysicalObject extends AbstractPhysicalObject {
 
     public final int id;

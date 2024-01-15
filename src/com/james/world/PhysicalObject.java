@@ -3,6 +3,9 @@ package com.james.world;
 import com.james.collisions.AbstractPhysicalObject;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * A representation of an object in 3D space that exists on the server side.
+ */
 public class PhysicalObject extends AbstractPhysicalObject {
 
     public final int id;
@@ -32,6 +35,12 @@ public class PhysicalObject extends AbstractPhysicalObject {
         this.id = count;
     }
 
+    /**
+     * Basic update method for PhysicalObjects. As you can see, this method is pretty barebones, but classes
+     * that extend PhysicalObject (such as MovableObject) may have more complex overloaded update() methods.
+     * @see MovableObject
+     * @return whether the current PhysicalObject should be deleted.
+     */
     public boolean update() {
         return shouldDelete;
     }
