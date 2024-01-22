@@ -2,8 +2,6 @@ package com.james.world;
 
 import org.lwjgl.util.vector.Vector3f;
 
-import java.io.Serializable;
-
 /**
  * Triangle class used as the most basic unit for a mesh. Includes its 3 points that define it,
  * as well as its unit vector. These can be either in local space (respective to origin), or in

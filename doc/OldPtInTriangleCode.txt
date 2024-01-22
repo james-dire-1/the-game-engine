@@ -1,0 +1,20 @@
+    // Note: this method is implemented from Fauerby's report:
+    // http://www.peroxide.dk/papers/collision/collision.pdf
+    public static boolean pointInTriangle(Vector3f pa, Vector3f pb, Vector3f pc, Vector3f point) {
+        Vector3f e10 = Vector3f.sub(pb, pa, null);
+        Vector3f e20 = Vector3f.sub(pc, pa, null);
+
+        float a = Vector3f.dot(e10, e10);
+        float b = Vector3f.dot(e10, e20);
+        float c = Vector3f.dot(e20, e20);
+        float ac_bb = a*c - b*b;
+        Vector3f vp = new Vector3f(point.x - pa.x, point.y - pa.y, point.z - pa.z);
+
+        float d = Vector3f.dot(vp, e10);
+        float e = Vector3f.dot(vp, e20);
+        float x = d*c - e*b;
+        float y = e*a - d*b;
+        float z = x + y - ac_bb;
+
+        return (( (int)z & (~( (int)x | (int)y )) ) & 0x80000000) != 0;
+    }

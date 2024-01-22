@@ -1,0 +1,105 @@
+Note: In trying to implement the point in triangle method from Fauerby's report,
+I wanted to make sure that my Java code was equivalent to the C++ code he had provided.
+This wasn't as simple because some crazy bit shifting and type punning is used in his implementation,
+which I needed to make sure I got right in the Java implementation. It also doesn't help that he
+type puns to an unsigned int, while in Java there is no such unsigned int, which, although it doesn't
+matter with bitwise operators, made the process of comparing the code and the values it outputs more
+difficult. Anyway, here is the C++ code I used to compare:
+
+#include <iostream>
+#include <string>
+
+typedef unsigned int uint32;
+#define in(a) ((uint32&) a)
+
+struct VECTOR
+{
+    float x, y, z;
+
+    VECTOR(float x, float y, float z)
+        : x(x), y(y), z(z)
+    {
+    }
+
+    double dot(const VECTOR& other) const {
+        return x * other.x + y * other.y + z * other.z;
+    }
+};
+
+VECTOR subtract(const VECTOR& v1, const VECTOR& v2)
+{
+    return VECTOR(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z);
+}
+
+bool checkPointInTriangle(const VECTOR& point,
+     const VECTOR& pa,const VECTOR& pb, const VECTOR& pc)
+{
+  //VECTOR e10=pb-pa;
+  //VECTOR e20=pc-pa;
+  VECTOR e10 = subtract(pb, pa);
+  VECTOR e20 = subtract(pc, pa);
+  float a = e10.dot(e10);
+  float b = e10.dot(e20);
+  float c = e20.dot(e20);
+  float ac_bb=(a*c)-(b*b);
+  VECTOR vp(point.x-pa.x, point.y-pa.y, point.z-pa.z);
+  float d = vp.dot(e10);
+  float e = vp.dot(e20);
+  float x = (d*c)-(e*b);
+  float y = (e*a)-(d*b);
+  float z = x+y-ac_bb;
+
+    std::cout << "x: " << x << std::endl;
+    std::cout << "y: " << y << std::endl;
+    std::cout << "z: " << z << std::endl;
+
+    std::cout << "in(x): " << in(x) << std::endl;
+    std::cout << "in(y): " << in(y) << std::endl;
+    std::cout << "in(z): " << in(z) << std::endl;
+
+    std::cout << "(( in(z)& ~(in(x)|in(y)) ) & 0x80000000): " << (( in(z)& ~(in(x)|in(y)) ) & 0x80000000) << std::endl;
+
+    //const std::type_info& type = typeid(( in(z)& ~(in(x)|in(y)) ) & 0x80000000);
+
+    //if (type == typeid(unsigned int)) {
+    //    std::cout << "It is an unsigned int" << std::endl;
+    //}
+    //if (type == typeid(int)) {
+    //    std::cout << "It is an int" << std::endl;
+    //}
+
+    unsigned int toReturn = ( in(z)& ~(in(x)|in(y)) ) & 0x80000000;
+    std::cout << "toReturn: " << toReturn << std::endl;
+
+    int toReturnAsInt = (int&) toReturn;
+    std::cout << "toReturnAsInt: " << toReturnAsInt << std::endl;
+
+    return (( in(z)& ~(in(x)|in(y)) ) & 0x80000000);
+}
+
+int main()
+{
+    VECTOR a(0, 0, 0);
+    VECTOR b(10, 0, 0);
+    VECTOR c(5, 10, 0);
+
+    VECTOR point(5, 9.9999f, 0);
+
+    bool isInTriangle = checkPointInTriangle(point, a, b, c);
+
+    std::cout << isInTriangle << std::endl;
+
+    // std::cout << "-----------" << std::endl;
+
+    // unsigned int number = 3175874560;
+
+    //int number2 = *((int*) &number);
+
+    // int number2 = (int&) number;
+
+    // std::cout << "number2: " << number2 << std::endl;
+
+    // bool myBoolean = 5;
+
+    // std::cout << myBoolean << std::endl;
+}

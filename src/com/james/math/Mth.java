@@ -121,6 +121,20 @@ public class Mth {
         return new Vector2f(finalX, finalY);
     }
 
+    public static Vector3f add(Vector3f... vectors) {
+        float finalX = 0;
+        float finalY = 0;
+        float finalZ = 0;
+
+        for (Vector3f vector : vectors) {
+            finalX += vector.x;
+            finalY += vector.y;
+            finalZ += vector.z;
+        }
+
+        return new Vector3f(finalX, finalY, finalZ);
+    }
+
     public static Vector2f multiplyVectors(Vector2f a, Vector2f b) {
         return new Vector2f(a.x * b.x, a.y * b.y);
     }
@@ -149,6 +163,66 @@ public class Mth {
         float w2 = w2Numerator / w2Denominator;
 
         return w1 >= 0 && w2 >= 0 && w1+w2 <= 1;
+    }
+
+    // Note: this method is implemented from Fauerby's report:
+    // http://www.peroxide.dk/papers/collision/collision.pdf
+    public static boolean pointInTriangle(Vector3f pa, Vector3f pb, Vector3f pc, Vector3f point) {
+        Vector3f e10 = Vector3f.sub(pb, pa, null);
+        Vector3f e20 = Vector3f.sub(pc, pa, null);
+
+        float a = Vector3f.dot(e10, e10);
+        float b = Vector3f.dot(e10, e20);
+        float c = Vector3f.dot(e20, e20);
+        float ac_bb = a*c - b*b;
+        Vector3f vp = new Vector3f(point.x - pa.x, point.y - pa.y, point.z - pa.z);
+
+        float d = Vector3f.dot(vp, e10);
+        float e = Vector3f.dot(vp, e20);
+        float x = d*c - e*b;
+        float y = e*a - d*b;
+        float z = x + y - ac_bb;
+
+        System.out.println("x = " + x);
+        System.out.println("y = " + y);
+        System.out.println("z = " + z);
+
+        System.out.println("Float.floatToIntBits(x) = " + Float.floatToIntBits(x));
+        System.out.println("Float.floatToIntBits(y) = " + Float.floatToIntBits(y));
+        System.out.println("Float.floatToIntBits(z) = " + Float.floatToIntBits(z));
+
+        System.out.println("(( Float.floatToIntBits(z) & (~( Float.floatToIntBits(x) | Float.floatToIntBits(y) )) ) & 0x80000000)  = " + ((Float.floatToIntBits(z) & (~(Float.floatToIntBits(x) | Float.floatToIntBits(y)))) & 0x80000000));
+        System.out.println("(( (int)z & (~( (int)x | (int)y )) ) & 0x80000000) = " + (((int) z & (~((int) x | (int) y))) & 0x80000000));
+
+        return (( Float.floatToIntBits(z) & (~( Float.floatToIntBits(x) | Float.floatToIntBits(y) )) ) & 0x80000000) != 0;
+//        return (( (int)z & (~( (int)x | (int)y )) ) & 0x80000000) != 0;
+    }
+
+    // Note: this method is implemented from Fauerby's report:
+    // http://www.peroxide.dk/papers/collision/collision.pdf
+    public Float getLowestRootUnderThreshold(float a, float b, float c, float maxR) {
+        float determinant = b * b - 4 * a * c;
+        if (determinant < 0) return null;
+
+        float sqrtOfDeterminant = (float) Math.sqrt(determinant);
+        float r1 = (-b - sqrtOfDeterminant) / (2 * a);
+        float r2 = (-b + sqrtOfDeterminant) / (2 * a);
+
+        if (r1 > r2) {
+            float temp = r2;
+            r2 = r1;
+            r1 = temp;
+        }
+
+        if (r1 > 0 && r1 < maxR) {
+            return r1;
+        }
+
+        if (r2 > 0 && r2 < maxR) {
+            return r2;
+        }
+
+        return null;
     }
 
 }
