@@ -1,0 +1,16 @@
+package com.james.evenNewerCollisionsStuff;
+
+import com.james.main.clientSide.CachedPhysicalObject;
+import com.james.main.clientSide.ClientPacketReceiveActions;
+
+public class CachedEllipsoidHitbox {
+
+    public final CachedPhysicalObject object;
+    public final EllipsoidDimensions dimensions;
+
+    public CachedEllipsoidHitbox(int idOfCorrespondingObject, float radiusX, float radiusY, float radiusZ) {
+        this.object = ClientPacketReceiveActions.cachedLocalPhysicalObjects.get(idOfCorrespondingObject);
+        this.dimensions = ModelPreparations.getEllipsoidDimensions(radiusX, radiusY, radiusZ);
+    }
+
+}

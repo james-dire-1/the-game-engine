@@ -29,6 +29,10 @@ public class MovableObject extends PhysicalObject {
         this.acceleration.z = z;
     }
 
+    public Vector3f getVelocity() { return velocity; }
+
+    public Vector3f getAcceleration() { return acceleration; }
+
     @Override
     public boolean update() {
         this.velocity.x += this.acceleration.x * level.secondsPerGameTick;

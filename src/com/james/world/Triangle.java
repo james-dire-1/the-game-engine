@@ -8,6 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
  * world space (respective to the world).
  */
 public class Triangle {
+    // TODO: 2024-06-16 Do we need a new Triangle class?
 
     public final Vector3f[] points;
     public final Vector3f unitVector;

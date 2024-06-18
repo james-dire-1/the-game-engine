@@ -1,0 +1,22 @@
+package com.james.evenNewerCollisionsStuff;
+
+import com.james.main.clientSide.ClientPacketReceiveActions;
+import com.james.world.Triangle;
+import org.lwjgl.util.vector.Vector3f;
+
+public class ClientCollisionHandler {
+
+    public static void update() {
+        for (CachedAABBHitbox aabbHitbox : ClientPacketReceiveActions.cachedLocalAABBHitboxes) {
+            // TODO: 2024-06-16 Write the condition required for collision here
+            Vector3f objectPosition = aabbHitbox.object.getPosition();
+            PlayerHitbox playerHitbox = ClientPacketReceiveActions.playerHitbox;
+            ModelMesh meshInEllipsoidLocalSpace = playerHitbox.dimensions.modelMeshMap.get(aabbHitbox.meshPath);
+            Triangle[] trianglesInEllipsoidLocalSpace = meshInEllipsoidLocalSpace.triangles;
+            Triangle[] trianglesInEllipsoidWorldSpace = ModelMesh.performOperationOnAllTriangles(trianglesInEllipsoidLocalSpace, PointOperations::addObjectPositionToPoint, objectPosition);
+
+            // perform the necessary stuff over here hoss ong fr fr
+        }
+    }
+
+}

@@ -36,6 +36,14 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
+    public void sendAABBHitboxAdded(int id, String meshPath) {
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath);
+        });
+    }
+
+    // Outdated code. Will be removed in the future.
+    @Override
     public void sendObjectHitboxAdded(int idOfCorrespondingObject, float radius) {
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.objectHitboxAddedReceived(idOfCorrespondingObject, radius);

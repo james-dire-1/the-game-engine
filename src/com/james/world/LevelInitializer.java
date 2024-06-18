@@ -1,5 +1,8 @@
 package com.james.world;
 
+import com.james.evenNewerCollisionsStuff.EllipsoidDimensions;
+import com.james.evenNewerCollisionsStuff.ModelMeshBankInR3;
+import com.james.evenNewerCollisionsStuff.ModelPreparations;
 import com.james.tools.ModelLoader;
 import com.james.tools.Time;
 import org.lwjgl.util.vector.Vector3f;
@@ -8,8 +11,12 @@ import java.util.Arrays;
 
 /**
  * Class that handles the management of a Level instance. That is, it creates a new Level when constructed,
- * and creates a new Thread for the game loop on which the Level will be run on. Calls the Level's update()
+ * and creates a new Thread for the game loop on which the Level will be run. Calls the Level's update()
  * method every game tick.
+ * @implNote This class should be designed in such a way that the standalone server software would not need
+ * to rely on it. However, both the standalone server software and the actual game client will use the same
+ * Level class.
+ * @see Level
  */
 public class LevelInitializer implements Runnable {
 
@@ -22,6 +29,14 @@ public class LevelInitializer implements Runnable {
         Thread thread = new Thread(this);
         thread.start();
     }
+
+    /* @Override
+    public void run() {
+        // TODO: 2024-06-16 Put this method call somewhere in main
+        ModelPreparations.init();
+
+        // Do some stuff hoss
+    } */
 
     @Override
     public void run() {
@@ -44,15 +59,20 @@ public class LevelInitializer implements Runnable {
 
         float lastTime = Time.getCurrentTime();
         while (shouldRun) {
-            if (Time.getCurrentTime() - lastTime >= level.secondsPerGameTick) {
-                lastTime = Time.getCurrentTime();
+            try {
+                Thread.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // if (Time.getCurrentTime() - lastTime >= level.secondsPerGameTick) {
+                // lastTime = Time.getCurrentTime();
 
                 //wall.setPosition(wall.getPosition().x, wall.getPosition().y + 0.05f, wall.getPosition().z);
                 //level.events.sendPhysicalObjectMoved(wall.id, wall.getPosition().x, wall.getPosition().y,
                 //        wall.getPosition().z);
 
-                level.update();
-            }
+                // level.update();
+            //}
         }
     }
 

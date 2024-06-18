@@ -1,16 +1,18 @@
 package com.james.collisions;
 
+import com.james.main.clientSide.OldClientCollisionHandler;
 import com.james.math.Mth;
+import com.james.world.OldCollisionHandler;
 import com.james.world.WallTriangle;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Utility class used by both the ClientCollisionHandler and the server CollisionHandler.
- * @see com.james.main.clientSide.ClientCollisionHandler
- * @see com.james.world.CollisionHandler
+ * @see OldClientCollisionHandler
+ * @see OldCollisionHandler
  */
-public class CollisionMath {
+public class OldCollisionMath {
 
     public static void collisionBetweenObjectAndWallTriangle(AbstractObjectHitbox objectHitbox, WallTriangle triangle) {
         Vector2f a = null;

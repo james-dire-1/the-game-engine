@@ -30,6 +30,8 @@ public class GuiText {
      * since they don't use normalized size. Rather, they use screen size. However, the constructor still
      * expects them, so a random one is supplied.
      */
+    // TODO: 2024-06-03 the fact that we're still using Guis for invisible frames is not a good idea
+    // TODO: 2024-06-03 Perhaps reconsider the structure of the code to allow for a different way to go about this?
     public GuiText(String text, FontInfo font, float fontSize, TextAlignment alignment, List<Gui> guis, Position position) {
         byte[] asciiCodes = text.getBytes(StandardCharsets.US_ASCII);
 

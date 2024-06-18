@@ -1,0 +1,41 @@
+package com.james.evenNewerCollisionsStuff;
+
+import com.james.world.Triangle;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CollisionHandler {
+
+    public final List<EllipsoidHitbox> ellipsoidHitboxes = new ArrayList<>();
+    public final List<AABBHitbox> aabbHitboxes = new ArrayList<>();
+
+    public void update() {
+        for (EllipsoidHitbox ellipsoidHitbox : ellipsoidHitboxes) {
+            for (AABBHitbox aabbHitbox : aabbHitboxes) {
+                Vector3f objectPosition = aabbHitbox.object.getPosition();
+                ModelMesh meshInEllipsoidLocalSpace = ellipsoidHitbox.dimensions.modelMeshMap.get(aabbHitbox.meshPath);
+                Triangle[] trianglesInEllipsoidLocalSpace = meshInEllipsoidLocalSpace.triangles;
+                Triangle[] trianglesInEllipsoidWorldSpace = new Triangle[trianglesInEllipsoidLocalSpace.length];
+
+                for (int i = 0; i < trianglesInEllipsoidLocalSpace.length; i++) {
+                    Vector3f[] pointsInEllipsoidLocalSpace = trianglesInEllipsoidLocalSpace[i].points;
+                    Vector3f[] pointsInEllipsoidWorldSpace = new Vector3f[3];
+
+                    for (int j = 0; j <= 2; j++) {
+                        Vector3f point = pointsInEllipsoidLocalSpace[j];
+                        float ellipsoidWorldSpaceX = point.x + objectPosition.x;
+                        float ellipsoidWorldSpaceY = point.y + objectPosition.y;
+                        float ellipsoidWorldSpaceZ = point.z + objectPosition.z;
+
+                        pointsInEllipsoidWorldSpace[j] = new Vector3f(ellipsoidWorldSpaceX, ellipsoidWorldSpaceY, ellipsoidWorldSpaceZ);
+                    }
+
+                    trianglesInEllipsoidWorldSpace[i] = new Triangle(pointsInEllipsoidWorldSpace);
+                }
+            }
+        }
+    }
+
+}

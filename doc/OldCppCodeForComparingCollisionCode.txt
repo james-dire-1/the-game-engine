@@ -4,7 +4,9 @@ This wasn't as simple because some crazy bit shifting and type punning is used i
 which I needed to make sure I got right in the Java implementation. It also doesn't help that he
 type puns to an unsigned int, while in Java there is no such unsigned int, which, although it doesn't
 matter with bitwise operators, made the process of comparing the code and the values it outputs more
-difficult. Anyway, here is the C++ code I used to compare:
+difficult. Anyway, here is the C++ code I used to compare.
+
+Oh, and in doing this, I learnt about the Float.floatToIntBits method!
 
 #include <iostream>
 #include <string>

@@ -1,6 +1,6 @@
 package com.james.world;
 
-import com.james.collisions.CollisionMath;
+import com.james.collisions.OldCollisionMath;
 import com.james.math.Mth;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -12,14 +12,14 @@ import java.util.List;
  * object-mesh collisions. This class is also where the ObjectHitboxes and WallTriangles for MeshHitboxes
  * are stored.
  */
-public class CollisionHandler {
+public class OldCollisionHandler {
 
     private final Level level;
 
     public final List<ObjectHitbox> hitboxes = new ArrayList<>();
     public final List<WallTriangle> walls = new ArrayList<>();
 
-    public CollisionHandler(Level level) {
+    public OldCollisionHandler(Level level) {
         this.level = level;
     }
 
@@ -44,11 +44,11 @@ public class CollisionHandler {
 
                 if (triangle.mode == WallTriangle.ExtendingMode.Vertical) {
                     if (objectPosition.x > triangle.lowestCoordinate && objectPosition.x < triangle.highestCoordinate) {
-                        CollisionMath.collisionBetweenObjectAndWallTriangle(objectHitbox, triangle);
+                        OldCollisionMath.collisionBetweenObjectAndWallTriangle(objectHitbox, triangle);
                     }
                 } else if (triangle.mode == WallTriangle.ExtendingMode.Horizontal) {
                     if (objectPosition.z > triangle.lowestCoordinate && objectPosition.z < triangle.highestCoordinate) {
-                        CollisionMath.collisionBetweenObjectAndWallTriangle(objectHitbox, triangle);
+                        OldCollisionMath.collisionBetweenObjectAndWallTriangle(objectHitbox, triangle);
                     }
                 }
 

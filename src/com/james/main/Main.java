@@ -1,7 +1,6 @@
 package com.james.main;
 
-import com.james.main.clientSide.CachedObjectHitbox;
-import com.james.main.clientSide.ClientCollisionHandler;
+import com.james.main.clientSide.OldClientCollisionHandler;
 import com.james.main.clientSide.ClientPacketReceiveActions;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
@@ -10,7 +9,6 @@ import com.james.input.KeyInput;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
 import com.james.math.Mth;
-import com.james.physics.SphereHitbox;
 import com.james.renderEngine.particles.ComplexParticle;
 import com.james.renderEngine.particles.ComplexParticleSettings;
 import com.james.renderEngine.particles.Particle;
@@ -139,7 +137,7 @@ public class Main {
         LevelInitializer levelInitializer = new LevelInitializer(localLevelEvents);
 
         ClientPacketReceiveActions.player = new Player(new Vector3f(-5, 0, 0));
-        ClientPacketReceiveActions.playerHitbox = new PlayerHitbox(ClientPacketReceiveActions.player, 1);
+        ClientPacketReceiveActions.oldPlayerHitbox = new OldPlayerHitbox(ClientPacketReceiveActions.player, 1);
 
         while (!GLFWUtilities.shouldClose) {
             Time.updateDeltaTime();
@@ -232,7 +230,7 @@ public class Main {
             ParticleHandler.update();
             UiHandler.update();
             ClientPacketReceiveActions.player.update();
-            ClientCollisionHandler.update();
+            OldClientCollisionHandler.update();
 
             // camera controller
             if (camController != null)
@@ -241,7 +239,7 @@ public class Main {
             // rendering
             MasterRenderer.render(batchedGameObjectsList);
             ParticleRenderer.render(ParticleHandler.particles);
-            //GuiRenderer.render(guis);
+//            GuiRenderer.render(guis);
             GuiRenderer.render(UiHandler.guisToRender);
             GLFWUtilities.render();
 

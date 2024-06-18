@@ -4,13 +4,16 @@ import com.james.renderEngine.models.Model;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- * Notes: Position and rotation are made final because you shouldn't be reassigning their references!
+ * Representation of an object that can be rendered on the client-side. However, there is no simulation
+ * handled here.
+ * @implNote Position and rotation are made final because you shouldn't be reassigning their references!
  * Only the values at these references. This is why they are also private, to prevent any other class
  * from reassigning these variables' references. This is very important to ensure in order for it to
  * work nicely with other classes, like the SphereHitbox, whose position variable can just be the same
  * reference that its GameObject uses, so that way no updating is needed for the SphereHitbox if ever
  * the GameObject were to move.
  */
+// TODO: 2024-06-03 Remove the SphereHitbox reference from the above note; SphereHitboxes are no longer used.
 public class GameObject {
 
     public final Model model;
@@ -18,6 +21,8 @@ public class GameObject {
     private final Vector3f rotation;
     private float scale;
 
+    // TODO: 2024-06-16 The explanation given above is kind of counter-intuitive, since returning these allows
+    // TODO: 2024-06-16 other classes to just re-assign references anyways!
     public Vector3f getPosition() { return position; }
     public Vector3f getRotation() { return rotation; }
     public float getScale() { return scale; }

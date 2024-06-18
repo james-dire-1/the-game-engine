@@ -1,5 +1,7 @@
 package com.james.world;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,8 +16,9 @@ import java.util.List;
 public class Level {
 
     public float secondsPerGameTick = 0.05f;
+    public Vector3f gravity = new Vector3f(0, -1, 0);
 
-    public final CollisionHandler collisionHandler = new CollisionHandler(this);
+    public final OldCollisionHandler collisionHandler = new OldCollisionHandler(this);
     private final List<PhysicalObject> physicalObjects = new ArrayList<>();
 
     public final ServerPacketSendEvents events;

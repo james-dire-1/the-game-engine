@@ -53,6 +53,8 @@ public class ModelFactory {
         return verticalPlane;
     }
 
+    // TODO: 2024-06-02 Apparently guis do not use Models, but rather have their own special class.
+    // TODO: 2024-06-03 So... what in the world is this doing here??
     public static Model getGui() {
         if (gui == null) {
             float[] vertexPositions = {

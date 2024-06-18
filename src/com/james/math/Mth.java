@@ -91,6 +91,7 @@ public class Mth {
         return finalDistance;
     }
 
+    // TODO: 2024-06-03 This should not be in the Mth class that the server is also using
     public static Vector2f toNormalizedPosition(int screenX, int screenY) {
         float x = (float) screenX / WindowResizeInput.width * 2 - 1;
         float y = (float) screenY / WindowResizeInput.height * 2 - 1;
@@ -98,6 +99,7 @@ public class Mth {
         return new Vector2f(x, y);
     }
 
+    // TODO: 2024-06-03 This should not be in the Mth class that the server is also using
     public static Vector2f toNormalizedSize(int screenX, int screenY) {
         float x = (float) screenX / WindowResizeInput.width * 2;
         float y = (float) screenY / WindowResizeInput.height * 2;
@@ -139,6 +141,14 @@ public class Mth {
         return new Vector2f(a.x * b.x, a.y * b.y);
     }
 
+    public static Vector3f multiplyVectors(Vector3f a, Vector3f b) {
+        return new Vector3f(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
+
+    public static Vector3f divideVectors(Vector3f a, Vector3f b) {
+        return new Vector3f(a.x / b.x, a.y / b.y, a.z / b.z);
+    }
+
     public static int asScreenCoordForPosition(float normalizedCoord, int screenDimension) {
         return (int) ((normalizedCoord + 1) / 2 * screenDimension);
     }
@@ -165,6 +175,7 @@ public class Mth {
         return w1 >= 0 && w2 >= 0 && w1+w2 <= 1;
     }
 
+    // TODO: 2024-06-17 You're going to have to remove this method eventually
     // Note: this method is implemented from Fauerby's report:
     // http://www.peroxide.dk/papers/collision/collision.pdf
     public static boolean pointInTriangle(Vector3f pa, Vector3f pb, Vector3f pc, Vector3f point) {
@@ -183,24 +194,13 @@ public class Mth {
         float y = e*a - d*b;
         float z = x + y - ac_bb;
 
-        System.out.println("x = " + x);
-        System.out.println("y = " + y);
-        System.out.println("z = " + z);
-
-        System.out.println("Float.floatToIntBits(x) = " + Float.floatToIntBits(x));
-        System.out.println("Float.floatToIntBits(y) = " + Float.floatToIntBits(y));
-        System.out.println("Float.floatToIntBits(z) = " + Float.floatToIntBits(z));
-
-        System.out.println("(( Float.floatToIntBits(z) & (~( Float.floatToIntBits(x) | Float.floatToIntBits(y) )) ) & 0x80000000)  = " + ((Float.floatToIntBits(z) & (~(Float.floatToIntBits(x) | Float.floatToIntBits(y)))) & 0x80000000));
-        System.out.println("(( (int)z & (~( (int)x | (int)y )) ) & 0x80000000) = " + (((int) z & (~((int) x | (int) y))) & 0x80000000));
-
         return (( Float.floatToIntBits(z) & (~( Float.floatToIntBits(x) | Float.floatToIntBits(y) )) ) & 0x80000000) != 0;
-//        return (( (int)z & (~( (int)x | (int)y )) ) & 0x80000000) != 0;
     }
 
+    // TODO: 2024-06-17 You're going to have to remove this method eventually
     // Note: this method is implemented from Fauerby's report:
     // http://www.peroxide.dk/papers/collision/collision.pdf
-    public Float getLowestRootUnderThreshold(float a, float b, float c, float maxR) {
+    public static Float getLowestRootUnderThreshold(float a, float b, float c, float maxR) {
         float determinant = b * b - 4 * a * c;
         if (determinant < 0) return null;
 
@@ -223,6 +223,11 @@ public class Mth {
         }
 
         return null;
+    }
+
+    public static void setLength(Vector3f vector, float length) {
+        vector.normalise(vector);
+        vector.scale(length);
     }
 
 }

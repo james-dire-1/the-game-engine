@@ -14,7 +14,7 @@ public class CollisionPacket {
     public Vector3f eBasePoint;
 
     public boolean foundCollision;
-    public double nearestDistance;
+    public float nearestDistance;
     public Vector3f intersectionPoint;
 
 }

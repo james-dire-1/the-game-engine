@@ -1,7 +1,6 @@
 package com.james.main.clientSide;
 
-import com.james.evenNewerCollisionsStuff.CachedAABBHitbox;
-import com.james.evenNewerCollisionsStuff.PlayerHitbox;
+import com.james.evenNewerCollisionsStuff.CachedEllipsoidHitbox;
 import com.james.main.*;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
@@ -20,12 +19,8 @@ public class ClientPacketReceiveActions {
 
     public static Player player;
     public static PlayerHitbox playerHitbox;
+    public static final float secondsTillEndCollisionForPlayer = 1;
     public static final Map<Integer, CachedPhysicalObject> cachedLocalPhysicalObjects = new HashMap<>();
-    public static final List<CachedAABBHitbox> cachedLocalAABBHitboxes = new ArrayList<>();
-
-    // Outdated code. Will be removed in the future.
-    public static OldPlayerHitbox oldPlayerHitbox;
-    public static final float secondsTillEndCollisionForPlayer = 1; //
     public static final List<CachedObjectHitbox> cachedLocalObjectHitboxes = new ArrayList<>();
     public static final List<WallTriangle> cachedLocalWallTriangles = new ArrayList<>();
 
@@ -53,8 +48,8 @@ public class ClientPacketReceiveActions {
         }
     }
 
-    public static void aabbHitboxAddedReceived(int id, String meshPath) {
-        cachedLocalAABBHitboxes.add(new CachedAABBHitbox(id, meshPath));
+    public static void ellipsoidHitboxAddedReceived(int id, float radiusX, float radiusY, float radiusZ) {
+        new CachedEllipsoidHitbox(id, radiusX, radiusY, radiusZ);
     }
 
     // Outdated code. Will be removed in the future.
