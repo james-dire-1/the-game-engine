@@ -1,7 +1,7 @@
 package com.james.renderEngine.rendering;
 
+import com.james.tools.RenderingMath;
 import com.james.input.WindowResizeInput;
-import com.james.math.Mth;
 import com.james.renderEngine.particles.Particle;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.shaders.ParticleShader;
@@ -18,7 +18,7 @@ public class ParticleRenderer {
 
     public static void prepare() {
         shader.start();
-        Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+        Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
     }

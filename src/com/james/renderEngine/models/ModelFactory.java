@@ -1,5 +1,6 @@
 package com.james.renderEngine.models;
 
+// TODO: 2024-06-20 consider changing the package that this is in
 public class ModelFactory {
 
     private static Model cube;
@@ -51,27 +52,6 @@ public class ModelFactory {
         }
 
         return verticalPlane;
-    }
-
-    // TODO: 2024-06-02 Apparently guis do not use Models, but rather have their own special class.
-    // TODO: 2024-06-03 So... what in the world is this doing here??
-    public static Model getGui() {
-        if (gui == null) {
-            float[] vertexPositions = {
-                    0, 0, 0,
-                    0, -1, 0,
-                    1, 0, 0,
-                    1, -1, 0
-            };
-
-            int[] indices = {
-                    0, 1, 2, 2, 1, 3
-            };
-
-            gui = new Model(vertexPositions, indices);
-        }
-
-        return gui;
     }
 
 }

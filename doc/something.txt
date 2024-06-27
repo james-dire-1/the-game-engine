@@ -103,7 +103,7 @@ package com.james.renderEngine.rendering;
 import com.james.gameObjects.Camera;
 import com.james.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
-import com.james.math.Mth;
+import com.james.common.tools.Mth;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.shaders.BasicShader;
@@ -528,7 +528,7 @@ private float getFinalValueForFloatType(float elapsedSeconds, FloatType type, Fu
 
    package com.james.renderEngine.particles.dataTypes;
 
-   import com.james.math.MathFunctions;
+   import com.james.renderEngine.particles.math.MathFunctions;
 
    import java.util.HashMap;
    import java.util.Map;
@@ -572,8 +572,8 @@ private float getFinalValueForFloatType(float elapsedSeconds, FloatType type, Fu
 
 package com.james.renderEngine.particles;
 
-import com.james.math.EasingMath;
-import com.james.math.MathFunctions;
+import com.james.renderEngine.particles.math.EasingMath;
+import com.james.renderEngine.particles.math.MathFunctions;
 import com.james.renderEngine.particles.dataTypes.FloatType;
 import com.james.renderEngine.particles.dataTypes.FloatValue;
 import com.james.renderEngine.particles.dataTypes.KeyframeType;

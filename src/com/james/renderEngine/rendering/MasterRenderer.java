@@ -17,15 +17,15 @@ public class MasterRenderer {
 
     public static Camera currentCamera = Camera.defaultCamera;
 
-    // TODO consider changing this into an array? is a list really necessary?
-    private static final List<AbstractRenderer> renderers = new ArrayList<>();
+    private static AbstractRenderer[] renderers;
 
-    public static void prepare(AbstractRenderer... shadersToAdd) {
+    public static void prepare(AbstractRenderer... renderersToAdd) {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glEnable(GL_DEPTH_TEST);
 
-        renderers.addAll(Arrays.asList(shadersToAdd));
+        renderers = new AbstractRenderer[renderersToAdd.length];
+        System.arraycopy(renderersToAdd, 0, renderers, 0, renderersToAdd.length);
 
         for (AbstractRenderer AbstractRenderer : renderers) {
             AbstractRenderer.prepare();

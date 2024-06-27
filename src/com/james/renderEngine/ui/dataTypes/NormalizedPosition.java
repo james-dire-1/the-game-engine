@@ -1,6 +1,6 @@
 package com.james.renderEngine.ui.dataTypes;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import org.lwjgl.util.vector.Vector2f;
 
 public class NormalizedPosition extends Position {
@@ -19,7 +19,7 @@ public class NormalizedPosition extends Position {
             return new Vector2f(x, y);
         }
 
-        return Mth.add(gui.parent.position.normalized(), new Vector2f(x, y));
+        return RenderingMath.add(gui.parent.position.normalized(), new Vector2f(x, y));
     }
 
     public Vector2f simpleNormalized() {

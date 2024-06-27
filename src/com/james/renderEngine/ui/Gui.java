@@ -28,7 +28,10 @@ public class Gui {
     public Size size;
 
     public final Gui parent;
-    private final List<Gui> children = new ArrayList<>();
+    public final List<Gui> children = new ArrayList<>();
+
+    public boolean isVisible = true;
+    public boolean isEnabled = true;
 
     /**
      * Overload constructor that uses the default vertex positions for guis.
@@ -42,7 +45,7 @@ public class Gui {
     // TODO: 2022-12-14 a new model is created every time a new gui without a texture is created
 
     /**
-     * Creates a gui object with specified position, size, parent, and vertex positions.
+     * Creates a gui object with specified position, size, parent, vertex positions, and indices.
      */
     public Gui(Position position, Size size, Gui parent, float[] vertexPositions, int[] indices) {
         this.position = position;

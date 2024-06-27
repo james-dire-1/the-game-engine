@@ -1,6 +1,6 @@
 package com.james.renderEngine.ui.dataTypes;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import org.lwjgl.util.vector.Vector2f;
 
 public class MixedSize extends Size {
@@ -15,7 +15,7 @@ public class MixedSize extends Size {
 
     @Override
     public Vector2f normalized() {
-        return Mth.add(size.normalized(), offset.normalized());
+        return RenderingMath.add(size.normalized(), offset.normalized());
     }
 
     public void setSize(float x, float y) {

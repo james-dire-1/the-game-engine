@@ -3,6 +3,8 @@ package com.james.renderEngine.uiElements;
 import com.james.renderEngine.textRendering.Character;
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.ui.Gui;
+import com.james.renderEngine.ui.GuiGroup;
+import com.james.renderEngine.ui.dataTypes.NormalizedSize;
 import com.james.renderEngine.ui.dataTypes.Position;
 import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
@@ -14,7 +16,7 @@ import java.util.List;
 /**
  * Creates a new text gui.
  */
-public class GuiText {
+public class GuiText implements GuiGroup {
 
     public final Gui master;
 
@@ -90,6 +92,11 @@ public class GuiText {
         guis.add(guiForCharacter);
 
         return character.xAdvance*fontSize;
+    }
+
+    @Override
+    public List<Gui> getAllGuis() {
+        return master.children;
     }
 
     public enum TextAlignment {

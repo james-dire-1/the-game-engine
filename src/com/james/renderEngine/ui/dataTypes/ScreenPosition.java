@@ -1,6 +1,6 @@
 package com.james.renderEngine.ui.dataTypes;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import org.lwjgl.util.vector.Vector2f;
 
 public class ScreenPosition extends Position {
@@ -16,14 +16,14 @@ public class ScreenPosition extends Position {
     @Override
     public Vector2f normalized() {
         if (gui.parent == null) {
-            return Mth.toNormalizedPosition(x, y);
+            return RenderingMath.toNormalizedPosition(x, y);
         }
 
-        return Mth.add(gui.parent.position.normalized(), Mth.toNormalizedSize(x, y));
+        return RenderingMath.add(gui.parent.position.normalized(), RenderingMath.toNormalizedSize(x, y));
     }
 
     public Vector2f normalizedMixed() {
-        return Mth.toNormalizedSize(x, y);
+        return RenderingMath.toNormalizedSize(x, y);
     }
 
     public void setPosition(int x, int y) {

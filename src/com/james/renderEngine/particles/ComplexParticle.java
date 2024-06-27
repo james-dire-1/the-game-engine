@@ -1,7 +1,7 @@
 package com.james.renderEngine.particles;
 
-import com.james.math.EasingMath;
-import com.james.math.MathFunctions;
+import com.james.renderEngine.particles.math.EasingMath;
+import com.james.renderEngine.particles.math.MathFunctions;
 import com.james.renderEngine.particles.dataTypes.FloatType;
 import com.james.renderEngine.particles.dataTypes.KeyframeType;
 import com.james.tools.Time;

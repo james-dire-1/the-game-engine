@@ -1,0 +1,28 @@
+2 of them from PointOperations
+// TODO: 2024-06-18 How many recursions are actually happening here? [CommonCollisionProcedure]
+// TODO: 2024-06-18 For efficiency's sake, we should definitely cache the trianglesInEllipsoidWorldSpace after they are created, but how?!!   :O [CommonCollisionProcedure]
+The above seems to be more trouble than it's worth
+// TODO: 2024-06-21 Not only that, but this stuff should only be run if a collision has occurred etc [CommonCollisionProcedure]
+// TODO: 2024-06-18 Is a new instance of Vector3f necessary here? [CommonCollisionProcedure]
+// TODO: 2024-06-20 Counter intuitive. Models are being loaded twice with ModelLoaders. Once client-side, once server-side [ModelMeshBankInR3]
+// TODO: 2024-06-16 I'm not really a huge fan of this encapsulation thing. Consider alternatives? [ModelMeshBankInR3]
+The above is fine
+// TODO: 2024-06-21 Make this code more independent [ModelPreparations] > [EllipsoidDimensionsManager] > [EllipsoidDimensions]
+// TODO: 2024-06-17 You're going to have to remove this method eventually [Mth]
+// TODO: 2024-06-17 You're going to have to remove this method eventually [Mth]
+// TODO consider changing this into an array? is a list really necessary? [MasterRenderer]
+// TODO: 2023-01-04 Consider removing this method, as it's kind of pointless and calls to glBindVertexArray() were made without using this method throughout the program. [GLUtilities]
+I've decided to not act on this
+// TODO: 2024-06-20 verify the necessity of this [Level]
+It does not seem to be necessary, but it may be in the future
+// TODO: 2024-06-16 Say where you got this from [Plane]
+// TODO: 2023-06-17 Is the abs really necessary?? This is pythagorean theorem we're doing, which should be positive regardless. [Mth]
+// TODO: 2024-06-03 This should not be in the Mth class that the server is also using [Mth]
+// TODO: 2024-06-03 This should not be in the Mth class that the server is also using [Mth]
+// TODO: 2024-06-21 change these verbose things hoss [GameObject]
+I decided not to change this
+// TODO: 2024-06-21 Why is this method here?? (and surrounding methods too??) [GameObject]
+// TODO: 2023-08-06 Remove old legacy code for getting system time. glfw's way of getting the time works better for some reason idk
+// TODO: 2024-06-16 The explanation given above is kind of counter-intuitive, since returning these allows other classes to just re-assign references anyways! [GameObject]
+// TODO: 2024-06-03 Remove the SphereHitbox reference from the above note; SphereHitboxes are no longer used. [GameObject]
+// TODO: 2024-06-02 Apparently guis do not use Models, but rather have their own special class. So... what in the world is this doing here?? [ModelFactory]

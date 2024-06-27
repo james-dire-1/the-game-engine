@@ -3,7 +3,6 @@ package com.james.tools;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
-import com.james.math.Mth;
 import com.james.renderEngine.rendering.MasterRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import org.lwjgl.util.vector.Matrix4f;
@@ -17,11 +16,11 @@ public class MousePicker {
     private static Vector3f currentRay;
     public static Vector3f getCurrentRay() { return currentRay; }
 
-    private static Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+    private static Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
 
     public static void update() {
         if (MasterRenderer.isNewProjectionMatrix()) {
-            projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+            projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         }
         currentRay = calculateMouseRay();
     }

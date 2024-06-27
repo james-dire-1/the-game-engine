@@ -1,0 +1,34 @@
+package com.james.evenNewerCollisionsStuff;
+
+import com.james.serverSide.objects.PhysicalObject;
+import org.lwjgl.util.vector.Vector3f;
+
+public class AABBHitbox {
+
+    public final PhysicalObject object;
+    public final String meshPath;
+    private final ModelMesh mesh;
+
+    public float lowerX, upperX, lowerY, upperY, lowerZ, upperZ;
+
+    public AABBHitbox(PhysicalObject object, String meshPath) {
+        this.object = object;
+        this.meshPath = meshPath;
+        this.mesh = ModelMeshBankInR3.getModelMesh(meshPath);
+
+        updatePosition();
+    }
+
+    public void updatePosition() {
+        Vector3f objectPosition = object.getPosition();
+
+        lowerX = objectPosition.x + mesh.minX;
+        upperX = objectPosition.x + mesh.maxX;
+        lowerY = objectPosition.y + mesh.minY;
+        upperY = objectPosition.y + mesh.maxY;
+        lowerZ = objectPosition.z + mesh.minZ;
+        upperZ = objectPosition.z + mesh.maxZ;
+    }
+
+
+}

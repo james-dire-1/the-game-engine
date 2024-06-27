@@ -15,8 +15,6 @@ public class GLUtilities {
     private static final List<Integer> vbos = new ArrayList<>();
     private static final List<Integer> textures = new ArrayList<>();
 
-    // TODO: 2023-01-04 Consider removing this method, as it's kind of pointless and calls to
-    // TODO: 2023-01-04 glBindVertexArray() were made without using this method throughout the program.
     public static void bindVAO(int vaoId) {
         glBindVertexArray(vaoId);
     }

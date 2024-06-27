@@ -84,7 +84,7 @@ public class Model {
      * Sets the renderer that this model should be rendered with. This should be called after all
      * modifications to the model have already been made, since this method checks that all necessary
      * criteria are met to use the requested renderer. Calling this method is necessary for your model to
-     * appear on the screen
+     * appear on the screen.
      */
     public void setRenderer(AbstractRenderer renderer) {
         if (hasRendererBeenSet) throw new RuntimeException();

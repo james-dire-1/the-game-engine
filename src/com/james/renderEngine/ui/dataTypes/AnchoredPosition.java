@@ -1,6 +1,6 @@
 package com.james.renderEngine.ui.dataTypes;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import com.james.renderEngine.ui.AnchorPoint;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -27,10 +27,10 @@ public class AnchoredPosition extends Position {
     @Override
     public Vector2f normalized() {
         if (gui.parent == null) {
-            return Mth.add(anchorPoint.value(size), offset.normalized());
+            return RenderingMath.add(anchorPoint.value(size), offset.normalized());
         }
 
-        return Mth.add(anchorPoint.valueWithParent(size, gui.parent), offset.normalized());
+        return RenderingMath.add(anchorPoint.valueWithParent(size, gui.parent), offset.normalized());
     }
 
 }

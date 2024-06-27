@@ -1,6 +1,6 @@
 package com.james.renderEngine.rendering;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import com.james.renderEngine.shaders.GuiShader;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.GuiMeshData;
@@ -20,6 +20,8 @@ public class GuiRenderer {
         shader.start();
 
         for (Gui gui : guis) {
+            if (!gui.isVisible) continue;
+
             GuiMeshData mesh = gui.getMesh();
 
             glBindVertexArray(mesh.vaoId);
@@ -29,7 +31,7 @@ public class GuiRenderer {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
 
-            Matrix4f transformationMatrix = Mth.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
+            Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
             shader.loadTransformationMatrix(transformationMatrix);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);

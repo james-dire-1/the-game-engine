@@ -1,9 +1,9 @@
 package com.james.renderEngine.rendering;
 
+import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
-import com.james.main.Main;
-import com.james.math.Mth;
+import game.main.Main;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.TexturedModelShader;
@@ -19,7 +19,7 @@ public class TexturedModelRenderer extends AbstractRenderer {
     @Override
     public void prepare() {
         shader.start();
-        Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+        Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
     }
@@ -29,7 +29,7 @@ public class TexturedModelRenderer extends AbstractRenderer {
         shader.start();
 
         if (MasterRenderer.isNewProjectionMatrix()) {
-            Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+            Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
             shader.loadProjectionMatrix(projectionMatrix);
         }
 
@@ -50,7 +50,7 @@ public class TexturedModelRenderer extends AbstractRenderer {
             glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
-                Matrix4f transformationMatrix = Mth.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
+                Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
                 if (rawModel.usesIndexBuffer) {

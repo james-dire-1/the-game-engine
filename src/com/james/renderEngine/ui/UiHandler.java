@@ -1,8 +1,8 @@
 package com.james.renderEngine.ui;
 
+import com.james.tools.RenderingMath;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
-import com.james.math.Mth;
 import com.james.renderEngine.utilities.VertexUtilityArrays;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -38,10 +38,10 @@ public class UiHandler {
         Vector2f normalizedPosition = gui.position.normalized();
         Vector2f normalizedSize = gui.size.normalized();
 
-        int centerX = Mth.asScreenCoordForPosition(normalizedPosition.x, WindowResizeInput.width);
-        int centerY = Mth.asScreenCoordForPosition(normalizedPosition.y, WindowResizeInput.height);
-        int halfWidth = Mth.asScreenCoordForSize(normalizedSize.x, WindowResizeInput.width) / 2;
-        int halfHeight = Mth.asScreenCoordForSize(normalizedSize.y, WindowResizeInput.height) / 2;
+        int centerX = RenderingMath.asScreenCoordForPosition(normalizedPosition.x, WindowResizeInput.width);
+        int centerY = RenderingMath.asScreenCoordForPosition(normalizedPosition.y, WindowResizeInput.height);
+        int halfWidth = RenderingMath.asScreenCoordForSize(normalizedSize.x, WindowResizeInput.width) / 2;
+        int halfHeight = RenderingMath.asScreenCoordForSize(normalizedSize.y, WindowResizeInput.height) / 2;
 
         int mouseX = (int) MouseMoveInput.getXPos();
         int mouseY = WindowResizeInput.height - (int) MouseMoveInput.getYPos();

@@ -1,6 +1,6 @@
 package com.james.renderEngine.gameObjects;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -23,7 +23,7 @@ public class Camera {
         this.pitch = pitch;
         this.yaw = yaw;
         this.roll = roll;
-        this.viewMatrix = Mth.createViewMatrix(position, pitch, yaw, roll);
+        this.viewMatrix = RenderingMath.createViewMatrix(position, pitch, yaw, roll);
     }
 
     public void translate(Vector3f toTranslate) {
@@ -78,7 +78,7 @@ public class Camera {
     public Matrix4f getViewMatrix() {
         // if the camera moved, recalculate the view matrix
         if (hasCameraMoved) {
-            viewMatrix = Mth.createViewMatrix(position, pitch, yaw, roll);
+            viewMatrix = RenderingMath.createViewMatrix(position, pitch, yaw, roll);
         }
         // ensures view matrix will not be recalculated next frame if the camera didn't move
         hasCameraMoved = false;

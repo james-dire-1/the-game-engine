@@ -1,6 +1,6 @@
 package com.james.evenNewerCollisionsStuff;
 
-import com.james.world.Triangle;
+import com.james.serverSide.math.Triangle;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;

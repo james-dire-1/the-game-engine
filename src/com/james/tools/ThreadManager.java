@@ -37,4 +37,8 @@ public class ThreadManager {
         }
     }
 
+    public interface Action {
+        void invoke();
+    }
+
 }

@@ -4,7 +4,7 @@ import com.james.evenNewerCollisionsStuff.CachedEllipsoidHitbox;
 import com.james.main.*;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
-import com.james.world.PhysicalObjectType;
+import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.world.WallTriangle;
 import org.lwjgl.util.vector.Vector3f;
 

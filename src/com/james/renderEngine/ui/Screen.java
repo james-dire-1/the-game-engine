@@ -1,7 +1,7 @@
 package com.james.renderEngine.ui;
 
+import com.james.tools.RenderingMath;
 import com.james.input.ClickInput;
-import com.james.math.Mth;
 import com.james.renderEngine.ui.dataTypes.MixedPosition;
 import com.james.renderEngine.ui.dataTypes.NormalizedPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenPosition;
@@ -19,6 +19,7 @@ public class Screen {
     /**
      * A list of all guis that belong to this screen. The list is saved so that later when deleting the screen,
      * we know which guis belonged to this screen, and thus we are able to only remove these guis from rendering.
+     * Not only that, but this list is also used in the update() method.
      */
     protected final List<Gui> guisOfScreen = new ArrayList<>();
     private boolean shouldDelete = false;
@@ -33,6 +34,15 @@ public class Screen {
     protected void addGui(Gui gui) {
         guisOfScreen.add(gui);
         UiHandler.guisToRender.add(gui);
+    }
+
+    /**
+     * Plural version of above method. Is useful for GuiGroups, such as GuiTexts.
+     */
+    protected void addGuis(Gui[] guis) {
+        for (Gui gui : guis) {
+            addGui(gui);
+        }
     }
 
     /**
@@ -56,7 +66,7 @@ public class Screen {
      */
     public boolean update() {
         for (Gui gui : guisOfScreen) {
-            if (gui instanceof HoveredComponent && UiHandler.isMouseOver(gui)) {
+            if (gui instanceof HoveredComponent && gui.isEnabled && UiHandler.isMouseOver(gui)) {
                 ((HoveredComponent) gui).onHovered();
 
                 if (gui instanceof ClickedComponent) {
@@ -105,7 +115,7 @@ public class Screen {
                 float normalizedProgress = timeSinceAnimationStart / data.animationLength;
                 float easingProgress = data.mathFunction.apply(normalizedProgress);
 
-                float finalValue = Mth.linearlyInterpolate(data.startValue, data.endValue, easingProgress);
+                float finalValue = RenderingMath.linearlyInterpolate(data.startValue, data.endValue, easingProgress);
 
                 if (data.attribute == GuiAnimationData.Attribute.PositionX) {
 
@@ -137,6 +147,9 @@ public class Screen {
 
     /**
      * Removes all guis that belonged to this screen from the list made for rendering in the UiHandler class.
+     * This should only ever be called from the UiHandler class. If you want a Screen to be deleted, call
+     * markForDeletion(), and the UiHandler will take care of the rest. (This is done to avoid
+     * ConcurrentModificationExceptions.)
      */
     public void delete() {
         for (Gui gui : guisOfScreen) {

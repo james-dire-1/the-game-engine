@@ -1,8 +1,8 @@
 package com.james.renderEngine.rendering;
 
+import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
-import com.james.math.Mth;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.ColorModelShader;
@@ -18,7 +18,7 @@ public class ColorModelRenderer extends AbstractRenderer {
     @Override
     public void prepare() {
         shader.start();
-        Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+        Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
         shader.stop();
     }
@@ -28,7 +28,7 @@ public class ColorModelRenderer extends AbstractRenderer {
         shader.start();
 
         if (MasterRenderer.isNewProjectionMatrix()) {
-            Matrix4f projectionMatrix = Mth.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+            Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
             shader.loadProjectionMatrix(projectionMatrix);
         }
 
@@ -44,7 +44,7 @@ public class ColorModelRenderer extends AbstractRenderer {
             glEnableVertexAttribArray(1);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
-                Matrix4f transformationMatrix = Mth.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
+                Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
                 glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);

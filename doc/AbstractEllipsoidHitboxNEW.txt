@@ -1,0 +1,47 @@
+package com.james.evenNewerCollisionsStuff;
+
+import com.james.serverSide.objects.MovableObject;
+import com.james.serverSide.math.Triangle;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public abstract class AbstractEllipsoidHitbox {
+
+    public final MovableObject movableObject;
+    public final EllipsoidDimensions dimensions;
+
+    protected AbstractEllipsoidHitbox(MovableObject movableObject, EllipsoidDimensions dimensions) {
+        this.movableObject = movableObject;
+        this.dimensions = dimensions;
+    }
+
+    // TODO: 2024-06-21 Is this whole thing actually more efficient? I don't know...
+    private static final Map<EllipsoidDimensions, Map<MovableObject, Triangle[]>> ellipsoidWorldSpaceTrianglesCache = new HashMap<>();
+
+    public static boolean areWorldSpaceTrianglesCached(EllipsoidHitbox ellipsoidHitbox) {
+        if (!ellipsoidWorldSpaceTrianglesCache.containsKey(ellipsoidHitbox.dimensions))
+            return false;
+
+        if (!ellipsoidWorldSpaceTrianglesCache.get(ellipsoidHitbox.dimensions).containsKey(ellipsoidHitbox.movableObject))
+            return false;
+
+        return true;
+    }
+
+    public static void addWorldSpaceTrianglesToLookupCache(EllipsoidDimensions dimensions, MovableObject movableobject, Triangle[] trianglesInEllipsoidWorldSpace) {
+        if (ellipsoidWorldSpaceTrianglesCache.containsKey(dimensions)) {
+            Map<MovableObject, Triangle[]> batch = ellipsoidWorldSpaceTrianglesCache.get(dimensions);
+            batch.put(movableobject, trianglesInEllipsoidWorldSpace);
+        } else {
+            Map<MovableObject, Triangle[]> newBatch = new HashMap<>();
+            newBatch.put(movableobject, trianglesInEllipsoidWorldSpace);
+            ellipsoidWorldSpaceTrianglesCache.put(dimensions, newBatch);
+        }
+    }
+
+    public static Triangle[] getEllipsoidWorldSpaceTriangles(EllipsoidDimensions dimensions, MovableObject movableObject) {
+        return ellipsoidWorldSpaceTrianglesCache.get(dimensions).get(movableObject);
+    }
+
+}

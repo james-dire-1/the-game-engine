@@ -1,6 +1,6 @@
 package com.james.renderEngine.ui.dataTypes;
 
-import com.james.math.Mth;
+import com.james.tools.RenderingMath;
 import org.lwjgl.util.vector.Vector2f;
 
 public class ScreenSize extends Size {
@@ -15,7 +15,7 @@ public class ScreenSize extends Size {
 
     @Override
     public Vector2f normalized() {
-        return Mth.toNormalizedSize(x, y);
+        return RenderingMath.toNormalizedSize(x, y);
     }
 
     public void setSize(int x, int y) {

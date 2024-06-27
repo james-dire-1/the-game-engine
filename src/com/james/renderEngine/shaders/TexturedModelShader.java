@@ -47,8 +47,8 @@ public class TexturedModelShader extends Shader {
     }
 
     public void loadLight(Light light) {
-        super.loadVector3fToUniform(location_lightPosition, light.position);
-        super.loadVector3fToUniform(location_lightColor, light.color);
+        super.loadVector3fToUniform(location_lightPosition, light.getPosition());
+        super.loadVector3fToUniform(location_lightColor, light.getColor());
     }
 
 }

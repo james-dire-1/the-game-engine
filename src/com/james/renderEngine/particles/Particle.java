@@ -1,6 +1,6 @@
 package com.james.renderEngine.particles;
 
-import com.james.math.Mth;
+import com.james.common.tools.Mth;
 import com.james.tools.Time;
 import org.lwjgl.util.vector.Vector3f;
 
