@@ -4,10 +4,6 @@ import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.WindowResizeInput;
 import com.james.tools.BatchedGameObjectsList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.lwjgl.opengl.GL30.*;
 
 public class MasterRenderer {
@@ -38,9 +34,11 @@ public class MasterRenderer {
         newProjectionMatrix = true;
     }
 
-    public static void render(BatchedGameObjectsList batchedGameObjectsList) {
+    public static void preRender() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
 
+    public static void render(BatchedGameObjectsList batchedGameObjectsList) {
         for (AbstractRenderer abstractRenderer : renderers) {
             abstractRenderer.render(batchedGameObjectsList);
         }

@@ -29,6 +29,10 @@ public class ClientPacketReceiveActions {
     public static final List<CachedAABBHitbox> cachedLocalAABBHitboxes = new ArrayList<>();
     public static LevelProperties levelProperties = new LevelProperties();
 
+    public static void serverIsReadyReceived() {
+        GameLoader.serverIsReady = true;
+    }
+
     public static void physicalObjectAddedReceived(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
         CachedPhysicalObject object = new CachedPhysicalObject(id, new Vector3f(position), new Vector3f(rotation), scale);
         cachedLocalPhysicalObjects.put(id, object);

@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public interface ServerPacketSendEvents {
 
+    void notifyThatServerIsReady();
     void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale);
     void sendPhysicalObjectMoved(int id, float x, float y, float z);
     void sendAABBHitboxAdded(int id, String meshPath);

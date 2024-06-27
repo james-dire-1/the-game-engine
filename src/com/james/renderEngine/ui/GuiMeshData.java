@@ -26,7 +26,6 @@ public class GuiMeshData {
         GLUtilities.storeDataInVAO(0, 3, vertexPositions);
         if (textureCoords != null) GLUtilities.storeDataInVAO(1, 2, textureCoords);
         else if (colors != null) GLUtilities.storeDataInVAO(2, 3, colors);
-        else throw new RuntimeException(); // this should not happen
         GLUtilities.unbindBoundVAO();
     }
 

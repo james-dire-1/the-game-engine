@@ -1,15 +1,6 @@
-package game.ui;
+package game.ui.old;
 
-import com.james.input.WindowResizeInput;
-import com.james.renderEngine.particles.math.MathFunctions;
-import com.james.renderEngine.ui.GuiAnimationData;
 import com.james.renderEngine.ui.Screen;
-import com.james.renderEngine.ui.dataTypes.ScreenPosition;
-import game.ui.Button;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 
 public class TitleScreenTest extends Screen {
 
@@ -35,7 +26,7 @@ public class TitleScreenTest extends Screen {
         GuiAnimationData multiplayerAnimationData = new GuiAnimationData(GuiAnimationData.Attribute.PositionX, MathFunctions::cubic, 0, ANIMATION_TIME_IN_SECONDS, 100, 600, true);
         super.addAnimationForGui(multiplayerButton, multiplayerAnimationData);*/
 
-        List<Function<Float, Float>> array = new ArrayList<>();
+        /* List<Function<Float, Float>> array = new ArrayList<>();
         array.add(MathFunctions::linear);
         array.add(MathFunctions::quadratic);
         array.add(MathFunctions::cubic);
@@ -48,7 +39,7 @@ public class TitleScreenTest extends Screen {
             GuiAnimationData animationData = new GuiAnimationData(GuiAnimationData.Attribute.PositionX,
                     array.get(i), 0, ANIMATION_TIME_IN_SECONDS, 100, 600, true);
             super.addAnimationForGui(button, animationData);
-        }
+        } */
     }
 
 }

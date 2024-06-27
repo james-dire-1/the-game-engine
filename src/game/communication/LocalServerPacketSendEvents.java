@@ -20,6 +20,11 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
+    @Override
+    public void notifyThatServerIsReady() {
+        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::serverIsReadyReceived);
+    }
+
     // TODO: 2024-06-20 This implementation is going to have to change once we add the networking eventually
     @Override
     public void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {

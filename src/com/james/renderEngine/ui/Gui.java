@@ -10,6 +10,7 @@ import com.james.renderEngine.utilities.VertexUtilityArrays;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Gui {
@@ -18,6 +19,7 @@ public class Gui {
     private final int[] indices;
     private float[] textureCoords;
     private float[] colors;
+    public float[] singleColor;
 
     private GuiMeshData mesh;
     public GuiMeshData getMesh() { return mesh; }
@@ -31,7 +33,7 @@ public class Gui {
     public final Gui parent;
     public final List<Gui> children = new ArrayList<>();
 
-    public boolean usesColors;
+    public RenderingMode renderingMode;
     public boolean isVisible = true;
     public boolean isEnabled = true;
 
@@ -72,10 +74,10 @@ public class Gui {
      * to be normalized, so first we must normalize the data if it isn't normalized already
      */
     public void setTextureAndSamplingData(String path, int x, int y, int widthToSample, int heightToSample, boolean normalized) {
-        if (colors != null)
+        if (renderingMode != null)
             throw new RuntimeException();
 
-        usesColors = false;
+        renderingMode = RenderingMode.Texture;
 
         BufferedImage image = TextureBank.getTexture(path);
         int imageWidth = image.getWidth();
@@ -108,7 +110,7 @@ public class Gui {
     }
 
     /**
-     * Overload of setTextureAndSamplingData to be used when the whole texture should be applied to gui.
+     * Overload of setTextureAndSamplingData() to be used when the whole texture should be applied to gui.
      */
     public void setTextureAndSamplingData(String path) {
         setTextureAndSamplingData(path, 0, 0, 1, 1, true);
@@ -118,12 +120,28 @@ public class Gui {
      * Sets the gui to use colors at each vertex.
      */
     public void setColors(float[] colors) {
-        if (textureCoords != null)
+        if (renderingMode != null)
             throw new RuntimeException();
 
-        usesColors = true;
+        renderingMode = RenderingMode.ColorGradient;
 
         this.colors = colors;
+    }
+
+    /**
+     * Sets the gui to use a single color. Thus, instead of assigning a color to each vertex, which has
+     * to be loaded into a VAO, the single color is passed to the shader as a uniform variable.
+     * @implNote There is a separate array to be used for a single color, because the real colors array
+     * gets passed to GuiMeshData, which will load it into a VAO. This is of course not what we want for
+     * a single color.
+     */
+    public void setSingleColor(float r, float g, float b) {
+        if (renderingMode != null)
+            throw new RuntimeException();
+
+        renderingMode = RenderingMode.SingleColor;
+
+        this.singleColor = new float[] {r, g, b};
     }
 
     /**
@@ -135,6 +153,10 @@ public class Gui {
      */
     public void apply() {
         this.mesh = GuiMeshData.getOrCreateGuiMeshData(vertexPositions, indices, textureCoords, colors);
+    }
+
+    public enum RenderingMode {
+        Texture, ColorGradient, SingleColor
     }
 
 }

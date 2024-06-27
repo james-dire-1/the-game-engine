@@ -92,6 +92,10 @@ public abstract class Shader {
         GL20.glUniform3f(uniformLocation, value.x, value.y, value.z);
     }
 
+    public void loadVector3fToUniform(int uniformLocation, float x, float y, float z) {
+        GL20.glUniform3f(uniformLocation, x, y, z);
+    }
+
     public void loadVector2fToUniform(int uniformLocation, Vector2f value) {
         GL20.glUniform2f(uniformLocation, value.x, value.y);
     }

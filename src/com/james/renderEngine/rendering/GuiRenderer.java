@@ -26,10 +26,10 @@ public class GuiRenderer {
 
             glBindVertexArray(mesh.vaoId);
             glEnableVertexAttribArray(0);
-            glEnableVertexAttribArray(1);
-            glEnableVertexAttribArray(2);
+            if (gui.renderingMode == Gui.RenderingMode.Texture) glEnableVertexAttribArray(1);
+            else if (gui.renderingMode == Gui.RenderingMode.ColorGradient) glEnableVertexAttribArray(2);
 
-            if (!gui.usesColors) {
+            if (gui.renderingMode == Gui.RenderingMode.Texture) {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
             }
@@ -37,7 +37,9 @@ public class GuiRenderer {
             Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
             shader.loadTransformationMatrix(transformationMatrix);
 
-            shader.loadUsesColors(gui.usesColors);
+            shader.loadRenderingMode(gui.renderingMode);
+
+            if (gui.renderingMode == Gui.RenderingMode.SingleColor) shader.loadSingleColor(gui.singleColor);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);
 

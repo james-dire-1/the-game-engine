@@ -34,7 +34,7 @@ public class GuiText implements GuiGroup {
      */
     // TODO: 2024-06-03 the fact that we're still using Guis for invisible frames is not a good idea
     // TODO: 2024-06-03 Perhaps reconsider the structure of the code to allow for a different way to go about this?
-    public GuiText(String text, FontInfo font, float fontSize, TextAlignment alignment, List<Gui> guis, Position position) {
+    public GuiText(String text, FontInfo font, float fontSize, TextAlignment alignment, Position position) {
         byte[] asciiCodes = text.getBytes(StandardCharsets.US_ASCII);
 
         float currentCursorPosition = 0;
@@ -46,7 +46,7 @@ public class GuiText implements GuiGroup {
         for (byte asciiCode : asciiCodes) {
             Character character = font.getCharacterInfo(asciiCode);
 
-            currentCursorPosition += addTextQuadAndAdvanceCursor(font, fontSize, character, guis, master, currentCursorPosition);
+            currentCursorPosition += addTextQuadAndAdvanceCursor(font, fontSize, character, master, currentCursorPosition);
         }
     }
 
@@ -82,14 +82,13 @@ public class GuiText implements GuiGroup {
      *
      * @return the new cursor position after adding the text quad to the list
      */
-    private static float addTextQuadAndAdvanceCursor(FontInfo font, float fontSize, Character character, List<Gui> guis, Gui parent, float currentCursorPosition) {
+    private static float addTextQuadAndAdvanceCursor(FontInfo font, float fontSize, Character character, Gui parent, float currentCursorPosition) {
         ScreenPosition positionForCharacter = new ScreenPosition((int)(currentCursorPosition + character.xOffset*fontSize), (int)(-character.yOffset*fontSize));
         ScreenSize sizeForCharacter = new ScreenSize((int)(character.width*fontSize), (int)(character.height*fontSize));
 
         Gui guiForCharacter = new Gui(positionForCharacter, sizeForCharacter, parent, VertexUtilityArrays.textQuadVertexPositions, VertexUtilityArrays.defaultIndices);
         guiForCharacter.setTextureAndSamplingData(font.textureAtlasPath, character.x, character.y, character.width, character.height, false);
         guiForCharacter.apply();
-        guis.add(guiForCharacter);
 
         return character.xAdvance*fontSize;
     }

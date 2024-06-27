@@ -27,6 +27,8 @@ public abstract class LevelInitializer implements Runnable {
     public void run() {
         onStartup();
 
+        level.events.notifyThatServerIsReady();
+
         float lastTime = Time.getCurrentTime();
         while (shouldRun) {
             try {

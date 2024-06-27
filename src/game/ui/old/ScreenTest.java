@@ -1,12 +1,10 @@
-package game.ui;
+package game.ui.old;
 
-import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
-import com.james.renderEngine.ui.dataTypes.NormalizedPosition;
 
 public class ScreenTest extends Screen {
 
-    public ScreenTest() {
+    /* public ScreenTest() {
         Button topButton = new Button(new NormalizedPosition(0, 0.3f), "top button");
         topButton.setAction((ClickedComponent.MouseButton mouseButton) -> {
             if (mouseButton == ClickedComponent.MouseButton.LEFT) {
@@ -32,6 +30,6 @@ public class ScreenTest extends Screen {
             super.markForDeletion();
         });
         super.addGui(bottomButton);
-    }
+    } */
 
 }

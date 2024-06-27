@@ -7,23 +7,23 @@ import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.*;
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.texturing.TextureBank;
-import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.UiHandler;
-import com.james.renderEngine.ui.dataTypes.ScreenPosition;
-import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import game.rendering.Renderers;
+import game.ui.screens.TitleScreen;
 import org.lwjgl.util.vector.Vector3f;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
     public static final Light light = new Light(new Vector3f(0, 10, 0), new Vector3f(1, 1, 1));
+
+    public static GameLoader gameLoader;
+
+    public static final FontInfo arial = new FontInfo("/arial.fnt", "/arial.png");
+    public static final FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
 
     private static long lastTime2 = System.nanoTime()/1000000;
     private static long fps;
@@ -36,9 +36,6 @@ public class Main {
         ModelMeshBankInR3.init("res/one-sided-wall5.dae", "res/test_environment_7.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
-        FontInfo arial = new FontInfo("/arial.fnt", "/arial.png");
-        FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
-
         GLFWUtilities.init();
         ParticleHandler.init();
 
@@ -49,15 +46,7 @@ public class Main {
         MasterRenderer.prepare(Renderers.colorModelRenderer, Renderers.texturedModelRenderer, Renderers.flatRenderer);
         ParticleRenderer.prepare();
 
-        GameLoader gameLoader = new GameLoader();
-
-        Gui gui = new Gui(new ScreenPosition(300, 300), new ScreenSize(100, 100), null);
-//        gui.setColors(new float[]{1, 0, 0,   0, 1, 0,   0, 0, 1,   1, 1, 1});
-        gui.setTextureAndSamplingData("/GameInventorySlot.png");
-        gui.apply();
-
-        List<Gui> guiList = new ArrayList<>();
-        guiList.add(gui);
+        UiHandler.screens.add(new TitleScreen());
 
         while (!GLFWUtilities.shouldClose) {
             Time.updateDeltaTime();
@@ -65,12 +54,12 @@ public class Main {
             // important stuff
             GLFWUtilities.pollEvents();
             UiHandler.update();
-            gameLoader.update();
+            if (gameLoader != null && GameLoader.serverIsReady) gameLoader.update();
 
             // rendering
-            gameLoader.render();
+            MasterRenderer.preRender();
+            if (gameLoader != null && GameLoader.serverIsReady) gameLoader.render();
             GuiRenderer.render(UiHandler.guisToRender);
-            GuiRenderer.render(guiList);
             GLFWUtilities.render();
 
             // fps timer

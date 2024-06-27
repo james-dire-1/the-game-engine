@@ -33,6 +33,7 @@ public class GameLoader {
     public static Camera focusCamera = new Camera(new Vector3f(0, 0, 0), 0, 0, 0);
     // TODO: 2024-06-27 Make this possibly non-static in the future?
     public static BatchedGameObjectsList batchedGameObjectsList;
+    public static boolean serverIsReady = false;
 
     private final LevelInitializer levelInitializer;
     private final PlayerHandler playerHandler;

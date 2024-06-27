@@ -36,7 +36,7 @@ import game.communication.LocalServerPacketSendEvents;
 import game.player.PlayerHandler;
 import game.rendering.ModelBank;
 import game.rendering.Renderers;
-import game.ui.ScreenTest;
+import game.ui.old.ScreenTest;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWGamepadState;
 import org.lwjgl.util.vector.Vector3f;

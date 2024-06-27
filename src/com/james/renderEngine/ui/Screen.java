@@ -39,7 +39,7 @@ public class Screen {
     /**
      * Plural version of above method. Is useful for GuiGroups, such as GuiTexts.
      */
-    protected void addGuis(Gui[] guis) {
+    protected void addGuis(List<Gui> guis) {
         for (Gui gui : guis) {
             addGui(gui);
         }
@@ -148,8 +148,7 @@ public class Screen {
     /**
      * Removes all guis that belonged to this screen from the list made for rendering in the UiHandler class.
      * This should only ever be called from the UiHandler class. If you want a Screen to be deleted, call
-     * markForDeletion(), and the UiHandler will take care of the rest. (This is done to avoid
-     * ConcurrentModificationExceptions.)
+     * markForDeletion(), and the UiHandler will take care of the rest.
      */
     public void delete() {
         for (Gui gui : guisOfScreen) {
@@ -165,6 +164,8 @@ public class Screen {
 
     /**
      * Adds a screen to the screensToBeAdded addition queue.
+     * @implNote If it's the first screen being created (i.e. we are not currently iterating through the
+     * screens list in UiHandler), then we can call UiHandler.screens.add() directly.
      */
     protected static void queueScreenForAddition(Screen screen) {
         screensToBeAdded.add(screen);
