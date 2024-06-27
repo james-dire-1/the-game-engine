@@ -7,13 +7,19 @@ import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.*;
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.texturing.TextureBank;
+import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.UiHandler;
+import com.james.renderEngine.ui.dataTypes.ScreenPosition;
+import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import game.rendering.Renderers;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -45,6 +51,14 @@ public class Main {
 
         GameLoader gameLoader = new GameLoader();
 
+        Gui gui = new Gui(new ScreenPosition(300, 300), new ScreenSize(100, 100), null);
+//        gui.setColors(new float[]{1, 0, 0,   0, 1, 0,   0, 0, 1,   1, 1, 1});
+        gui.setTextureAndSamplingData("/GameInventorySlot.png");
+        gui.apply();
+
+        List<Gui> guiList = new ArrayList<>();
+        guiList.add(gui);
+
         while (!GLFWUtilities.shouldClose) {
             Time.updateDeltaTime();
 
@@ -56,6 +70,7 @@ public class Main {
             // rendering
             gameLoader.render();
             GuiRenderer.render(UiHandler.guisToRender);
+            GuiRenderer.render(guiList);
             GLFWUtilities.render();
 
             // fps timer

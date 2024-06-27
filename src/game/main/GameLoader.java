@@ -93,10 +93,6 @@ public class GameLoader {
         }
     }
 
-    public void cleanUp() {
-
-    }
-
     private void input() {
         if (KeyInput.isKeyDown(GLFW.GLFW_KEY_R)) {
             GLFWUtilities.lockCursor(!GLFWUtilities.isCursorLocked());

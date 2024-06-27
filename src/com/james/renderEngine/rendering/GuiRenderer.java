@@ -27,17 +27,23 @@ public class GuiRenderer {
             glBindVertexArray(mesh.vaoId);
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(2);
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
+            if (!gui.usesColors) {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
+            }
 
             Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
             shader.loadTransformationMatrix(transformationMatrix);
+
+            shader.loadUsesColors(gui.usesColors);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);
 
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(2);
             glBindVertexArray(0);
         }
 

@@ -18,13 +18,15 @@ public class GuiMeshData {
     public final int vaoId;
     public final int vertexCount;
 
-    private GuiMeshData(float[] vertexPositions, int[] indices, float[] textureCoords) {
+    private GuiMeshData(float[] vertexPositions, int[] indices, float[] textureCoords, float[] colors) {
         this.vaoId = GLUtilities.createAndBindVAO();
         this.vertexCount = indices.length;
 
         GLUtilities.storeIndicesDataInVAO(indices);
         GLUtilities.storeDataInVAO(0, 3, vertexPositions);
-        GLUtilities.storeDataInVAO(1, 2, textureCoords);
+        if (textureCoords != null) GLUtilities.storeDataInVAO(1, 2, textureCoords);
+        else if (colors != null) GLUtilities.storeDataInVAO(2, 3, colors);
+        else throw new RuntimeException(); // this should not happen
         GLUtilities.unbindBoundVAO();
     }
 
@@ -39,15 +41,18 @@ public class GuiMeshData {
      * which in turn means less vaos with duplicate data (the constructor of GuiMeshData creates a new vao every
      * time).
      */
-    public static GuiMeshData getOrCreateGuiMeshData(float[] vertexPositions, int[] indices, float[] textureCoords) {
+    public static GuiMeshData getOrCreateGuiMeshData(float[] vertexPositions, int[] indices, float[] textureCoords, float[] colors) {
         for (Data data : guiMeshDataMap.keySet()) {
-            if (Arrays.equals(data.vertexPositions, vertexPositions) && Arrays.equals(data.indices, indices) && Arrays.equals(data.textureCoords, textureCoords)) {
+            if (    Arrays.equals(data.vertexPositions, vertexPositions) &&
+                    Arrays.equals(data.indices, indices) &&
+                    Arrays.equals(data.textureCoords, textureCoords) &&
+                    Arrays.equals(data.colors, colors)) {
                 return guiMeshDataMap.get(data);
             }
         }
 
-        GuiMeshData guiMeshData = new GuiMeshData(vertexPositions, indices, textureCoords);
-        guiMeshDataMap.put(new Data(vertexPositions, indices, textureCoords), guiMeshData);
+        GuiMeshData guiMeshData = new GuiMeshData(vertexPositions, indices, textureCoords, colors);
+        guiMeshDataMap.put(new Data(vertexPositions, indices, textureCoords, colors), guiMeshData);
 
         return guiMeshData;
     }
@@ -59,11 +64,13 @@ public class GuiMeshData {
         private final float[] vertexPositions;
         private final int[] indices;
         private final float[] textureCoords;
+        private final float[] colors;
 
-        private Data(float[] vertexPositions, int[] indices, float[] textureCoords) {
+        private Data(float[] vertexPositions, int[] indices, float[] textureCoords, float[] colors) {
             this.vertexPositions = vertexPositions;
             this.indices = indices;
             this.textureCoords = textureCoords;
+            this.colors = colors;
         }
     }
 

@@ -17,6 +17,7 @@ public class Gui {
     public final float[] vertexPositions;
     private final int[] indices;
     private float[] textureCoords;
+    private float[] colors;
 
     private GuiMeshData mesh;
     public GuiMeshData getMesh() { return mesh; }
@@ -30,6 +31,7 @@ public class Gui {
     public final Gui parent;
     public final List<Gui> children = new ArrayList<>();
 
+    public boolean usesColors;
     public boolean isVisible = true;
     public boolean isEnabled = true;
 
@@ -40,12 +42,8 @@ public class Gui {
         this(position, size, parent, VertexUtilityArrays.defaultVertexPositions, VertexUtilityArrays.defaultIndices);
     }
 
-    // TODO: 2022-12-14 Consider optimizing this code, since new models are created every time a new gui is made.
-    // TODO: 2022-12-14 While this might be necessary for guis of different textures, it is not necessary that
-    // TODO: 2022-12-14 a new model is created every time a new gui without a texture is created
-
     /**
-     * Creates a gui object with specified position, size, parent, vertex positions, and indices.
+     * Creates a gui object with specified position, size, parent, vertex positions, colors, and indices.
      */
     public Gui(Position position, Size size, Gui parent, float[] vertexPositions, int[] indices) {
         this.position = position;
@@ -74,6 +72,11 @@ public class Gui {
      * to be normalized, so first we must normalize the data if it isn't normalized already
      */
     public void setTextureAndSamplingData(String path, int x, int y, int widthToSample, int heightToSample, boolean normalized) {
+        if (colors != null)
+            throw new RuntimeException();
+
+        usesColors = false;
+
         BufferedImage image = TextureBank.getTexture(path);
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
@@ -112,6 +115,18 @@ public class Gui {
     }
 
     /**
+     * Sets the gui to use colors at each vertex.
+     */
+    public void setColors(float[] colors) {
+        if (textureCoords != null)
+            throw new RuntimeException();
+
+        usesColors = true;
+
+        this.colors = colors;
+    }
+
+    /**
      * Once all the data for this gui has been gathered, it can be applied to receive its GuiMeshData instance.
      * The reason this happens at the end is so that all the information can be tested against all the GuiMeshData
      * instances' information that already exists, and if one GuiMeshData instance's information is identical
@@ -119,7 +134,7 @@ public class Gui {
      * instance getting created. Hence, "getOrCreateGuiMeshData"
      */
     public void apply() {
-        this.mesh = GuiMeshData.getOrCreateGuiMeshData(vertexPositions, indices, textureCoords);
+        this.mesh = GuiMeshData.getOrCreateGuiMeshData(vertexPositions, indices, textureCoords, colors);
     }
 
 }
