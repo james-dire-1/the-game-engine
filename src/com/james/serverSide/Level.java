@@ -6,6 +6,7 @@ import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.common.simulation.LevelProperties;
 import com.james.serverSide.simulation.objects.PhysicalObject;
 import game.serverSide.communication.ServerPacketSendEvents;
+import newStuff.ConnectedPlayer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ public class Level extends LevelProperties {
 
     public final ServerPacketSendEvents events;
 
+    private final List<ConnectedPlayer> connectedPlayers = new ArrayList<>();
     private final List<PhysicalObject> physicalObjects = new ArrayList<>();
     private final CollisionHandler collisionHandler = new CollisionHandler(this);
 
@@ -48,6 +50,10 @@ public class Level extends LevelProperties {
 
         physicalObjects.addAll(objectsToAdd);
         objectsToAdd.clear();
+    }
+
+    public void addConnectedPlayer(ConnectedPlayer connectedPlayer) {
+        connectedPlayers.add(connectedPlayer);
     }
 
     private final List<PhysicalObject> objectsToAdd = new ArrayList<>();

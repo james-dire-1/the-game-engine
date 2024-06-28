@@ -20,6 +20,9 @@ import com.james.tools.MousePicker;
 import game.communication.ClientPacketReceiveActions;
 import game.communication.LocalServerPacketSendEvents;
 import game.player.PlayerHandler;
+import newStuff.ClientLevel;
+import newStuff.LocalClientPacketSendEvents;
+import newStuff.LocalServerProperties;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -36,7 +39,11 @@ public class GameLoader {
     public static boolean serverIsReady = false;
 
     private final LevelInitializer levelInitializer;
+    private final LocalServerProperties properties;
+    private final ClientLevel clientLevel;
     private final PlayerHandler playerHandler;
+
+    private boolean firstTime = true;
 
     private static long lastTime;
     private static final Random r = new Random();
@@ -44,7 +51,7 @@ public class GameLoader {
     public GameLoader()  {
         batchedGameObjectsList = new BatchedGameObjectsList();
 
-        levelInitializer = new LevelInitializer(new LocalServerPacketSendEvents()) {
+        this.levelInitializer = new LevelInitializer(new LocalServerPacketSendEvents()) {
             @Override
             public void onStartup() {
                 for (int i = 0; i < 10; i++) {
@@ -63,7 +70,10 @@ public class GameLoader {
             }
         };
 
-        playerHandler = new PlayerHandler(batchedGameObjectsList, ClientPacketReceiveActions.levelProperties, new Vector3f(-5, 25, 0), focusCamera);
+        this.properties = new LocalServerProperties();
+        this.clientLevel = new ClientLevel(new LocalClientPacketSendEvents());
+
+        this.playerHandler = new PlayerHandler(batchedGameObjectsList, ClientPacketReceiveActions.levelProperties, new Vector3f(-5, 25, 0), focusCamera);
         ClientPacketReceiveActions.levelProperties.setTicksPerSecond(40);
 
         Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
@@ -73,6 +83,14 @@ public class GameLoader {
     public void update() {
         // mouse picker
         MousePicker.update();
+
+        if (firstTime) {
+            firstTime = false;
+            Vector3f playerPosition = ClientPacketReceiveActions.player.getPosition();
+            clientLevel.events.sendPlayerJoined(properties, playerPosition.x, playerPosition.y, playerPosition.z);
+        } else {
+
+        }
 
         input();
         playerHandler.update();
