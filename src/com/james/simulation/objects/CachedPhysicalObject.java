@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class CachedPhysicalObject extends AbstractPhysicalObject {
 
+    // TODO: 2024-06-28 Remove this id field from here; it is redundant
     public final int id;
 
     protected final Vector3f rotation;

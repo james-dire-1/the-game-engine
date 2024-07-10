@@ -42,10 +42,9 @@ public class MovableObject extends PhysicalObject {
         this.acceleration.z = z;
     }
 
-    @Override
-    public boolean update() {
+    public void moveUpdate() {
         if (usesAcceleration) {
-            Vector3f.add(this.velocity, Mth.multiply(this.acceleration, levelProperties.secondsPerGameTick), this.velocity);
+            Vector3f.add(velocity, Mth.multiply(this.acceleration, levelProperties.secondsPerGameTick), velocity);
         }
 
         Vector3f netVelocity;
@@ -55,9 +54,7 @@ public class MovableObject extends PhysicalObject {
             netVelocity = velocity;
         }
 
-        Vector3f.add(this.position, Mth.multiply(netVelocity, levelProperties.secondsPerGameTick), this.position);
-
-        return super.update();
+        Vector3f.add(position, Mth.multiply(netVelocity, levelProperties.secondsPerGameTick), position);
     }
 
 }

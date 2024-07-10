@@ -1,4 +1,4 @@
-package game.player;
+package com.james.simulation.objects;
 
 import com.james.common.simulation.LevelProperties;
 import com.james.serverSide.simulation.objects.MovableObject;

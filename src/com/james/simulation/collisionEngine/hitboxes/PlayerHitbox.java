@@ -2,7 +2,7 @@ package com.james.simulation.collisionEngine.hitboxes;
 
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractEllipsoidHitbox;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
-import game.player.Player;
+import com.james.simulation.objects.Player;
 
 /**
  * Ellipsoid hitbox to be used client-side for the Player.

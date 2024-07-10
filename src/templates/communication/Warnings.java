@@ -1,4 +1,4 @@
-package game.communication;
+package templates.communication;
 
 public class Warnings {
 

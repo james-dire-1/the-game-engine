@@ -1,4 +1,4 @@
-package game.serverSide.communication;
+package templates.serverSide.communication;
 
 import com.james.common.simulation.objects.PhysicalObjectType;
 import org.lwjgl.util.vector.Vector3f;
@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public interface ServerPacketSendEvents {
 
-    void notifyThatServerIsReady();
+    void notifyThatLevelIsReady();
     void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale);
     void sendPhysicalObjectMoved(int id, float x, float y, float z);
     void sendAABBHitboxAdded(int id, String meshPath);

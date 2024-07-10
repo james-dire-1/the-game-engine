@@ -1,4 +1,4 @@
-package game.rendering;
+package templates.rendering;
 
 import com.james.renderEngine.rendering.ColorModelRenderer;
 import com.james.renderEngine.rendering.FlatRenderer;

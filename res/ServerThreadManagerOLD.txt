@@ -11,7 +11,7 @@ public class ServerThreadManager {
 
     public static void executeOnSimulationThread(Action action) {
         if (action == null) {
-            System.out.println("No action to execute on main thread!");
+            System.out.println("No action to execute on simulation thread!");
             return;
         }
 

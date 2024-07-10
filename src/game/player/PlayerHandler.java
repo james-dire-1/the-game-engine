@@ -1,10 +1,8 @@
 package game.player;
 
-import com.james.simulation.collisionEngine.ClientCollisionHandler;
-import com.james.simulation.collisionEngine.hitboxes.PlayerHitbox;
 import com.james.common.simulation.LevelProperties;
-import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.input.KeyInput;
+import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.CameraController;
 import com.james.common.tools.Mth;
@@ -12,12 +10,10 @@ import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.tools.Time;
-import game.communication.ClientPacketReceiveActions;
-import game.main.GameLoader;
-import game.main.Main;
-import game.rendering.ModelBank;
+import templates.communication.ClientPacketReceiveActions;
+import templates.rendering.ModelBank;
+import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -28,8 +24,8 @@ import static org.lwjgl.glfw.GLFW.*;
 public class PlayerHandler {
 
     private final Player player;
+    private final LevelProperties levelProperties;
     private final CameraController camController;
-    private final Camera camera;
 
     private final Vector2f forwardDirectionVector = new Vector2f();
     private final Vector2f rightDirectionVector = new Vector2f();
@@ -43,18 +39,15 @@ public class PlayerHandler {
      * ClientPacketReceiveActions.
      * @see ClientPacketReceiveActions
      */
-    public PlayerHandler(BatchedGameObjectsList batchedGameObjectsList, LevelProperties levelProperties, Vector3f position, Camera camera) {
-        this.player = new Player(levelProperties, position);
+    public PlayerHandler(BatchedGameObjectsList batchedGameObjectsList, LevelProperties levelProperties, Camera camera) {
+        this.player = ClientLevel.get().getPlayer();
 
         Model model = ModelBank.getAbstractArt();
         GameObject gameObject = new GameObject(model, player.getPosition(), player.getRotation(), 1);
         batchedGameObjectsList.addGameObject(gameObject);
 
+        this.levelProperties = levelProperties;
         this.camController = new CameraController(camera, gameObject.getPosition(), 20);
-        this.camera = this.camController.getCamera();
-
-        ClientPacketReceiveActions.player = this.player;
-        ClientPacketReceiveActions.playerHitbox = new PlayerHitbox(this.player, EllipsoidDimensions.get(1, 1, 1));
     }
 
     /**
@@ -64,9 +57,11 @@ public class PlayerHandler {
      * collisions.
      */
     public void update() {
+        Camera camera = camController.getCamera();
+
         player.getRotation().y = -camera.getYaw();
 
-        if (Time.getCurrentTime() - lastTime >= ClientPacketReceiveActions.levelProperties.secondsPerGameTick) {
+        if (Time.getCurrentTime() - lastTime >= levelProperties.secondsPerGameTick) {
             lastTime = Time.getCurrentTime();
             calculateDirectionVectors();
 
@@ -89,7 +84,7 @@ public class PlayerHandler {
             player.setVelocity(velocity.x, 0, -velocity.y);
 
 //            player.update();
-            ClientCollisionHandler.update();
+            ClientLevel.get().update();
         }
 
         camController.update();
@@ -99,6 +94,8 @@ public class PlayerHandler {
      * Calculates the two direction vectors that are important for player movement: forward and right.
      */
     private void calculateDirectionVectors() {
+        Camera camera = camController.getCamera();
+
         float forwardAngleInUnitCircle = 90 - camera.getYaw();
         forwardDirectionVector.x = (float) Math.cos(Math.toRadians(forwardAngleInUnitCircle));
         forwardDirectionVector.y = (float) Math.sin(Math.toRadians(forwardAngleInUnitCircle));

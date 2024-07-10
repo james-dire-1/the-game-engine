@@ -1,4 +1,4 @@
-package game.rendering;
+package templates.rendering;
 
 import com.james.renderEngine.models.Model;
 import com.james.common.tools.ModelLoader;

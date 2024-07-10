@@ -2,7 +2,7 @@ package com.james.renderEngine.gameObjects;
 
 import com.james.renderEngine.models.Model;
 import com.james.simulation.objects.CachedPhysicalObject;
-import game.communication.ClientPacketReceiveActions;
+import templates.communication.ClientPacketReceiveActions;
 import org.lwjgl.util.vector.Vector3f;
 
 /**

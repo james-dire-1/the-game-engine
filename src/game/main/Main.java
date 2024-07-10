@@ -2,6 +2,7 @@ package game.main;
 
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
+import com.james.tools.Time;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.*;
@@ -12,8 +13,10 @@ import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
-import game.rendering.Renderers;
+import newStuff.GameLoader;
+import templates.rendering.Renderers;
 import game.ui.screens.TitleScreen;
+import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Main {
@@ -54,11 +57,11 @@ public class Main {
             // important stuff
             GLFWUtilities.pollEvents();
             UiHandler.update();
-            if (gameLoader != null && GameLoader.serverIsReady) gameLoader.update();
+            if (gameLoader != null && ClientLevel.get().isReady) gameLoader.update();
 
             // rendering
             MasterRenderer.preRender();
-            if (gameLoader != null && GameLoader.serverIsReady) gameLoader.render();
+            if (gameLoader != null && ClientLevel.get().isReady) gameLoader.render();
             GuiRenderer.render(UiHandler.guisToRender);
             GLFWUtilities.render();
 

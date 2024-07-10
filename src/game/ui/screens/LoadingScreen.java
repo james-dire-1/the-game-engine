@@ -4,9 +4,10 @@ import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.uiElements.GuiText;
-import game.main.GameLoader;
+import com.james.renderEngine.utilities.GLFWUtilities;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
+import com.james.simulation.ClientLevel;
 
 public class LoadingScreen extends Screen {
 
@@ -20,8 +21,9 @@ public class LoadingScreen extends Screen {
 
     @Override
     public boolean update() {
-        if (GameLoader.serverIsReady) {
+        if (ClientLevel.get().isReady) {
             super.markForDeletion();
+            GLFWUtilities.lockCursor(true);
         }
 
         return super.update();

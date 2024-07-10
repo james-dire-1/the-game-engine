@@ -2,7 +2,7 @@ package game.ui.screens;
 
 import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
-import game.main.GameLoader;
+import game.main.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
@@ -24,7 +24,7 @@ public class TitleScreen extends Screen {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new LoadingScreen());
-                Main.gameLoader = new GameLoader();
+                Main.gameLoader = new LocalGameLoader();
             }
         });
         super.addGuis(playButton.getAllGuis());
@@ -33,7 +33,7 @@ public class TitleScreen extends Screen {
         joinOnlineGameButton.button.setAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
-                queueScreenForAddition(new JoinOnlineGameScreen());
+                queueScreenForAddition(new MultiplayerScreen());
             }
         });
         super.addGuis(joinOnlineGameButton.getAllGuis());
@@ -42,7 +42,7 @@ public class TitleScreen extends Screen {
         settingsButton.button.setAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
-                queueScreenForAddition(new SettingsScreen());
+                queueScreenForAddition(new SettingsScreen(SettingsScreen.PreviousScreen.TITLE_SCREEN));
             }
         });
         super.addGuis(settingsButton.getAllGuis());

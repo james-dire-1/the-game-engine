@@ -1,41 +1,38 @@
-package game.communication;
+package templates.communication;
 
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
-import com.james.common.simulation.LevelProperties;
-import com.james.simulation.collisionEngine.hitboxes.PlayerHitbox;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.simulation.objects.CachedPhysicalObject;
-import game.main.GameLoader;
-import game.main.Main;
-import game.rendering.ModelBank;
-import game.player.Player;
+import game.main.LocalGameLoader;
+import templates.rendering.ModelBank;
+import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.*;
+import static templates.common.GlobalConstants.IS_DETAILED_NETWORK_DEBUG;
+import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
 
 /**
  * Methods that handle what should happen on the client side when particular events occur on the server side.
- * This class also contains important variables, and cached instances of classes from the server; it contains
- * a list of the CachedObjectHitboxes, and a list of the cached WallTriangles.
  */
-// TODO: 2024-06-24 This class needs to be divided up in the future
 public class ClientPacketReceiveActions {
 
-    public static Player player;
-    public static PlayerHitbox playerHitbox;
-    public static final Map<Integer, CachedPhysicalObject> cachedLocalPhysicalObjects = new HashMap<>();
-    public static final List<CachedAABBHitbox> cachedLocalAABBHitboxes = new ArrayList<>();
-    public static LevelProperties levelProperties = new LevelProperties();
+    public static void levelIsReadyReceived() {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelIsReadyReceived");
 
-    public static void serverIsReadyReceived() {
-        GameLoader.serverIsReady = true;
+        ClientLevel.get().isReady = true;
     }
 
     public static void physicalObjectAddedReceived(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectAddedReceived " + "{id=" + id + "} {type=" + type +"}");
+
         CachedPhysicalObject object = new CachedPhysicalObject(id, new Vector3f(position), new Vector3f(rotation), scale);
-        cachedLocalPhysicalObjects.put(id, object);
+        boolean alreadyExists = ClientLevel.get().addCachedPhysicalObject(id, object);
+
+        if (alreadyExists) {
+            Warnings.printClientServerDeSyncWarning("PhysicalObject of id " + id + " and of type " + type + " already exists client-side");
+        }
 
         Model model = null;
         if (type == PhysicalObjectType.Wall) {
@@ -47,11 +44,13 @@ public class ClientPacketReceiveActions {
         }
 
         GameObject gameObject = new GameObject(model, object.getPosition(), object.getRotation(), scale);
-        GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+        LocalGameLoader.batchedGameObjectsList.addGameObject(gameObject);
     }
 
     public static void physicalObjectMovedReceived(int id, float x, float y, float z) {
-        CachedPhysicalObject obj = cachedLocalPhysicalObjects.get(id);
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectMovedReceived");
+
+        CachedPhysicalObject obj = ClientLevel.get().getCachedPhysicalObject(id);
         if (obj != null) {
             obj.setPosition(x, y, z);
         } else {
@@ -60,15 +59,21 @@ public class ClientPacketReceiveActions {
     }
 
     public static void aabbHitboxAddedReceived(int id, String meshPath) {
-        cachedLocalAABBHitboxes.add(new CachedAABBHitbox(id, meshPath));
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.aabbHitboxAddedReceived " + "{id=" + id + "}");
+
+        ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath));
     }
 
     public static void levelSecondsPerGameTickChangedReceived(float secondsPerGameTick) {
-        levelProperties.secondsPerGameTick = secondsPerGameTick;
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelSecondsPerGameTickChangedReceived");
+
+        ClientLevel.get().secondsPerGameTick = secondsPerGameTick;
     }
 
     public static void levelGravityChangedReceived(float x, float y, float z) {
-        levelProperties.gravity.set(x, y, z);
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelGravityChangedReceived");
+
+        ClientLevel.get().gravity.set(x, y, z);
     }
 
 }

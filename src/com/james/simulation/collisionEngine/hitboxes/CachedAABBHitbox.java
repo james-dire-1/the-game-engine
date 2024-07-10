@@ -1,7 +1,7 @@
 package com.james.simulation.collisionEngine.hitboxes;
 
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
-import game.communication.ClientPacketReceiveActions;
+import com.james.simulation.ClientLevel;
 
 /**
  * AABB hitbox to be used client-side.
@@ -9,7 +9,7 @@ import game.communication.ClientPacketReceiveActions;
 public class CachedAABBHitbox extends AbstractAABBHitbox {
 
     public CachedAABBHitbox(int idOfCorrespondingObject, String meshPath) {
-        super(ClientPacketReceiveActions.cachedLocalPhysicalObjects.get(idOfCorrespondingObject), meshPath);
+        super(ClientLevel.get().getCachedPhysicalObject(idOfCorrespondingObject), meshPath);
     }
 
 }
