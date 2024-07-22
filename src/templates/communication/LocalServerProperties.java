@@ -20,17 +20,24 @@ public class LocalServerProperties implements ServerProperties {
         LocalServerProperties.playerInfo = playerInfo;
     }
 
-    public static void playerJoinedReceived(float x, float y, float z) {
+    public static void playerJoinedReceived(float x, float y, float z, float rotY) {
         LocalServerProperties properties = new LocalServerProperties();
 
         ServerThreadManager.executeOnALevelThread(Level.getByName("main"), () -> {
-            ServerPacketReceiveActions.playerJoinedReceived(properties, x, y, z);
+            ServerPacketReceiveActions.playerJoinedReceived(properties, x, y, z, rotY);
         });
     }
 
-    public static void playerMovedReceived(float x, float y, float z) {
+    public static void playerTransformChangedReceived(float x, float y, float z, float rotY) {
         ServerThreadManager.executeOnALevelThread(playerInfo.level, () -> {
-            ServerPacketReceiveActions.playerMovedReceived(playerInfo, x, y, z);
+            ServerPacketReceiveActions.playerTransformChangedReceived(playerInfo, x, y, z, rotY);
+        });
+    }
+
+    // TODO: 2024-07-12 DOES THIS ACTUALLY HAVE TO EVER GET CALLED?
+    public static void playerLeftReceived() {
+        ServerThreadManager.executeOnALevelThread(playerInfo.level, () -> {
+            ServerPacketReceiveActions.playerLeftReceived(playerInfo);
         });
     }
 

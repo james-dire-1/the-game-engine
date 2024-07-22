@@ -29,3 +29,4 @@ I decided not to change this
 // TODO: 2022-12-14 Consider optimizing this code, since new models are created every time a new gui is made. While this might be necessary for guis of different textures, it is not necessary that a new model is created every time a new gui without a texture is created [Gui]
 Hasn't this already been fixed a long time ago?
 // TODO: 2024-06-24 This class needs to be divided up in the future [ClientPacketReceiveActions]
+// TODO: 2024-07-12 You still have to remove its game object!! Aye carumba! [ClientPacketReceiveActions]

@@ -16,7 +16,7 @@ import java.util.List;
 public class ClientCollisionHandler {
 
     public final PlayerHitbox playerHitbox;
-    public final List<CachedAABBHitbox> cachedLocalAABBHitboxes = new ArrayList<>();
+    public final List<CachedAABBHitbox> cachedAABBHitboxes = new ArrayList<>();
 
     private final LevelProperties levelProperties;
     private final Player player;
@@ -35,7 +35,7 @@ public class ClientCollisionHandler {
      */
     public void update() {
         if (player.isAffectedByAABBCollisions) {
-            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerHitbox, cachedLocalAABBHitboxes, levelProperties);
+            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerHitbox, cachedAABBHitboxes, levelProperties);
             if (!algorithmPerformed) {
                 player.moveUpdate();
             }

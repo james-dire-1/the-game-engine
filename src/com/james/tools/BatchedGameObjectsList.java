@@ -12,7 +12,12 @@ public class BatchedGameObjectsList {
 
     private final Map<Model, List<GameObject>> gameObjectsMap = new HashMap<>();
 
+    private int count;
+    public int getCount() { return count; }
+
     public void addGameObject(GameObject gameObject) {
+        count++;
+
         if (gameObjectsMap.containsKey(gameObject.model)) {
             List<GameObject> batch = gameObjectsMap.get(gameObject.model);
             batch.add(gameObject);
@@ -24,8 +29,14 @@ public class BatchedGameObjectsList {
     }
 
     public void removeGameObject(GameObject gameObject) {
+        count--;
+
         List<GameObject> batch = gameObjectsMap.get(gameObject.model);
-        batch.remove(gameObject);
+        boolean success = batch.remove(gameObject);
+
+        if (!success)
+            throw new RuntimeException("No such game object was found.");
+
         if (batch.isEmpty()) {
             gameObjectsMap.remove(gameObject.model);
         }

@@ -1,14 +1,12 @@
-package com.james.serverSide.simulation.objects;
+package newStuff;
 
+import com.james.renderEngine.gameObjects.GameObject;
 import org.lwjgl.util.vector.Vector3f;
 
-/**
- * Represents a player object on the server-side.
- */
-// TODO: 2024-06-30 Make this extend PhysicalObject or something
-public class ConnectedPlayer {
+public class CachedConnectedPlayer {
 
-    public final int id;
+    private GameObject gameObject;
+    public GameObject getGameObject() { return gameObject; }
 
     private final Vector3f position;
     private final Vector3f rotation;
@@ -16,14 +14,13 @@ public class ConnectedPlayer {
     public Vector3f getPosition() { return position; }
     public Vector3f getRotation() { return rotation; }
 
-    private static int count;
-
-    public ConnectedPlayer(Vector3f position, Vector3f rotation) {
+    public CachedConnectedPlayer(Vector3f position, Vector3f rotation) {
         this.position = position;
         this.rotation = rotation;
+    }
 
-        count++;
-        this.id = count;
+    public void setGameObject(GameObject gameObject) {
+        this.gameObject = gameObject;
     }
 
     public void setPosition(float x, float y, float z) {

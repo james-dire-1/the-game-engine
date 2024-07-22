@@ -1,7 +1,7 @@
 package com.james.networking;
 
 import com.james.common.networking.Packet;
-import com.james.common.networking.PacketType;
+import templates.common.networking.PacketType;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -10,10 +10,9 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Client implements Runnable {
@@ -26,9 +25,13 @@ public class Client implements Runnable {
     private volatile ObjectInputStream input;
 
     private final Map<PacketType, Consumer<Object[]>> readListeners = new HashMap<>();
-    private final List<Consumer<Client>> onServerStoppedListeners = new ArrayList<>();
+    private volatile BiConsumer<Exception, Client> onServerDisconnectListener;
+
+    private Exception e;
 
     public Client(String host, int port) {
+        preConnectTasks();
+
         this.host = host;
         this.port = port;
 
@@ -53,6 +56,7 @@ public class Client implements Runnable {
         try {
             this.connection = new Socket(InetAddress.getByName(host), port);
             this.output = new ObjectOutputStream(connection.getOutputStream());
+            this.output.flush();
             this.input = new ObjectInputStream(connection.getInputStream());
         } catch (IOException e) {
             failed = true;
@@ -66,24 +70,33 @@ public class Client implements Runnable {
         try {
             while (true) {
                 Packet packet = (Packet) input.readObject();
-                Consumer<Object[]> listener = readListeners.get(packet.type);
-
-                if (listener != null) {
-                    listener.accept(packet.data);
+                Consumer<Object[]> listener;
+                synchronized (readListeners) {
+                    listener = readListeners.get(packet.type);
                 }
+
+                if (listener == null)
+                    throw new RuntimeException("A listener was not set up! " + packet.type);
+
+                listener.accept(packet.data);
             }
         } catch (EOFException e) {
-            for (Consumer<Client> listener : onServerStoppedListeners) {
-                listener.accept(this);
-            }
+            this.e = e;
             disconnect();
         } catch (SocketException e) {
-            e.printStackTrace();
+            this.e = e;
         } catch (IOException | ClassNotFoundException e) {
+            this.e = e;
             e.printStackTrace();
             disconnect();
+        } finally {
+            if (onServerDisconnectListener != null) {
+                onServerDisconnectListener.accept(e, this);
+            }
         }
     }
+
+    public void preConnectTasks() { }
 
     public void exceptionInConstruction(IOException e) {
         e.printStackTrace();
@@ -92,16 +105,19 @@ public class Client implements Runnable {
     public void onSuccessfulConnection() { }
 
     public void setReadListener(PacketType type, Consumer<Object[]> listener) {
-        readListeners.put(type, listener);
+        synchronized (readListeners) {
+            readListeners.put(type, listener);
+        }
     }
 
-    public void addOnServerStoppedListener(Consumer<Client> listener) {
-        onServerStoppedListeners.add(listener);
+    public void setDisconnectListener(BiConsumer<Exception, Client> listener) {
+        onServerDisconnectListener = listener;
     }
 
     public void sendPacket(Packet packet) {
         try {
             output.writeObject(packet);
+            output.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,15 +126,12 @@ public class Client implements Runnable {
     public void disconnect() {
         try {
             output.close();
+            output.flush();
             input.close();
             connection.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public interface Action {
-        void invoke();
     }
 
     private static Client instance;

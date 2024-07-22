@@ -1,6 +1,7 @@
 package com.james.simulation.objects;
 
 import com.james.common.simulation.objects.AbstractPhysicalObject;
+import com.james.renderEngine.gameObjects.GameObject;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
@@ -9,8 +10,8 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class CachedPhysicalObject extends AbstractPhysicalObject {
 
-    // TODO: 2024-06-28 Remove this id field from here; it is redundant
-    public final int id;
+    private GameObject gameObject;
+    public GameObject getGameObject() { return gameObject; }
 
     protected final Vector3f rotation;
     protected float scale;
@@ -18,12 +19,15 @@ public class CachedPhysicalObject extends AbstractPhysicalObject {
     public Vector3f getRotation() { return rotation; }
     public float getScale() { return scale; }
 
-    public CachedPhysicalObject(int id, Vector3f position, Vector3f rotation, float scale) {
+    public CachedPhysicalObject(Vector3f position, Vector3f rotation, float scale) {
         super(position);
-        this.id = id;
 
         this.rotation = rotation;
         this.scale = scale;
+    }
+
+    public void setGameObject(GameObject gameObject) {
+        this.gameObject = gameObject;
     }
 
     public void setRotation(float x, float y, float z) {

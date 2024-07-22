@@ -1,5 +1,7 @@
 package com.james.common.networking;
 
+import templates.common.networking.PacketType;
+
 import java.io.Serializable;
 
 public class Packet implements Serializable {

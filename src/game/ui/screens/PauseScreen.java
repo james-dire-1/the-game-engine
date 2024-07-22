@@ -5,6 +5,7 @@ import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
+import com.james.simulation.ClientLevel;
 import game.main.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.TitleButton;
@@ -63,6 +64,8 @@ public class PauseScreen extends Screen {
                 } else if (loader instanceof OnlineGameLoader) {
                     Client.get().disconnect();
                 }
+
+                ClientLevel.delete();
                 Main.gameLoader = null;
             }
         });

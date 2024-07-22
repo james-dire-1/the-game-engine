@@ -1,6 +1,7 @@
 package templates.communication;
 
 import com.james.serverSide.LevelInitializer;
+import com.james.serverSide.PlayerInfo;
 import com.james.tools.ThreadManager;
 import com.james.common.simulation.objects.PhysicalObjectType;
 import templates.serverSide.communication.ServerPacketSendEvents;
@@ -24,7 +25,7 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
 public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
     @Override
-    public void notifyThatLevelIsReady() {
+    public void notifyThatLevelIsReady(PlayerInfo playerInfo) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.notifyThatLevelIsReady");
 
         ThreadManager.executeOnMainThread(ClientPacketReceiveActions::levelIsReadyReceived);
@@ -32,7 +33,7 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
     // TODO: 2024-06-20 This implementation is going to have to change once we add the networking eventually
     @Override
-    public void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
+    public void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale, PlayerInfo... playerInfoArray) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPhysicalObjectAddedToLevel " + "{id=" + id + "} {type=" + type +"}");
 
         ThreadManager.executeOnMainThread(() -> {
@@ -50,12 +51,60 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void sendAABBHitboxAdded(int id, String meshPath) {
+    public void sendPhysicalObjectRotated(int id, float rotX, float rotY, float rotZ) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPhysicalObjectRotated");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.physicalObjectRotatedReceived(id, rotX, rotY, rotZ);
+        });
+    }
+
+    @Override
+    public void sendPhysicalObjectScaled(int id, float scale) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPhysicalObjectScaled");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.physicalObjectScaledReceived(id, scale);
+        });
+    }
+
+    @Override
+    public void sendPhysicalObjectTransformChanged(int id, Vector3f position, Vector3f rotation, float scale) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPhysicalObjectTransformChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.physicalObjectTransformChangedReceived(id, position, rotation, scale);
+        });
+    }
+
+    @Override
+    public void sendAABBHitboxAdded(int id, String meshPath, PlayerInfo... playerInfoArray) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendAABBHitboxAdded " + "{id=" + id + "}");
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath);
         });
+    }
+
+    @Override
+    public void sendConnectedPlayerAdded(int id, float x, float y, float z, float rotY, PlayerInfo playerInfo) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendConnectedPlayerAdded " + "{id=" + id + "} to {id=" + playerInfo.getConnectedPlayer().id + "}");
+
+        // Do nothing; this is a local game!
+    }
+
+    @Override
+    public void sendConnectedPlayerTransformChanged(int id, float x, float y, float z, float rotY, PlayerInfo exceptPlayerInfo) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendConnectedPlayerMoved");
+
+        // Do nothing; this is a local game!
+    }
+
+    @Override
+    public void sendConnectedPlayerLeft(int id, PlayerInfo exceptPlayerInfo) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendConnectedPlayerLeft " + "{id=" + id + "}");
+
+        // Do nothing; this is a local game!
     }
 
     @Override

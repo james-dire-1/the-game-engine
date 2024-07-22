@@ -11,4 +11,6 @@ public class Player extends MovableObject {
         super(levelProperties, PhysicalObjectType.Other, position, new Vector3f(), 1);
     }
 
+
+
 }

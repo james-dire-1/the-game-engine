@@ -11,6 +11,7 @@ import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
+import templates.common.networking.PacketType;
 
 import java.io.IOException;
 
@@ -28,6 +29,22 @@ public class ConnectingScreen extends Screen {
 
     private void connectToServer(String host) {
         new Client(host, 6789) {
+            @Override
+            public void preConnectTasks() {
+                setReadListener(PacketType.LEVEL_IS_READY, OnlineGameLoader::levelIsReadyReceived);
+                setReadListener(PacketType.PHYSICAL_OBJECT_ADDED_TO_LEVEL, OnlineGameLoader::physicalObjectAddedReceived);
+                setReadListener(PacketType.PHYSICAL_OBJECT_MOVED, OnlineGameLoader::physicalObjectMovedReceived);
+                setReadListener(PacketType.PHYSICAL_OBJECT_ROTATED, OnlineGameLoader::physicalObjectRotatedReceived);
+                setReadListener(PacketType.PHYSICAL_OBJECT_SCALED, OnlineGameLoader::physicalObjectScaledReceived);
+                setReadListener(PacketType.PHYSICAL_OBJECT_TRANSFORM_CHANGED, OnlineGameLoader::physicalObjectTransformChangedReceived);
+                setReadListener(PacketType.AABB_HITBOX_ADDED, OnlineGameLoader::aabbHitboxAddedReceived);
+                setReadListener(PacketType.CONNECTED_PLAYER_ADDED, OnlineGameLoader::connectedPlayerAddedReceived);
+                setReadListener(PacketType.CONNECTED_PLAYER_TRANSFORM_CHANGED, OnlineGameLoader::connectedPlayerTransformChangedReceived);
+                setReadListener(PacketType.CONNECTED_PLAYER_LEFT, OnlineGameLoader::connectedPlayerLeftReceived);
+                setReadListener(PacketType.LEVEL_SECONDS_PER_GAME_TICK_CHANGED, OnlineGameLoader::levelSecondsPerGameTickChangedReceived);
+                setReadListener(PacketType.LEVEL_GRAVITY_CHANGED, OnlineGameLoader::levelGravityChangedReceived);
+            }
+
             @Override
             public void onSuccessfulConnection() {
                 ThreadManager.executeOnMainThread(() -> {
@@ -48,10 +65,6 @@ public class ConnectingScreen extends Screen {
     @Override
     public boolean update() {
         ClientLevel level = ClientLevel.get();
-
-        System.out.println("level = " + level);
-        if (level != null) System.out.println("level.isReady = " + level.isReady);
-        System.out.println("---------------");
 
         if (level != null && level.isReady) {
             super.markForDeletion();

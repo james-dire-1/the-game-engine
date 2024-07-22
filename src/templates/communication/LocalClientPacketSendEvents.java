@@ -21,16 +21,16 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
 public class LocalClientPacketSendEvents implements ClientPacketSendEvents {
 
     @Override
-    public void sendPlayerJoined(float x, float y, float z) {
+    public void sendPlayerJoined(float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalClientPacketSendEvents.sendPlayerJoined");
-        LocalServerProperties.playerJoinedReceived(x, y, z);
+        LocalServerProperties.playerJoinedReceived(x, y, z, rotY);
     }
 
     // TODO: 2024-06-29 Implement a way to remove duplicate move packets from the server once it is time to process them
     @Override
-    public void sendPlayerMoved(float x, float y, float z) {
+    public void sendPlayerTransformChanged(float x, float y, float z, float rotY) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalClientPacketSendEvents.sendPlayerMoved");
-        LocalServerProperties.playerMovedReceived(x, y, z);
+        LocalServerProperties.playerTransformChangedReceived(x, y, z, rotY);
     }
 
     @Override

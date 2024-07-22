@@ -27,7 +27,7 @@ public class Level extends LevelProperties {
     public final ServerPacketSendEvents events;
     public boolean isPaused = false;
 
-    private final Map<PlayerInfo, ConnectedPlayer> connectedPlayers = new HashMap<>();
+    private final Map<PlayerInfo, ConnectedPlayer> connectedPlayersMap = new HashMap<>();
     private final List<PhysicalObject> physicalObjects = new ArrayList<>();
     private final CollisionHandler collisionHandler = new CollisionHandler(this);
 
@@ -54,7 +54,17 @@ public class Level extends LevelProperties {
             }
         }
 
-        // send any necessary stuff to clients
+        // Send any necessary stuff to clients
+
+        // TODO: 2024-07-21 Should this always be sent, even if the player didn't move?
+        for (Map.Entry<PlayerInfo, ConnectedPlayer> entry : connectedPlayersMap.entrySet()) {
+            PlayerInfo playerInfo = entry.getKey();
+            ConnectedPlayer connectedPlayer = entry.getValue();
+            Vector3f position = connectedPlayer.getPosition();
+            float rotY = connectedPlayer.getRotation().y;
+
+            events.sendConnectedPlayerTransformChanged(connectedPlayer.id, position.x, position.y, position.z, rotY, playerInfo);
+        }
 
         if (!isPaused) {
             // Move
@@ -92,11 +102,19 @@ public class Level extends LevelProperties {
     }
 
     public void addConnectedPlayer(PlayerInfo playerInfo, ConnectedPlayer connectedPlayer) {
-        connectedPlayers.put(playerInfo, connectedPlayer);
+        connectedPlayersMap.put(playerInfo, connectedPlayer);
+    }
+
+    public ConnectedPlayer removeConnectedPlayer(PlayerInfo playerInfo) {
+        return connectedPlayersMap.remove(playerInfo);
+    }
+
+    public Map<PlayerInfo, ConnectedPlayer> getConnectedPlayersMap() {
+        return connectedPlayersMap;
     }
 
     public ConnectedPlayer getConnectedPlayer(PlayerInfo playerInfo) {
-        return connectedPlayers.get(playerInfo);
+        return connectedPlayersMap.get(playerInfo);
     }
 
     private final List<PhysicalObject> objectsToAdd = new ArrayList<>();

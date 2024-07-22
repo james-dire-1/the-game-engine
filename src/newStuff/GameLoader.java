@@ -12,6 +12,7 @@ import com.james.renderEngine.rendering.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.simulation.ClientLevel;
+import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.MousePicker;
 import com.james.tools.Time;
@@ -51,8 +52,10 @@ public abstract class GameLoader {
         this.clientLevel = new ClientLevel(events, new Vector3f(-5, 25, 0));
         this.playerHandler = new PlayerHandler(batchedGameObjectsList, this.clientLevel, focusCamera);
 
-        Vector3f playerPosition = ClientLevel.get().getPlayer().getPosition();
-        clientLevel.events.sendPlayerJoined(playerPosition.x, playerPosition.y, playerPosition.z);
+        Player player = ClientLevel.get().getPlayer();
+        Vector3f playerPosition = player.getPosition();
+        float rotY = player.getRotation().y;
+        clientLevel.events.sendPlayerJoined(playerPosition.x, playerPosition.y, playerPosition.z, rotY);
     }
 
     protected abstract void additionalStartupActions();
@@ -67,9 +70,13 @@ public abstract class GameLoader {
 
         if (Time.getCurrentTime() - lastTimePlayerPosition >= SECONDS_PER_SEND) {
             lastTimePlayerPosition = Time.getCurrentTime();
-            Vector3f playerPosition = ClientLevel.get().getPlayer().getPosition();
 
-            clientLevel.events.sendPlayerMoved(playerPosition.x, playerPosition.y, playerPosition.z);
+            Player player = ClientLevel.get().getPlayer();
+            Vector3f playerPosition = player.getPosition();
+            float rotY = player.getRotation().y;
+
+
+            clientLevel.events.sendPlayerTransformChanged(playerPosition.x, playerPosition.y, playerPosition.z, rotY);
         }
 
         if (PauseScreen.isOpen != prevIsOpen) {

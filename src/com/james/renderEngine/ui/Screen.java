@@ -142,6 +142,9 @@ public class Screen {
     }
 
     protected void markForDeletion() {
+        if (shouldDelete)
+            throw new RuntimeException("shouldDelete is already true!");
+
         shouldDelete = true;
     }
 
