@@ -23,6 +23,7 @@ public class Screen {
      */
     protected final List<Gui> guisOfScreen = new ArrayList<>();
     private boolean shouldDelete = false;
+    public boolean shouldDelete() { return shouldDelete; }
 
     private final Map<Gui, List<GuiAnimationData>> animatedGuis = new HashMap<>();
 
@@ -31,7 +32,7 @@ public class Screen {
      * UiHandler class. This method should only be called in subclasses of Screen, as when creating guis for a
      * screen, that should always be done in a child of the screen.
      */
-    protected void addGui(Gui gui) {
+    public void addGui(Gui gui) {
         guisOfScreen.add(gui);
         UiHandler.guisToRender.add(gui);
     }
@@ -39,9 +40,23 @@ public class Screen {
     /**
      * Plural version of above method. Is useful for GuiGroups, such as GuiTexts.
      */
-    protected void addGuis(List<Gui> guis) {
+    public void addGuis(List<Gui> guis) {
         for (Gui gui : guis) {
             addGui(gui);
+        }
+    }
+
+    public void removeGui(Gui gui) {
+        boolean success1 = guisOfScreen.remove(gui);
+        boolean success2 = UiHandler.guisToRender.remove(gui);
+
+        if (!success1 || !success2)
+            throw new RuntimeException();
+    }
+
+    public void removeGuis(List<Gui> guis) {
+        for (Gui gui : guis) {
+            removeGui(gui);
         }
     }
 
@@ -64,7 +79,7 @@ public class Screen {
      * Update method called for all screens. You can also override this method in child classes for custom
      * functionality. Updates the guis of this screen. To be called once per frame.
      */
-    public boolean update() {
+    public void update() {
         for (Gui gui : guisOfScreen) {
             if (gui instanceof HoveredComponent && gui.isEnabled && UiHandler.isMouseOver(gui)) {
                 ((HoveredComponent) gui).onHovered();
@@ -80,8 +95,6 @@ public class Screen {
         }
 
         animateGuis();
-
-        return shouldDelete;
     }
 
     /**

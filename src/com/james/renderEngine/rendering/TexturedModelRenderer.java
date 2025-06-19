@@ -39,6 +39,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;
 
+            if (!model.usesCulling()) glDisable(GL_CULL_FACE);
+
             RawModel rawModel = model.rawModel;
 
             glBindVertexArray(rawModel.vaoId);
@@ -64,6 +66,9 @@ public class TexturedModelRenderer extends AbstractRenderer {
             glDisableVertexAttribArray(1);
             glDisableVertexAttribArray(2);
             glBindVertexArray(0);
+
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
         }
 
         shader.stop();

@@ -16,6 +16,8 @@ public class ImageTexture {
         this.id = load(TextureBank.getTexture(path));
     }
 
+    // TODO: 2024-12-24 I heard that it can be beneficial to add some mipmapping to text guis, so consider a way
+    // TODO: 2024-12-24 to add mipmapping to this method
     // Some code I got from The Cherno
     private static int load(BufferedImage image) {
         int width = image.getWidth();

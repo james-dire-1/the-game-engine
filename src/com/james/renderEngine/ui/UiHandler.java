@@ -20,8 +20,8 @@ public class UiHandler {
         while (iterator.hasNext()) {
             Screen screen = iterator.next();
 
-            boolean shouldDelete = screen.update();
-            if (shouldDelete) {
+            screen.update();
+            if (screen.shouldDelete()) {
                 screen.delete();
                 iterator.remove();
             }

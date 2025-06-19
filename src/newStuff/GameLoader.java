@@ -75,7 +75,6 @@ public abstract class GameLoader {
             Vector3f playerPosition = player.getPosition();
             float rotY = player.getRotation().y;
 
-
             clientLevel.events.sendPlayerTransformChanged(playerPosition.x, playerPosition.y, playerPosition.z, rotY);
         }
 

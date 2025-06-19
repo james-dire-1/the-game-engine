@@ -20,10 +20,12 @@ public class FailedToConnectScreen extends Screen {
         SolidBackground background = new SolidBackground(0x3f7556);
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("Failed to connect to " + host);
+        TitleHeader header = new TitleHeader("Failed to connect to \"" + host + "\"");
         super.addGuis(header.getAllGuis());
 
-        GuiText text = new GuiText(e.getMessage(), Main.rowdies, 0.25f, GuiText.TextAlignment.CENTER_ALIGNED, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
+        GuiText text = new GuiText(e.getMessage(), Main.rowdies, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
+        text.setAlignment(TextAlignment.CENTER_ALIGNED);
+        text.apply();
         super.addGuis(text.getAllGuis());
 
         TitleButton.resetCurrentVerticalPosition();

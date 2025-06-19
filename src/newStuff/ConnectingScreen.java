@@ -21,7 +21,9 @@ public class ConnectingScreen extends Screen {
         SolidBackground background = new SolidBackground(0xdddddd);
         super.addGui(background);
 
-        GuiText text = new GuiText("Connecting to remote server...", Main.rowdies, 0.3f, GuiText.TextAlignment.CENTER_ALIGNED, new AnchoredPosition(AnchorPoint.CENTER));
+        GuiText text = new GuiText("Connecting to remote server...", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.CENTER));
+        text.setAlignment(TextAlignment.CENTER_ALIGNED);
+        text.apply();
         super.addGuis(text.getAllGuis());
 
         connectToServer(host);
@@ -63,7 +65,7 @@ public class ConnectingScreen extends Screen {
     }
 
     @Override
-    public boolean update() {
+    public void update() {
         ClientLevel level = ClientLevel.get();
 
         if (level != null && level.isReady) {
@@ -71,6 +73,6 @@ public class ConnectingScreen extends Screen {
             GLFWUtilities.lockCursor(true);
         }
 
-        return super.update();
+        super.update();
     }
 }

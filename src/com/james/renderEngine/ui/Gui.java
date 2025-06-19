@@ -10,7 +10,6 @@ import com.james.renderEngine.utilities.VertexUtilityArrays;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Gui {
@@ -20,6 +19,7 @@ public class Gui {
     private float[] textureCoords;
     private float[] colors;
     public float[] singleColor;
+    private boolean isText = false;
 
     private GuiMeshData mesh;
     public GuiMeshData getMesh() { return mesh; }
@@ -30,6 +30,7 @@ public class Gui {
     public Position position;
     public Size size;
 
+    // TODO: 2024-12-27 Does this necessarily have to be final?
     public final Gui parent;
     public final List<Gui> children = new ArrayList<>();
 
@@ -73,22 +74,21 @@ public class Gui {
      * @implNote x, y, widthToSample, and heightToSample are measured in pixels, but OpenGL expects the data
      * to be normalized, so first we must normalize the data if it isn't normalized already
      */
+    // TODO: 2024-12-23 There should be a method for unconventional texture and sampling data, just like how we are
+    // TODO: 2024-12-23 able to have unconventional vertexPositions and indices arrays
+    // TODO: 2024-12-24 Also, there should be some check to see if this method is being called for a gui that is
+    // TODO: 2024-12-24 using conventional vertexPositions and indices arrays
     public void setTextureAndSamplingData(String path, int x, int y, int widthToSample, int heightToSample, boolean normalized) {
-        if (renderingMode != null)
-            throw new RuntimeException();
-
-        renderingMode = RenderingMode.Texture;
-
-        BufferedImage image = TextureBank.getTexture(path);
-        int imageWidth = image.getWidth();
-        int imageHeight = image.getHeight();
-
         float normalizedX;
         float normalizedY;
         float normalizedWidthToSample;
         float normalizedHeightToSample;
 
         if (!normalized) {
+            BufferedImage image = TextureBank.getTexture(path);
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+
             normalizedX = (float) x / imageWidth;
             normalizedY = (float) y / imageHeight;
             normalizedWidthToSample = (float) widthToSample / imageWidth;
@@ -117,14 +117,18 @@ public class Gui {
     }
 
     /**
+     * Overload of setTextureAndSamplingData() to be used for unconventional texture coordinates. Useful for text
+     * rendering.
+     */
+    public void setTextureAndSamplingData(String path, float[] textureCoords) {
+        this.textureCoords = textureCoords;
+        this.texture = ImageTexture.getOrCreateImageTexture(path);
+    }
+
+    /**
      * Sets the gui to use colors at each vertex.
      */
     public void setColors(float[] colors) {
-        if (renderingMode != null)
-            throw new RuntimeException();
-
-        renderingMode = RenderingMode.ColorGradient;
-
         this.colors = colors;
     }
 
@@ -136,12 +140,16 @@ public class Gui {
      * a single color.
      */
     public void setSingleColor(float r, float g, float b) {
-        if (renderingMode != null)
-            throw new RuntimeException();
-
-        renderingMode = RenderingMode.SingleColor;
-
         this.singleColor = new float[] {r, g, b};
+    }
+
+    /**
+     * Marks the gui (whether it's corresponds to a single character, or a whole string of text) as text. This
+     * is important for the GuiRenderer to know, as rendering for text guis is different compared to other types
+     * of guis
+     */
+    public void markAsText() {
+        isText = true;
     }
 
     /**
@@ -150,13 +158,26 @@ public class Gui {
      * instances' information that already exists, and if one GuiMeshData instance's information is identical
      * to the information we have here, then it can simply be returned without any new redundant new GuiMeshData
      * instance getting created. Hence, "getOrCreateGuiMeshData"
+     * Not only that, but we need to know everything about the gui before we can assign its RenderingMode, which
+     * also happens in this method.
      */
     public void apply() {
+        if (textureCoords != null && colors == null && singleColor == null && !isText)
+            renderingMode = RenderingMode.Texture;
+        else if (textureCoords == null && colors != null && singleColor == null && !isText)
+            renderingMode = RenderingMode.ColorGradient;
+        else if (textureCoords == null && colors == null && singleColor != null && !isText)
+            renderingMode = RenderingMode.SingleColor;
+        else if (textureCoords != null && colors == null && singleColor != null && isText)
+            renderingMode = RenderingMode.Text;
+        else
+            throw new RuntimeException();
+
         this.mesh = GuiMeshData.getOrCreateGuiMeshData(vertexPositions, indices, textureCoords, colors);
     }
 
     public enum RenderingMode {
-        Texture, ColorGradient, SingleColor
+        Texture, ColorGradient, SingleColor, Text
     }
 
 }

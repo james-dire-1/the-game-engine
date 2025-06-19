@@ -23,6 +23,9 @@ public class Model {
     private float[] normals;
     public boolean hasNormals() { return normals != null; }
 
+    private boolean culling = true;
+    public boolean usesCulling() { return culling; }
+
     /**
      * Unlike vertexCount in RawModel, uniqueVertexCount counts NON-REPEATING vertices. Used only for
      * debugging.
@@ -78,6 +81,10 @@ public class Model {
         GLUtilities.unbindBoundVAO();
 
         errorChecking(DataType.NORMALS);
+    }
+
+    public void disableCulling() {
+        culling = false;
     }
 
     /**

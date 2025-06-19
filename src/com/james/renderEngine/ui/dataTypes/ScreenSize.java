@@ -5,12 +5,17 @@ import org.lwjgl.util.vector.Vector2f;
 
 public class ScreenSize extends Size {
 
-    public int x;
-    public int y;
+    public float x;
+    public float y;
 
-    public ScreenSize(int x, int y) {
+    public final float originalX;
+    public final float originalY;
+
+    public ScreenSize(float x, float y) {
         this.x = x;
         this.y = y;
+        this.originalX = x;
+        this.originalY = y;
     }
 
     @Override
@@ -18,12 +23,12 @@ public class ScreenSize extends Size {
         return RenderingMath.toNormalizedSize(x, y);
     }
 
-    public void setSize(int x, int y) {
+    public void setSize(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public void changeSize(int x, int y) {
+    public void changeSize(float x, float y) {
         this.x += x;
         this.y += y;
     }

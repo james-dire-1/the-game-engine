@@ -17,10 +17,30 @@ import org.lwjgl.glfw.GLFW;
 
 public class MultiplayerScreen extends Screen {
 
+//    private static boolean initialized;
+
     private static GuiText field;
     private TitleButton joinServer;
 
     public MultiplayerScreen() {
+//        if (!initialized) {
+//            initialized = true;
+//            TypingInput.addListener((char character) -> {
+//                if (field != null) {
+//                    field.append(character);
+//                }
+//            });
+//            KeyInput.addListener((int key) -> {
+//                if (field != null) {
+//                    if (key == GLFW.GLFW_KEY_BACKSPACE) {
+//                        field.backspace();
+//                    } else if (key == GLFW.GLFW_KEY_ENTER) {
+//                        field.append('\n');
+//                    }
+//                }
+//            });
+//        }
+
         TypingInputNotifier.addScreen(this, this::onTypingInput);
 
         SolidBackground background = new SolidBackground(0x5d4073);
@@ -67,6 +87,11 @@ public class MultiplayerScreen extends Screen {
         field.apply();
         super.addGuis(field.getAllGuis());
     }
+
+//    @Override
+//    protected void deletionActions() {
+//        field = null;
+//    }
 
     public void onTypingInput(char character, int key) {
         if (character != '\u0000') {

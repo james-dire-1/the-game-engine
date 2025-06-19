@@ -29,6 +29,7 @@ public class Client implements Runnable {
 
     private Exception e;
 
+    // TODO: 2024-09-26 Why does preConnectTasks have to be done on this thread? Can in work in the run method?
     public Client(String host, int port) {
         preConnectTasks();
 

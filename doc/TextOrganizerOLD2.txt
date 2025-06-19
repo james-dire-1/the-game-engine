@@ -1,0 +1,103 @@
+package newStuff;
+
+import com.james.renderEngine.textRendering.Character;
+import com.james.renderEngine.textRendering.FontInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TextOrganizer {
+
+    // TODO: 2024-12-27 make a comment about not adding whitespace
+    public static List<Line> organizeMultiLineText(FontInfo fontInfo, float fontSize, float maxLength, byte[] asciiCodes) {
+        Character whitespace = fontInfo.getCharacterInfo(FontInfo.SPACE_ASCII);
+        List<Line> allLines = new ArrayList<>();
+
+        Line currentLine = new Line(whitespace, fontSize, maxLength);
+        allLines.add(currentLine);
+        Word currentWord = new Word(fontSize);
+
+        for (byte asciiCode : asciiCodes) {
+            Character character = fontInfo.getCharacterInfo(asciiCode);
+
+            if (asciiCode == FontInfo.SPACE_ASCII) {
+                if (!currentWord.asciiCodes.isEmpty()) {
+                    boolean successAppendingWord = currentLine.attemptToAddWord(currentWord);
+                    if (!successAppendingWord) {
+                        currentLine = new Line(whitespace, fontSize, maxLength);
+                        allLines.add(currentLine);
+                        currentLine.attemptToAddWord(currentWord);
+                    }
+
+                    currentWord = new Word(fontSize);
+                }
+
+                boolean successAppendingSpace = currentLine.attemptToAddWhitespace();
+                if (!successAppendingSpace) {
+                    currentLine = new Line(whitespace, fontSize, maxLength);
+                    allLines.add(currentLine);
+                }
+
+                continue;
+            }
+
+            currentWord.addCharacter(character);
+        }
+
+        boolean successAppendingWord = currentLine.attemptToAddWord(currentWord);
+        if (!successAppendingWord) {
+            currentLine = new Line(whitespace, fontSize, maxLength);
+            allLines.add(currentLine);
+            currentLine.attemptToAddWord(currentWord);
+        }
+
+        for (Line line : allLines) {
+            line.trimSingleTrailingWhitespace();
+        }
+
+        return allLines;
+    }
+
+    /**
+     * Gets the starting cursor position for multi line text.
+     */
+    public static float getStartCursorPosition(TextAlignment alignment, Line line) {
+        float position = 0;
+        if (alignment == TextAlignment.CENTER_ALIGNED) {
+            position = -line.currentLength / 2;
+        } else if (alignment == TextAlignment.RIGHT_ALIGNED) {
+            position = -line.currentLength;
+        }
+
+        return position;
+    }
+
+    /**
+     * Gets the starting cursor position for single line text.
+     */
+//    public static float getStartCursorPosition(TextAlignment alignment, FontInfo font, float fontSize, byte[] asciiCodes) {
+//        float position = 0;
+//        if (alignment == TextAlignment.CENTER_ALIGNED) {
+//            position = -getTotalWidthOfSingleLineText(font, fontSize, asciiCodes) / 2;
+//        } else if (alignment == TextAlignment.RIGHT_ALIGNED) {
+//            position = -getTotalWidthOfSingleLineText(font, fontSize, asciiCodes);
+//        }
+//
+//        return position;
+//    }
+
+    /**
+     * Gets the total width of single line text.
+     */
+    public static float getTotalWidthOfSingleLineText(FontInfo font, float fontSize, byte[] asciiCodes) {
+        float totalWidthOfText = 0;
+
+        for (int asciiCode : asciiCodes) {
+            Character character = font.getCharacterInfo(asciiCode);
+            totalWidthOfText += character.xAdvance * fontSize;
+        }
+
+        return totalWidthOfText;
+    }
+
+}

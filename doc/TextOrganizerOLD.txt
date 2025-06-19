@@ -1,0 +1,15 @@
+    public static float getStartCursorPositionForCenteredText(FontInfo font, float fontSize, byte[] asciiCodes) {
+        float totalWidthOfText = 0;
+
+        for (int i = 0; i < asciiCodes.length; i++) {
+            Character character = font.getCharacterInfo(asciiCodes[i]);
+
+            if (i == asciiCodes.length-1) { // last element of the array
+                totalWidthOfText += character.width*fontSize;
+            } else { // other elements of the array
+                totalWidthOfText += character.xAdvance*fontSize;
+            }
+        }
+
+        return -totalWidthOfText/2;
+    }

@@ -14,6 +14,7 @@ import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import newStuff.GameLoader;
+import newStuff.TypingInputNotifier;
 import templates.rendering.Renderers;
 import game.ui.screens.TitleScreen;
 import com.james.simulation.ClientLevel;
@@ -41,6 +42,7 @@ public class Main {
 
         GLFWUtilities.init();
         ParticleHandler.init();
+        TypingInputNotifier.init();
 
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
         Renderers.colorModelRenderer = new ColorModelRenderer();

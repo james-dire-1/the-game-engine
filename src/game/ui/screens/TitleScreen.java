@@ -2,6 +2,7 @@ package game.ui.screens;
 
 import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
+import com.james.tools.Time;
 import game.main.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
@@ -10,11 +11,14 @@ import game.ui.uiElements.TitleHeader;
 
 public class TitleScreen extends Screen {
 
+    private final TitleHeader header;
+    private final TitleButton joinOnlineGameButton;
+
     public TitleScreen() {
         SolidBackground background = new SolidBackground(0x423227);
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("Welcome!");
+        header = new TitleHeader("Welcome!");
         super.addGuis(header.getAllGuis());
 
         TitleButton.resetCurrentVerticalPosition();
@@ -29,7 +33,7 @@ public class TitleScreen extends Screen {
         });
         super.addGuis(playButton.getAllGuis());
 
-        TitleButton joinOnlineGameButton = new TitleButton("Join Online Game");
+        joinOnlineGameButton = new TitleButton("Join Online Game");
         joinOnlineGameButton.button.setAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
@@ -48,4 +52,36 @@ public class TitleScreen extends Screen {
         super.addGuis(settingsButton.getAllGuis());
     }
 
+    private float hue;
+    private float instantiationTime = Time.getCurrentTime();
+
+    @Override
+    public void update() {
+        hue += 0.01f;
+        hue %= 1;
+
+//        float[] color = ColorUtils.HSVtoRGB(hue, 1, 1);
+//        header.modifySingleColor(color[0], color[1], color[2]);
+//        joinOnlineGameButton.guiText.modifySingleColor(color[0], color[1], color[2]);
+
+        header.modifyScales((int index, char character) -> {
+            float timeElapsed = Time.getCurrentTime() - instantiationTime;
+            float multiplier = (float) (Math.abs(0.125*Math.sin(2*Math.PI*timeElapsed))+0.875);
+            float scale = 1 * multiplier;
+            return new float[] {scale, scale};
+        });
+
+        header.modifyColors((int index, char character) -> {
+            float[] color;
+            if (index % 2 == 0) {
+                color = new float[] {1, 0, 0};
+            } else {
+                color = new float[] {0, 1, 0};
+            }
+
+            return color;
+        });
+
+        super.update();
+    }
 }

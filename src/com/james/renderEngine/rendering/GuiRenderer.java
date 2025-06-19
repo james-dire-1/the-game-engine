@@ -15,7 +15,10 @@ public class GuiRenderer {
     private static final GuiShader shader = new GuiShader();
 
     public static void render(List<Gui> guis) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         shader.start();
 
@@ -26,10 +29,13 @@ public class GuiRenderer {
 
             glBindVertexArray(mesh.vaoId);
             glEnableVertexAttribArray(0);
-            if (gui.renderingMode == Gui.RenderingMode.Texture) glEnableVertexAttribArray(1);
-            else if (gui.renderingMode == Gui.RenderingMode.ColorGradient) glEnableVertexAttribArray(2);
+            if (gui.renderingMode == Gui.RenderingMode.Texture || gui.renderingMode == Gui.RenderingMode.Text)
+                glEnableVertexAttribArray(1);
+                // TODO: 2024-12-25 This is going to have to change if we add multicolored text
+            else if (gui.renderingMode == Gui.RenderingMode.ColorGradient)
+                glEnableVertexAttribArray(2);
 
-            if (gui.renderingMode == Gui.RenderingMode.Texture) {
+            if (gui.renderingMode == Gui.RenderingMode.Texture || gui.renderingMode == Gui.RenderingMode.Text) {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
             }
@@ -39,7 +45,8 @@ public class GuiRenderer {
 
             shader.loadRenderingMode(gui.renderingMode);
 
-            if (gui.renderingMode == Gui.RenderingMode.SingleColor) shader.loadSingleColor(gui.singleColor);
+            if (gui.renderingMode == Gui.RenderingMode.SingleColor || gui.renderingMode == Gui.RenderingMode.Text)
+                shader.loadSingleColor(gui.singleColor);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);
 
@@ -52,6 +59,7 @@ public class GuiRenderer {
         shader.stop();
 
         glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
     }
 
     public static void cleanUp() {

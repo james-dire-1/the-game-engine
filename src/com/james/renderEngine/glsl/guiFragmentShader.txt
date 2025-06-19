@@ -11,14 +11,18 @@ uniform vec3 singleColor;
 
 void main(void) {
     if (renderingMode == 1.0) {
-        if (texture(textureSampler, pass_textureCoords).a > 0.5) {
-            out_Color = texture(textureSampler, pass_textureCoords);
-        } else {
-            discard;
-        }
+        out_Color = texture(textureSampler, pass_textureCoords);
     } else if (renderingMode == 2.0) {
         out_Color = vec4(pass_color, 1.0);
     } else if (renderingMode == 3.0) {
         out_Color = vec4(singleColor, 1.0);
+    } else if (renderingMode == 4.0) {
+        // if (texture(textureSampler, pass_textureCoords).a > 0.5) {
+        //     out_Color = vec4(singleColor, 1.0);
+        // } else {
+        //     discard;
+        // }
+        float alpha = texture(textureSampler, pass_textureCoords).a;
+        out_Color = vec4(singleColor, alpha);
     }
 }

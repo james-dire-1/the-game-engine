@@ -71,9 +71,9 @@ public class RenderingMath {
         return new Vector2f(x, y);
     }
 
-    public static Vector2f toNormalizedSize(int screenX, int screenY) {
-        float x = (float) screenX / WindowResizeInput.width * 2;
-        float y = (float) screenY / WindowResizeInput.height * 2;
+    public static Vector2f toNormalizedSize(float screenX, float screenY) {
+        float x = screenX / WindowResizeInput.width * 2;
+        float y = screenY / WindowResizeInput.height * 2;
 
         return new Vector2f(x, y);
     }

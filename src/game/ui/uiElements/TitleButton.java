@@ -8,6 +8,7 @@ import com.james.renderEngine.uiElements.GuiButton;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.tools.ColorUtils;
 import game.main.Main;
+import newStuff.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class TitleButton implements GuiGroup {
     private static final int DISTANCE_BETWEEN_BUTTONS = 75;
 
     public final GuiButton button;
+    public final GuiText guiText;
     private final List<Gui> guis = new ArrayList<>();
 
     public TitleButton(String text) {
@@ -27,7 +29,9 @@ public class TitleButton implements GuiGroup {
         button.apply();
         guis.add(button);
 
-        GuiText guiText = new GuiText(text.toUpperCase(Locale.ROOT), Main.rowdies, 0.3f, GuiText.TextAlignment.CENTER_ALIGNED, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-10)));
+        this.guiText = new GuiText(text.toUpperCase(Locale.ROOT), Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-10)));
+        guiText.setAlignment(TextAlignment.CENTER_ALIGNED);
+        guiText.apply();
         guis.addAll(guiText.getAllGuis());
 
         currentVerticalPosition += DISTANCE_BETWEEN_BUTTONS;

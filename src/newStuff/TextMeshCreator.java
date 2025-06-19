@@ -1,0 +1,211 @@
+package newStuff;
+
+import com.james.renderEngine.textRendering.Character;
+import com.james.renderEngine.textRendering.FontInfo;
+import com.james.renderEngine.texturing.TextureBank;
+import com.james.renderEngine.ui.Gui;
+import com.james.renderEngine.ui.dataTypes.Position;
+import com.james.renderEngine.ui.dataTypes.ScreenPosition;
+import com.james.renderEngine.ui.dataTypes.ScreenSize;
+import com.james.renderEngine.utilities.VertexUtilityArrays;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class TextMeshCreator {
+
+    private static final float maxJustifiedSpaceLength = 35;
+
+    /**
+     * @implNote When constructing the parent/master gui, the size doesn't matter, since it will not get
+     * rendered on the screen and its children (the text quads) will not need to make use of the parent gui's
+     * size, since they don't use normalized size. Rather, they use screen size. However, the constructor still
+     * expects them, so a random one is supplied.
+     */
+
+
+
+    public static Gui createGuis(Position position, float[] color, FontInfo font, float fontSize,
+                                 List<Line> lines, TextAlignment alignment, boolean justified) {
+        Gui master = new Gui(position, new ScreenSize(0, 0), null);
+        float cursorY = 0;
+
+        for (Line line : lines) {
+            boolean lastLine = lines.indexOf(line) == lines.size()-1;
+
+            float cursorX = TextOrganizer.getStartCursorPosition(alignment, line, justified, lastLine);
+            List<Integer> asciiCodes = line.asciiCodes;
+
+            float spaceLengthJustified = 0;
+            if (justified) {
+                if (lastLine) {
+                    spaceLengthJustified = font.getCharacterInfo(FontInfo.SPACE_ASCII).xAdvance*fontSize;
+                } else {
+                    spaceLengthJustified = TextOrganizer.getWhitespaceLengthForJustifiedText(font, fontSize, line);
+                }
+            }
+
+            for (int asciiCode : asciiCodes) {
+                Character character = font.getCharacterInfo(asciiCode);
+
+                if (character.id != FontInfo.SPACE_ASCII) {
+                    addTextQuad(cursorX, cursorY, color, font, fontSize, character, master);
+                }
+
+                if (character.id == FontInfo.SPACE_ASCII && justified) {
+                    cursorX += spaceLengthJustified;
+                } else {
+                    cursorX += character.xAdvance * fontSize;
+                }
+            }
+
+            cursorY -= font.lineHeight*fontSize;
+        }
+
+        return master;
+    }
+
+    /**
+     * Adds a text quad to the list of guis. CONTINUE HERE LATER
+     *
+     * @implNote Note that the y offset must be negated whereas the x offset must be kept as is. This is just the
+     * way font files are done.
+     */
+    private static void addTextQuad(float cursorX, float cursorY, float[] color, FontInfo font, float fontSize,
+                                    Character character, Gui parent) {
+        ScreenPosition positionForCharacter = new ScreenPosition(Math.round(cursorX + character.xOffset*fontSize), Math.round(cursorY - character.yOffset*fontSize));
+        ScreenSize sizeForCharacter = new ScreenSize(Math.round(character.width*fontSize), Math.round(character.height*fontSize));
+
+        Gui guiForCharacter = new Gui(positionForCharacter, sizeForCharacter, parent, VertexUtilityArrays.textQuadVertexPositions, VertexUtilityArrays.defaultIndices);
+
+        guiForCharacter.setTextureAndSamplingData(font.textureAtlasPath, character.x, character.y, character.width, character.height, false);
+        guiForCharacter.setSingleColor(color[0], color[1], color[2]);
+        guiForCharacter.markAsText();
+        guiForCharacter.apply();
+    }
+
+    // TODO: 2024-12-27 color parameter will somehow have to be changed in the future
+    public static Gui createMesh(Position position, float[] color, FontInfo font, float fontSize,
+                                 List<Line> lines, TextAlignment alignment, boolean justified) {
+        List<Float> vertexPositions = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        List<Float> textureCoords = new ArrayList<>();
+
+        BufferedImage image = TextureBank.getTexture(font.textureAtlasPath);
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+
+        float cursorY = 0;
+        int currentCharacterIndex = 0;
+
+        for (Line line : lines) {
+            boolean lastLine = lines.indexOf(line) == lines.size()-1;
+
+            float cursorX = TextOrganizer.getStartCursorPosition(alignment, line, justified, lastLine);
+            List<Integer> asciiCodes = line.asciiCodes;
+
+            float spaceLengthJustified = 0;
+            if (justified) {
+                if (lastLine) {
+                    spaceLengthJustified = font.getCharacterInfo(FontInfo.SPACE_ASCII).xAdvance*fontSize;
+                } else {
+                    spaceLengthJustified = TextOrganizer.getWhitespaceLengthForJustifiedText(font, fontSize, line);
+                }
+            }
+
+            for (int asciiCode : asciiCodes) {
+                Character character = font.getCharacterInfo(asciiCode);
+
+                if (character.id != FontInfo.SPACE_ASCII) {
+                    addCharacterToMesh(cursorX, cursorY, imageWidth, imageHeight, fontSize, character,
+                            currentCharacterIndex, vertexPositions, indices, textureCoords);
+
+                    currentCharacterIndex++;
+                }
+
+                if (character.id == FontInfo.SPACE_ASCII && justified) {
+                    cursorX += spaceLengthJustified;
+                } else {
+                    cursorX += character.xAdvance * fontSize;
+                }
+            }
+
+            cursorY -= font.lineHeight*fontSize;
+        }
+
+        return createMeshInstance(position, color, font.textureAtlasPath, vertexPositions, indices, textureCoords);
+    }
+
+    private static Gui createMeshInstance(Position position, float[] color, String textureAtlasPath,
+                                          List<Float> vertexPositions, List<Integer> indices,
+                                          List<Float> textureCoords) {
+        Float[] vertexPositionsArray = vertexPositions.toArray(new Float[0]);
+        Integer[] indicesArray = indices.toArray(new Integer[0]);
+        Float[] textureCoordsArray = textureCoords.toArray(new Float[0]);
+
+        float[] finalVertexPositionsArray = new float[vertexPositionsArray.length];
+        for (int i = 0; i < finalVertexPositionsArray.length; i++) {
+            finalVertexPositionsArray[i] = vertexPositionsArray[i];
+        }
+
+        int[] finalIndicesArray = new int[indicesArray.length];
+        for (int i = 0; i < finalIndicesArray.length; i++) {
+            finalIndicesArray[i] = indicesArray[i];
+        }
+
+        float[] finalTextureCoordsArray = new float[textureCoordsArray.length];
+        for (int i = 0; i < finalTextureCoordsArray.length; i++) {
+            finalTextureCoordsArray[i] = textureCoordsArray[i];
+        }
+
+        Gui mesh = new Gui(position, new ScreenSize(1, 1), null, finalVertexPositionsArray, finalIndicesArray);
+
+        mesh.setTextureAndSamplingData(textureAtlasPath, finalTextureCoordsArray);
+        mesh.setSingleColor(color[0], color[1], color[2]);
+        mesh.markAsText();
+        mesh.apply();
+
+        return mesh;
+    }
+
+    private static void addCharacterToMesh(float cursorX, float cursorY, int imageWidth, int imageHeight,
+                                           float fontSize, Character character, int currentCharacterIndex,
+                                           List<Float> vertexPositions, List<Integer> indices,
+                                           List<Float> textureCoords) {
+        float xLeft = cursorX + character.xOffset*fontSize;
+        float yTop = cursorY - character.yOffset*fontSize;
+        float xRight = xLeft + character.width*fontSize;
+        float yBottom = yTop - character.height*fontSize;
+
+        float xTexLeft = (float)character.x / imageWidth;
+        float yTexTop = (float)character.y / imageHeight;
+        float xTexRight = xTexLeft + (float)character.width / imageWidth;
+        float yTexBottom = yTexTop + (float)character.height / imageHeight;
+
+        Float[] vertexPositionsToAdd = {
+                xLeft, yTop, 0f,
+                xLeft, yBottom, 0f,
+                xRight, yTop, 0f,
+                xRight, yBottom, 0f
+        };
+
+        Integer[] indicesToAdd = {
+                4*currentCharacterIndex,     4*currentCharacterIndex + 1, 4*currentCharacterIndex + 2,
+                4*currentCharacterIndex + 2, 4*currentCharacterIndex + 1, 4*currentCharacterIndex + 3
+        };
+
+        Float[] textureCoordsToAdd = {
+                xTexLeft, yTexTop,
+                xTexLeft, yTexBottom,
+                xTexRight, yTexTop,
+                xTexRight, yTexBottom
+        };
+
+        vertexPositions.addAll(Arrays.asList(vertexPositionsToAdd));
+        indices.addAll(Arrays.asList(indicesToAdd));
+        textureCoords.addAll(Arrays.asList(textureCoordsToAdd));
+    }
+
+}

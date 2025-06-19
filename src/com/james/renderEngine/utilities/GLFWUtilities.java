@@ -4,6 +4,7 @@ import com.james.input.ClickInput;
 import com.james.input.KeyInput;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
+import newStuff.TypingInput;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -37,6 +38,7 @@ public class GLFWUtilities {
         glfwSetWindowSizeCallback(window, new WindowResizeInput());
         glfwSetCursorPosCallback(window, new MouseMoveInput());
         glfwSetMouseButtonCallback(window, new ClickInput());
+        glfwSetCharCallback(window, new TypingInput());
         glfwShowWindow(window);
 
         glfwMakeContextCurrent(window);
