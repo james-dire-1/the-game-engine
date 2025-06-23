@@ -27,10 +27,13 @@ public class TextMeshCreator {
 
 
 
-    public static Gui createGuis(Position position, float[] color, FontInfo font, float fontSize,
-                                 List<Line> lines, TextAlignment alignment, boolean justified) {
+    public static Gui createGuis(Position position, float[] singleColor, TextColorRules textColorRules,
+                                 String originalText, FontInfo font, float fontSize, List<Line> lines,
+                                 TextAlignment alignment, boolean justified) {
         Gui master = new Gui(position, new ScreenSize(0, 0), null);
         float cursorY = 0;
+
+        List<Gui> textQuads = new ArrayList<>();
 
         for (Line line : lines) {
             boolean lastLine = lines.indexOf(line) == lines.size()-1;
@@ -51,7 +54,8 @@ public class TextMeshCreator {
                 Character character = font.getCharacterInfo(asciiCode);
 
                 if (character.id != FontInfo.SPACE_ASCII) {
-                    addTextQuad(cursorX, cursorY, color, font, fontSize, character, master);
+                    Gui textQuad = addTextQuad(cursorX, cursorY, font, fontSize, character, master);
+                    textQuads.add(textQuad);
                 }
 
                 if (character.id == FontInfo.SPACE_ASCII && justified) {
@@ -64,6 +68,42 @@ public class TextMeshCreator {
             cursorY -= font.lineHeight*fontSize;
         }
 
+        // Setting the colors for the text and final applying
+
+        if (textColorRules == null) {
+            for (Gui guiForCharacter : textQuads) {
+                guiForCharacter.setSingleColor(singleColor[0], singleColor[1], singleColor[2]);
+                guiForCharacter.apply();
+            }
+        } else {
+            char[] charactersWithoutSpaces = originalText.replace(" ", "").toCharArray();
+
+            // TODO: 2025-06-23 remove these print outs
+            System.out.println("charactersWithoutSpaces.length = " + charactersWithoutSpaces.length);
+            System.out.println("textQuads.size() = " + textQuads.size());
+
+            for (int i = 0; i < charactersWithoutSpaces.length; i++) {
+                float[] colors = textColorRules.getCharacterColor(i, charactersWithoutSpaces[i]);
+                Gui guiForCharacter = textQuads.get(i);
+
+                if (colors.length == 3) {
+                    float r = colors[0];
+                    float g = colors[1];
+                    float b = colors[2];
+
+                    guiForCharacter.setSingleColor(r, g, b);
+                } else if (colors.length == 12) {
+
+                    guiForCharacter.setColors(colors);
+
+                } else {
+                    throw new RuntimeException();
+                }
+
+                guiForCharacter.apply();
+            }
+        }
+
         return master;
     }
 
@@ -73,22 +113,23 @@ public class TextMeshCreator {
      * @implNote Note that the y offset must be negated whereas the x offset must be kept as is. This is just the
      * way font files are done.
      */
-    private static void addTextQuad(float cursorX, float cursorY, float[] color, FontInfo font, float fontSize,
-                                    Character character, Gui parent) {
+    private static Gui addTextQuad(float cursorX, float cursorY, FontInfo font, float fontSize, 
+                                   Character character, Gui parent) {
         ScreenPosition positionForCharacter = new ScreenPosition(Math.round(cursorX + character.xOffset*fontSize), Math.round(cursorY - character.yOffset*fontSize));
         ScreenSize sizeForCharacter = new ScreenSize(Math.round(character.width*fontSize), Math.round(character.height*fontSize));
 
         Gui guiForCharacter = new Gui(positionForCharacter, sizeForCharacter, parent, VertexUtilityArrays.textQuadVertexPositions, VertexUtilityArrays.defaultIndices);
 
         guiForCharacter.setTextureAndSamplingData(font.textureAtlasPath, character.x, character.y, character.width, character.height, false);
-        guiForCharacter.setSingleColor(color[0], color[1], color[2]);
         guiForCharacter.markAsText();
-        guiForCharacter.apply();
+
+        return guiForCharacter;
     }
 
     // TODO: 2024-12-27 color parameter will somehow have to be changed in the future
-    public static Gui createMesh(Position position, float[] color, FontInfo font, float fontSize,
-                                 List<Line> lines, TextAlignment alignment, boolean justified) {
+    public static Gui createMesh(Position position, float[] singleColor, TextColorRules textColorRules,
+                                 String originalText, FontInfo font, float fontSize, List<Line> lines,
+                                 TextAlignment alignment, boolean justified) {
         List<Float> vertexPositions = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
         List<Float> textureCoords = new ArrayList<>();
@@ -135,12 +176,14 @@ public class TextMeshCreator {
             cursorY -= font.lineHeight*fontSize;
         }
 
-        return createMeshInstance(position, color, font.textureAtlasPath, vertexPositions, indices, textureCoords);
+        return createMeshInstance(position, singleColor, textColorRules, originalText, font.textureAtlasPath, vertexPositions, indices, textureCoords);
     }
 
-    private static Gui createMeshInstance(Position position, float[] color, String textureAtlasPath,
-                                          List<Float> vertexPositions, List<Integer> indices,
-                                          List<Float> textureCoords) {
+    private static Gui createMeshInstance(Position position, float[] singleColor, TextColorRules textColorRules,
+                                          String originalText, String textureAtlasPath, List<Float> vertexPositions,
+                                          List<Integer> indices, List<Float> textureCoords) {
+        // Making raw arrays out of their respective object types
+
         Float[] vertexPositionsArray = vertexPositions.toArray(new Float[0]);
         Integer[] indicesArray = indices.toArray(new Integer[0]);
         Float[] textureCoordsArray = textureCoords.toArray(new Float[0]);
@@ -161,10 +204,50 @@ public class TextMeshCreator {
         }
 
         Gui mesh = new Gui(position, new ScreenSize(1, 1), null, finalVertexPositionsArray, finalIndicesArray);
-
         mesh.setTextureAndSamplingData(textureAtlasPath, finalTextureCoordsArray);
-        mesh.setSingleColor(color[0], color[1], color[2]);
         mesh.markAsText();
+
+        // Setting the colors for the text
+
+        if (textColorRules == null) {
+            mesh.setSingleColor(singleColor[0], singleColor[1], singleColor[2]);
+        } else {
+            char[] charactersWithoutSpaces = originalText.replace(" ", "").toCharArray();
+            float[] finalColorsArray = new float[charactersWithoutSpaces.length * 4 * 3];
+
+            for (int i = 0; i < charactersWithoutSpaces.length; i++) {
+                float[] colors = textColorRules.getCharacterColor(i, charactersWithoutSpaces[i]);
+
+                if (colors.length == 3) {
+                    float r = colors[0];
+                    float g = colors[1];
+                    float b = colors[2];
+
+                    for (int corner = 0; corner < 4; corner++) {
+                        finalColorsArray[i * 4 * 3 + corner * 3] = r;
+                        finalColorsArray[i * 4 * 3 + corner * 3 + 1] = g;
+                        finalColorsArray[i * 4 * 3 + corner * 3 + 2] = b;
+                    }
+                } else if (colors.length == 12) {
+                    for (int corner = 0; corner < 4; corner++) {
+                        float r = colors[corner * 3];
+                        float g = colors[corner * 3 + 1];
+                        float b = colors[corner * 3 + 2];
+
+                        finalColorsArray[i * 4 * 3 + corner * 3] = r;
+                        finalColorsArray[i * 4 * 3 + corner * 3 + 1] = g;
+                        finalColorsArray[i * 4 * 3 + corner * 3 + 2] = b;
+                    }
+                } else {
+                    throw new RuntimeException();
+                }
+            }
+
+             mesh.setColors(finalColorsArray);
+        }
+
+        // Final applying
+
         mesh.apply();
 
         return mesh;

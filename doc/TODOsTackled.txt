@@ -30,3 +30,4 @@ I decided not to change this
 Hasn't this already been fixed a long time ago?
 // TODO: 2024-06-24 This class needs to be divided up in the future [ClientPacketReceiveActions]
 // TODO: 2024-07-12 You still have to remove its game object!! Aye carumba! [ClientPacketReceiveActions]
+// TODO: 2024-12-25 This is going to have to change if we add multicolored text [GuiRenderer]

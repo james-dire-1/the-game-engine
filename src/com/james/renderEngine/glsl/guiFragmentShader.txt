@@ -24,5 +24,8 @@ void main(void) {
         // }
         float alpha = texture(textureSampler, pass_textureCoords).a;
         out_Color = vec4(singleColor, alpha);
+    } else if (renderingMode == 5.0) {
+        float alpha = texture(textureSampler, pass_textureCoords).a;
+        out_Color = vec4(pass_color, alpha);
     }
 }

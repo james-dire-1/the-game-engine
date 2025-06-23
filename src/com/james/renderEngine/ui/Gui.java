@@ -32,6 +32,7 @@ public class Gui {
 
     // TODO: 2024-12-27 Does this necessarily have to be final?
     public final Gui parent;
+    // TODO: 2025-06-23 Consider making the ArrayList only if necessary for efficiency
     public final List<Gui> children = new ArrayList<>();
 
     public RenderingMode renderingMode;
@@ -139,12 +140,13 @@ public class Gui {
      * gets passed to GuiMeshData, which will load it into a VAO. This is of course not what we want for
      * a single color.
      */
+    // TODO: 2025-06-23 This is inefficient! We are creating new arrays every time this is called
     public void setSingleColor(float r, float g, float b) {
         this.singleColor = new float[] {r, g, b};
     }
 
     /**
-     * Marks the gui (whether it's corresponds to a single character, or a whole string of text) as text. This
+     * Marks the gui (whether it corresponds to a single character, or a whole string of text) as text. This
      * is important for the GuiRenderer to know, as rendering for text guis is different compared to other types
      * of guis
      */
@@ -156,7 +158,7 @@ public class Gui {
      * Once all the data for this gui has been gathered, it can be applied to receive its GuiMeshData instance.
      * The reason this happens at the end is so that all the information can be tested against all the GuiMeshData
      * instances' information that already exists, and if one GuiMeshData instance's information is identical
-     * to the information we have here, then it can simply be returned without any new redundant new GuiMeshData
+     * to the information we have here, then it can simply be returned without any redundant new GuiMeshData
      * instance getting created. Hence, "getOrCreateGuiMeshData"
      * Not only that, but we need to know everything about the gui before we can assign its RenderingMode, which
      * also happens in this method.
@@ -170,6 +172,8 @@ public class Gui {
             renderingMode = RenderingMode.SingleColor;
         else if (textureCoords != null && colors == null && singleColor != null && isText)
             renderingMode = RenderingMode.Text;
+        else if (textureCoords != null && colors != null && singleColor == null && isText)
+            renderingMode = RenderingMode.TextWithColorBuffer;
         else
             throw new RuntimeException();
 
@@ -177,7 +181,7 @@ public class Gui {
     }
 
     public enum RenderingMode {
-        Texture, ColorGradient, SingleColor, Text
+        Texture, ColorGradient, SingleColor, Text, TextWithColorBuffer
     }
 
 }

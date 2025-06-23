@@ -55,6 +55,37 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    public void applyUpdatedColorContentsForAllChars() {
+        char[] charactersWithoutSpaces = text.replace(" ", "").toCharArray();
+
+        for (int i = 0; i < charactersWithoutSpaces.length; i++) {
+            applyUpdatedColorContentsForCharIndex(i, charactersWithoutSpaces);
+        }
+    }
+
+    // TODO: 2025-06-23 When writing up the documentation, note the similarities between this method and
+    // TODO: 2025-06-23 what is found in the TextMeshCreator
+    public void applyUpdatedColorContentsForCharIndex(int index, char[] charactersWithoutSpaces) {
+        if (charactersWithoutSpaces == null) {
+            charactersWithoutSpaces = text.replace(" ", "").toCharArray();
+        }
+
+        float[] colors = textColorRules.getCharacterColor(index, charactersWithoutSpaces[index]);
+        Gui guiForCharacter = master.children.get(index);
+
+        if (colors.length == 3) {
+            float r = colors[0];
+            float g = colors[1];
+            float b = colors[2];
+
+            guiForCharacter.setSingleColor(r, g, b);
+        }
+        // if colors.length == 12, simply do nothing
+        // since we can't modify color buffers at the moment
+
+        guiForCharacter.apply();
+    }
+
     private final StringBuilder currentText;
     private Screen screen;
     private int maxCharCount;
@@ -104,7 +135,7 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
     @Override
     public void apply() {
         List<Line> lines = super.getLines();
-        this.master = TextMeshCreator.createGuis(position, singleColor, font, fontSize, lines, alignment, justified);
+        this.master = TextMeshCreator.createGuis(position, singleColor, textColorRules, text, font, fontSize, lines, alignment, justified);
     }
 
     @Override

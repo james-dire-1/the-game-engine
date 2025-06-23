@@ -11,12 +11,18 @@ public class CharacterColor {
         this.usesGradient = usesGradient;
     }
 
+    // TODO: 2025-06-22 Remove this if it turns out to be unnecessary
     public float[] getVertexColor(int vertex) {
         float r = colors[3*vertex];
         float g = colors[3*vertex + 1];
         float b = colors[3*vertex + 2];
 
         return new float[] {r, g, b};
+    }
+
+    public float[] getAllColors() {
+        if (!usesGradient) throw new RuntimeException();
+        return colors;
     }
 
     public float[] getSingleColor() {

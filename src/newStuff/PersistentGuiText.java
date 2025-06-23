@@ -29,7 +29,7 @@ public class PersistentGuiText extends AbstractGuiText {
     @Override
     public void apply() {
         List<Line> lines = super.getLines();
-        this.mesh = TextMeshCreator.createMesh(position, singleColor, font, fontSize, lines, alignment, justified);
+        this.mesh = TextMeshCreator.createMesh(position, singleColor, textColorRules, text, font, fontSize, lines, alignment, justified);
     }
 
     public Gui getMesh() {

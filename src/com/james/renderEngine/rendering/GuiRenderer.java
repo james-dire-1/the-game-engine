@@ -29,13 +29,19 @@ public class GuiRenderer {
 
             glBindVertexArray(mesh.vaoId);
             glEnableVertexAttribArray(0);
-            if (gui.renderingMode == Gui.RenderingMode.Texture || gui.renderingMode == Gui.RenderingMode.Text)
+
+            if (    gui.renderingMode == Gui.RenderingMode.Texture ||
+                    gui.renderingMode == Gui.RenderingMode.Text ||
+                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer)
                 glEnableVertexAttribArray(1);
-                // TODO: 2024-12-25 This is going to have to change if we add multicolored text
-            else if (gui.renderingMode == Gui.RenderingMode.ColorGradient)
+
+            if (    gui.renderingMode == Gui.RenderingMode.ColorGradient ||
+                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer)
                 glEnableVertexAttribArray(2);
 
-            if (gui.renderingMode == Gui.RenderingMode.Texture || gui.renderingMode == Gui.RenderingMode.Text) {
+            if (    gui.renderingMode == Gui.RenderingMode.Texture ||
+                    gui.renderingMode == Gui.RenderingMode.Text ||
+                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer) {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
             }
@@ -45,7 +51,8 @@ public class GuiRenderer {
 
             shader.loadRenderingMode(gui.renderingMode);
 
-            if (gui.renderingMode == Gui.RenderingMode.SingleColor || gui.renderingMode == Gui.RenderingMode.Text)
+            if (    gui.renderingMode == Gui.RenderingMode.SingleColor ||
+                    gui.renderingMode == Gui.RenderingMode.Text)
                 shader.loadSingleColor(gui.singleColor);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);

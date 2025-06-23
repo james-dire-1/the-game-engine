@@ -20,6 +20,7 @@ public class FontFileParser {
     private static final int PAD_BOTTOM = 2;
     private static final int PAD_RIGHT = 3;
 
+    // TODO: 2025-06-22 Update documentation here?
     /**
      * Reads in a font file and returns a map of Ascii codes to their respective Character instances
      * @implNote Padding corrections are done here

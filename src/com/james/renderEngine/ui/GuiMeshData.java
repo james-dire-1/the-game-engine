@@ -2,6 +2,7 @@ package com.james.renderEngine.ui;
 
 import com.james.renderEngine.utilities.GLUtilities;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,8 @@ public class GuiMeshData {
         GLUtilities.storeIndicesDataInVAO(indices);
         GLUtilities.storeDataInVAO(0, 3, vertexPositions);
         if (textureCoords != null) GLUtilities.storeDataInVAO(1, 2, textureCoords);
-        else if (colors != null) GLUtilities.storeDataInVAO(2, 3, colors);
+        if (colors != null) GLUtilities.storeDataInVAO(2, 3, colors);
+
         GLUtilities.unbindBoundVAO();
     }
 

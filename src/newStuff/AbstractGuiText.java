@@ -14,8 +14,10 @@ public abstract class AbstractGuiText {
     protected final float fontSize;
     protected final Position position;
 
-    protected TextAlignment alignment = TextAlignment.LEFT_ALIGNED;
     protected final float[] singleColor = { 0, 0, 0 };
+    protected TextColorRules textColorRules;
+
+    protected TextAlignment alignment = TextAlignment.LEFT_ALIGNED;
     protected int maxLength;
     protected boolean justified = false;
 
@@ -34,6 +36,10 @@ public abstract class AbstractGuiText {
         this.singleColor[0] = r;
         this.singleColor[1] = g;
         this.singleColor[2] = b;
+    }
+
+    public void setTextColorRules(TextColorRules textColorRules) {
+        this.textColorRules = textColorRules;
     }
 
     public abstract void modifyGlobalColor(float r, float g, float b);

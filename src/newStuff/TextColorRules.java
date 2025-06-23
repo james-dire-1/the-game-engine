@@ -49,12 +49,14 @@ public class TextColorRules {
         return finalColor;
     }
 
-    public float[] getCharacterColor(char character, int index) {
-        float[] finalColor;
+    public float[] getCharacterColor(int index, char character) {
         ColorContents contents = characterColorFunction.apply(character, index);
 
         CharacterColor startColor = characterColorList.get(contents.startColorIndex);
-        if (startColor.usesGradient) throw new RuntimeException();
+        if (startColor.usesGradient)
+            return startColor.getAllColors();
+
+        float[] finalColor;
 
         if (!contents.blend) {
             finalColor = startColor.getSingleColor();
@@ -74,25 +76,6 @@ public class TextColorRules {
         float b = RenderingMath.linearlyInterpolate(startColor[2], endColor[2], progress);
 
         return new float[] {r, g, b};
-    }
-
-    private static class ColorContents {
-        private final boolean blend;
-        private final int startColorIndex;
-        private int endColorIndex;
-        private float progress;
-
-        public ColorContents(int startColorIndex, int endColorIndex, float progress) {
-            this.blend = true;
-            this.startColorIndex = startColorIndex;
-            this.endColorIndex = endColorIndex;
-            this.progress = progress;
-        }
-
-        public ColorContents(int color) {
-            this.blend = false;
-            this.startColorIndex = color;
-        }
     }
 
 }

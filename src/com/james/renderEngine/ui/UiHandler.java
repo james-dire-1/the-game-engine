@@ -33,7 +33,7 @@ public class UiHandler {
 
     public static boolean isMouseOver(Gui gui) {
         if (gui.vertexPositions != VertexUtilityArrays.defaultVertexPositions)
-            throw new RuntimeException("You cannot use clicked components with guis that don't use the default vertex positions!");
+            throw new RuntimeException("You cannot use ClickedComponents with guis that don't use the default vertex positions!");
 
         Vector2f normalizedPosition = gui.position.normalized();
         Vector2f normalizedSize = gui.size.normalized();
