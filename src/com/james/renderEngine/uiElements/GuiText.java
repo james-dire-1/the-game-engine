@@ -145,7 +145,7 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
 
     @FunctionalInterface
     public interface GuiTextFunction {
-        float[] getProperty(int index, char id);
+        float[] getProperty(int index, char character);
     }
 
 }

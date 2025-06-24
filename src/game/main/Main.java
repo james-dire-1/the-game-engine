@@ -20,11 +20,6 @@ import game.ui.screens.TitleScreen;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
 
-/*
-Testing something over here !
-Testing again
- */
-
 public class Main {
 
     public static final Light light = new Light(new Vector3f(0, 10, 0), new Vector3f(1, 1, 1));

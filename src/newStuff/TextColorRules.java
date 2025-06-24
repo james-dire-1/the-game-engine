@@ -13,14 +13,14 @@ public class TextColorRules {
     private Supplier<ColorContents> singleColorFunction;
 
     private List<CharacterColor> characterColorList;
-    private BiFunction<Character, Integer, ColorContents> characterColorFunction;
+    private BiFunction<Integer, Character, ColorContents> characterColorFunction;
 
     public TextColorRules(Supplier<ColorContents> singleColorFunction) {
         this.singleColorList = new ArrayList<>();
         this.singleColorFunction = singleColorFunction;
     }
 
-    public TextColorRules(BiFunction<Character, Integer, ColorContents> characterColorFunction) {
+    public TextColorRules(BiFunction<Integer, Character, ColorContents> characterColorFunction) {
         this.characterColorList = new ArrayList<>();
         this.characterColorFunction = characterColorFunction;
     }
@@ -50,7 +50,7 @@ public class TextColorRules {
     }
 
     public float[] getCharacterColor(int index, char character) {
-        ColorContents contents = characterColorFunction.apply(character, index);
+        ColorContents contents = characterColorFunction.apply(index, character);
 
         CharacterColor startColor = characterColorList.get(contents.startColorIndex);
         if (startColor.usesGradient)

@@ -78,10 +78,6 @@ public class TextMeshCreator {
         } else {
             char[] charactersWithoutSpaces = originalText.replace(" ", "").toCharArray();
 
-            // TODO: 2025-06-23 remove these print outs
-            System.out.println("charactersWithoutSpaces.length = " + charactersWithoutSpaces.length);
-            System.out.println("textQuads.size() = " + textQuads.size());
-
             for (int i = 0; i < charactersWithoutSpaces.length; i++) {
                 float[] colors = textColorRules.getCharacterColor(i, charactersWithoutSpaces[i]);
                 Gui guiForCharacter = textQuads.get(i);

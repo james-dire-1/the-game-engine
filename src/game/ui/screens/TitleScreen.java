@@ -22,6 +22,8 @@ public class TitleScreen extends Screen {
     private final ColorContents c1;
     private final ColorContents c5and6;
     private final GuiText testing4;
+    private GuiText verifyGuiText;
+    private PersistentGuiText verifyPersistent;
 
     public TitleScreen() {
         SolidBackground background = new SolidBackground(0x423227);
@@ -47,7 +49,7 @@ public class TitleScreen extends Screen {
         c1 = new ColorContents(1, 0, 0);
         c5and6 = new ColorContents(5, 6, 0);
 
-        TextColorRules rules = new TextColorRules((Character character, Integer index) -> {
+        TextColorRules rules = new TextColorRules((Integer index, Character character) -> {
             if (character == 'e' || character == 't') {
                 return c0;
             } else if (index % 5 == 0) {
@@ -81,6 +83,8 @@ public class TitleScreen extends Screen {
         testing4.setTextColorRules(rules);
         testing4.apply();
         super.addGuis(testing4.getAllGuis());
+
+        testing();
 
         header = new TitleHeader("Welcome!");
         super.addGuis(header.getAllGuis());
@@ -116,6 +120,40 @@ public class TitleScreen extends Screen {
         super.addGuis(settingsButton.getAllGuis());
     }
 
+    ColorContents c01;
+    ColorContents c10;
+
+    private void testing() {
+        c01 = new ColorContents(0, 1, 0);
+        c10 = new ColorContents(1, 0, 0);
+        TextColorRules rules = new TextColorRules((Integer index, Character character) -> {
+            if (index % 2 == 0) return c01;
+            else return c10;
+        });
+
+        rules.addCharacterColor(CharacterColor.setSingleColor(1, 0, 0));
+        rules.addCharacterColor(CharacterColor.setSingleColor(0, 0, 1));
+
+        verifyGuiText = new GuiText("LoremipsumLoremipsumLoremipsumLoremipsum", Main.rowdies, 0.5f, new AnchoredPosition(AnchorPoint.TOP_LEFT));
+        verifyGuiText.setTextColorRules(rules);
+        verifyGuiText.apply();
+        super.addGuis(verifyGuiText.getAllGuis());
+
+        verifyPersistent = new PersistentGuiText("LoremipsumLoremipsumLoremipsumLoremipsum", Main.rowdies, 0.5f, new AnchoredPosition(AnchorPoint.TOP_LEFT, new ScreenSize(0, -50)));
+        verifyPersistent.setTextColorRules(rules);
+        verifyPersistent.apply();
+        super.addGui(verifyPersistent.getMesh());
+    }
+
+    private void testingUpdate() {
+        float progress = (Time.getCurrentTime() % 2f);
+
+        c01.progress = progress;
+        c10.progress = progress;
+
+        verifyGuiText.applyUpdatedColorContentsForAllChars();
+    }
+
     private float hue;
     private float instantiationTime = Time.getCurrentTime();
 
@@ -124,7 +162,9 @@ public class TitleScreen extends Screen {
         hue += 0.01f;
         hue %= 1;
 
-        float progress = (Time.getCurrentTime() % 1f);
+        float progress = (Time.getCurrentTime() % 2f);
+
+        testingUpdate();
 
 //        float[] color = ColorUtils.HSVtoRGB(hue, 1, 1);
 //        header.modifySingleColor(color[0], color[1], color[2]);
