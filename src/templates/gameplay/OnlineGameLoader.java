@@ -1,8 +1,9 @@
-package newStuff;
+package templates.gameplay;
 
 import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.networking.Client;
 import com.james.tools.ThreadManager;
+import templates.communication.OnlineClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketReceiveActions;
 

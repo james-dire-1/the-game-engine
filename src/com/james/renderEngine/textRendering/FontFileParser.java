@@ -1,7 +1,6 @@
-package newStuff;
+package com.james.renderEngine.textRendering;
 
-import com.james.renderEngine.textRendering.Character;
-import com.james.renderEngine.textRendering.FontInfo;
+import com.james.renderEngine.textRendering.dataTypes.Character;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -8,7 +8,7 @@ import com.james.renderEngine.utilities.GLFWUtilities;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
-import newStuff.TextAlignment;
+import com.james.renderEngine.textRendering.TextAlignment;
 
 public class LoadingScreen extends Screen {
 

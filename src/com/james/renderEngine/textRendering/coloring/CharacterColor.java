@@ -1,4 +1,6 @@
-package newStuff;
+package com.james.renderEngine.textRendering.coloring;
+
+import com.james.renderEngine.uiElements.PersistentGuiText;
 
 /**
  * Class to customize the color appearance of characters in text that belongs to either a GuiText or to a

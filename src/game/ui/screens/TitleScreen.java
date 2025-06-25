@@ -1,18 +1,22 @@
 package game.ui.screens;
 
+import com.james.renderEngine.textRendering.coloring.CharacterColor;
+import com.james.renderEngine.textRendering.coloring.ColorContents;
+import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.renderEngine.textRendering.coloring.TextColorRules;
 import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.tools.Time;
-import game.main.LocalGameLoader;
+import templates.gameplay.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
-import newStuff.*;
 
 public class TitleScreen extends Screen {
 

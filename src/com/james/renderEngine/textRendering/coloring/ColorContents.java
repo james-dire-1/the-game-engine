@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.renderEngine.textRendering.coloring;
 
 /**
  * A class that allows for blending between two CharacterColors, provided that both CharacterColors represent

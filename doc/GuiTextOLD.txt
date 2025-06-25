@@ -1,6 +1,6 @@
 package com.james.renderEngine.uiElements;
 
-import com.james.renderEngine.textRendering.Character;
+import com.james.renderEngine.textRendering.dataTypes.Character;
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.GuiGroup;
@@ -8,9 +8,9 @@ import com.james.renderEngine.ui.dataTypes.Position;
 import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.utilities.VertexUtilityArrays;
-import newStuff.TextAlignment;
-import newStuff.TextMeshCreator;
-import newStuff.TextOrganizer;
+import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.renderEngine.textRendering.TextMeshCreator;
+import com.james.renderEngine.textRendering.TextOrganizer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;

@@ -1,7 +1,7 @@
-package game.main;
+package templates.gameplay;
 
 import com.james.serverSide.LevelInitializer;
-import newStuff.GameLoader;
+import templates.gameplay.GameLoader;
 import templates.communication.LocalClientPacketSendEvents;
 import templates.communication.LocalServerPacketSendEvents;
 

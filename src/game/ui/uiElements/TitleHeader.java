@@ -5,7 +5,7 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
 import game.main.Main;
-import newStuff.TextAlignment;
+import com.james.renderEngine.textRendering.TextAlignment;
 
 public class TitleHeader extends GuiText {
 

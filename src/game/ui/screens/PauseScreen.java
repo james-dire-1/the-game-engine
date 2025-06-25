@@ -6,12 +6,12 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
-import game.main.LocalGameLoader;
+import templates.gameplay.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
-import newStuff.GameLoader;
-import newStuff.OnlineGameLoader;
+import templates.gameplay.GameLoader;
+import templates.gameplay.OnlineGameLoader;
 
 public class PauseScreen extends Screen {
 

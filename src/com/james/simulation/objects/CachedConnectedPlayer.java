@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.simulation.objects;
 
 import com.james.renderEngine.gameObjects.GameObject;
 import org.lwjgl.util.vector.Vector3f;

@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.renderEngine.textRendering;
 
 public enum TextAlignment {
     LEFT_ALIGNED,

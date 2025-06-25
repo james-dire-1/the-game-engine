@@ -1,6 +1,6 @@
 package templates.communication;
 
-import game.main.LocalGameLoader;
+import templates.gameplay.LocalGameLoader;
 import templates.serverSide.communication.ServerPacketReceiveActions;
 import com.james.serverSide.ServerThreadManager;
 

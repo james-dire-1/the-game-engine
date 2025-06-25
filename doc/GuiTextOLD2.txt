@@ -4,10 +4,10 @@ import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.GuiGroup;
 import com.james.renderEngine.ui.dataTypes.Position;
-import newStuff.Line;
-import newStuff.TextAlignment;
-import newStuff.TextMeshCreator;
-import newStuff.TextOrganizer;
+import com.james.renderEngine.textRendering.dataTypes.Line;
+import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.renderEngine.textRendering.TextMeshCreator;
+import com.james.renderEngine.textRendering.TextOrganizer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;

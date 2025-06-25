@@ -1,6 +1,6 @@
 package com.james.renderEngine.textRendering;
 
-import newStuff.FontFileParser;
+import com.james.renderEngine.textRendering.dataTypes.Character;
 
 import java.util.Map;
 

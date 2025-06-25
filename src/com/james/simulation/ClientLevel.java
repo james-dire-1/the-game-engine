@@ -1,12 +1,11 @@
 package com.james.simulation;
 
 import com.james.common.simulation.LevelProperties;
-import com.james.serverSide.simulation.objects.ConnectedPlayer;
 import com.james.simulation.collisionEngine.ClientCollisionHandler;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
-import newStuff.CachedConnectedPlayer;
+import com.james.simulation.objects.CachedConnectedPlayer;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 

@@ -1,7 +1,11 @@
-package newStuff;
+package com.james.renderEngine.uiElements;
 
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.ui.dataTypes.Position;
+import com.james.renderEngine.textRendering.dataTypes.Line;
+import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.renderEngine.textRendering.coloring.TextColorRules;
+import com.james.renderEngine.textRendering.TextOrganizer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;

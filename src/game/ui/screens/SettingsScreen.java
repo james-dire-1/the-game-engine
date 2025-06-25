@@ -8,8 +8,8 @@ import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
-import newStuff.PersistentGuiText;
-import newStuff.TextAlignment;
+import com.james.renderEngine.uiElements.PersistentGuiText;
+import com.james.renderEngine.textRendering.TextAlignment;
 
 public class SettingsScreen extends Screen {
 

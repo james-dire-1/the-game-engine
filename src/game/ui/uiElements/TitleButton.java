@@ -8,7 +8,7 @@ import com.james.renderEngine.uiElements.GuiButton;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.tools.ColorUtils;
 import game.main.Main;
-import newStuff.TextAlignment;
+import com.james.renderEngine.textRendering.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.List;

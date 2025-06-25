@@ -1,6 +1,7 @@
-package newStuff;
+package com.james.renderEngine.ui;
 
 import com.james.input.KeyInput;
+import com.james.input.TypingInput;
 import com.james.renderEngine.ui.Screen;
 
 import java.util.HashMap;

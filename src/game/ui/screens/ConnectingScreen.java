@@ -1,4 +1,4 @@
-package newStuff;
+package game.ui.screens;
 
 import com.james.networking.Client;
 import com.james.renderEngine.ui.AnchorPoint;
@@ -11,6 +11,8 @@ import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
+import templates.gameplay.OnlineGameLoader;
+import com.james.renderEngine.textRendering.TextAlignment;
 import templates.common.networking.PacketType;
 
 import java.io.IOException;

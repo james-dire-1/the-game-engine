@@ -1,7 +1,10 @@
-package newStuff;
+package com.james.renderEngine.textRendering.dataTypes;
 
-import com.james.renderEngine.textRendering.Character;
 import com.james.renderEngine.textRendering.FontInfo;
+import com.james.renderEngine.textRendering.TextMeshCreator;
+import com.james.renderEngine.textRendering.TextOrganizer;
+import com.james.renderEngine.textRendering.dataTypes.Character;
+import com.james.renderEngine.textRendering.dataTypes.Word;
 
 import java.util.ArrayList;
 import java.util.List;

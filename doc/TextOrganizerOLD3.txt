@@ -1,6 +1,6 @@
 package newStuff;
 
-import com.james.renderEngine.textRendering.Character;
+import com.james.renderEngine.textRendering.dataTypes.Character;
 import com.james.renderEngine.textRendering.FontInfo;
 
 import java.util.ArrayList;

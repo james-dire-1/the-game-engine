@@ -1,5 +1,8 @@
-package newStuff;
+package com.james.renderEngine.textRendering.coloring;
 
+import com.james.renderEngine.textRendering.coloring.CharacterColor;
+import com.james.renderEngine.textRendering.coloring.ColorContents;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.tools.RenderingMath;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ public class TextColorRules {
     private Supplier<ColorContents> singleColorFunction;
 
     private List<CharacterColor> characterColorList;
-    private BiFunction<Integer, Character, ColorContents> characterColorFunction;
+    private BiFunction<Integer, java.lang.Character, ColorContents> characterColorFunction;
 
     /**
      * Initializes TextColorRules for use with single colors. Note that constructing TextColorRules in this
@@ -53,7 +56,7 @@ public class TextColorRules {
      *
      * @param characterColorFunction the function for determining the ColorContents object at any given time
      */
-    public TextColorRules(BiFunction<Integer, Character, ColorContents> characterColorFunction) {
+    public TextColorRules(BiFunction<Integer, java.lang.Character, ColorContents> characterColorFunction) {
         this.characterColorList = new ArrayList<>();
         this.characterColorFunction = characterColorFunction;
     }

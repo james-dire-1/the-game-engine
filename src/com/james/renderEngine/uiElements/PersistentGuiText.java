@@ -1,9 +1,11 @@
-package newStuff;
+package com.james.renderEngine.uiElements;
 
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.dataTypes.Position;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
+import com.james.renderEngine.textRendering.dataTypes.Line;
+import com.james.renderEngine.textRendering.TextMeshCreator;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package newStuff;
+package game.ui.screens;
 
 import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.ClickedComponent;
@@ -7,10 +7,10 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
 import game.main.Main;
-import game.ui.screens.MultiplayerScreen;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
+import com.james.renderEngine.textRendering.TextAlignment;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package newStuff;
+package templates.communication;
 
 import com.james.common.networking.Packet;
 import templates.common.networking.PacketType;

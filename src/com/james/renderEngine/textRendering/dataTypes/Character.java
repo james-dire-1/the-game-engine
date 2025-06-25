@@ -1,4 +1,4 @@
-package com.james.renderEngine.textRendering;
+package com.james.renderEngine.textRendering.dataTypes;
 
 import java.util.Random;
 

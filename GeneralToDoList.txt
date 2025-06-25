@@ -2,3 +2,4 @@ Maybe add documentation for GameLoader, LocalGameLoader, and OnlineGameLoader?
 
 Add documentation for OnlineClientPacketSendEvents
 
+Move things in the glsl folder

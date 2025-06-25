@@ -1,7 +1,8 @@
-package newStuff;
+package com.james.renderEngine.textRendering;
 
-import com.james.renderEngine.textRendering.Character;
-import com.james.renderEngine.textRendering.FontInfo;
+import com.james.renderEngine.textRendering.coloring.TextColorRules;
+import com.james.renderEngine.textRendering.dataTypes.Character;
+import com.james.renderEngine.textRendering.dataTypes.Line;
 import com.james.renderEngine.texturing.TextureBank;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.dataTypes.Position;
@@ -117,7 +118,7 @@ public class TextMeshCreator {
      *
      * @return the character quad
      */
-    private static Gui addTextQuad(float cursorX, float cursorY, FontInfo font, float fontSize, 
+    private static Gui addTextQuad(float cursorX, float cursorY, FontInfo font, float fontSize,
                                    Character character, Gui parent) {
         ScreenPosition positionForCharacter = new ScreenPosition(Math.round(cursorX + character.xOffset*fontSize), Math.round(cursorY - character.yOffset*fontSize));
         ScreenSize sizeForCharacter = new ScreenSize(Math.round(character.width*fontSize), Math.round(character.height*fontSize));

@@ -10,9 +10,8 @@ import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
-import newStuff.ConnectingScreen;
-import newStuff.TextAlignment;
-import newStuff.TypingInputNotifier;
+import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.renderEngine.ui.TypingInputNotifier;
 import org.lwjgl.glfw.GLFW;
 
 public class MultiplayerScreen extends Screen {

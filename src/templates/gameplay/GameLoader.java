@@ -1,4 +1,4 @@
-package newStuff;
+package templates.gameplay;
 
 import com.james.input.KeyInput;
 import com.james.input.MouseMoveInput;
@@ -16,7 +16,6 @@ import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.MousePicker;
 import com.james.tools.Time;
-import game.main.LocalGameLoader;
 import game.player.PlayerHandler;
 import game.ui.screens.PauseScreen;
 import org.lwjgl.glfw.GLFW;
