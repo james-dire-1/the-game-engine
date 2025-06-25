@@ -7,7 +7,13 @@ import com.james.renderEngine.ui.dataTypes.ScreenSize;
 
 import java.util.List;
 
-// TODO: 2024-12-27 Note that most of these values on top are only used at initialization
+/**
+ * Creates a new text gui where all the characters are represented in a single gui mesh. Thus, with
+ * PersistentGuiText, a new VAO is created for every unique permutation of characters. PersistentGuiText is well
+ * suited for plain text and for text that uses non-updating color rules, among other applications. If it is not
+ * possible to use PersistentGuiText for a given use case, then GuiText must be used, which allows for more
+ * flexibility at the cost of efficiency.
+ */
 public class PersistentGuiText extends AbstractGuiText {
 
     public PersistentGuiText(String text, FontInfo font, float fontSize, Position position) {

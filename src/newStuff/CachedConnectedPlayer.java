@@ -3,6 +3,9 @@ package newStuff;
 import com.james.renderEngine.gameObjects.GameObject;
 import org.lwjgl.util.vector.Vector3f;
 
+/**
+ * Represents a player object on the client-side.
+ */
 public class CachedConnectedPlayer {
 
     private GameObject gameObject;

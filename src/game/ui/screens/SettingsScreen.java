@@ -1,12 +1,8 @@
 package game.ui.screens;
 
-import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
-import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.NormalizedPosition;
-import com.james.renderEngine.ui.dataTypes.ScreenSize;
-import com.james.renderEngine.uiElements.GuiText;
 import com.james.tools.Time;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;

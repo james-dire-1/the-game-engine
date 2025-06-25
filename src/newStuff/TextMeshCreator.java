@@ -14,19 +14,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Class with static methods for creating the individual character quads for GuiText and for creating the
+ * single text meshes for PersistentGuiText.
+ */
 public class TextMeshCreator {
 
-    private static final float maxJustifiedSpaceLength = 35;
-
     /**
+     * Method called by GuiText to construct the character quads for its text, after all properties of the
+     * text have been decided upon. Also handles applying colors/gradients to the text.
+     *
      * @implNote When constructing the parent/master gui, the size doesn't matter, since it will not get
      * rendered on the screen and its children (the text quads) will not need to make use of the parent gui's
      * size, since they don't use normalized size. Rather, they use screen size. However, the constructor still
      * expects them, so a random one is supplied.
+     *
+     * @return the parent/master gui
      */
-
-
-
     public static Gui createGuis(Position position, float[] singleColor, TextColorRules textColorRules,
                                  String originalText, FontInfo font, float fontSize, List<Line> lines,
                                  TextAlignment alignment, boolean justified) {
@@ -104,10 +108,14 @@ public class TextMeshCreator {
     }
 
     /**
-     * Adds a text quad to the list of guis. CONTINUE HERE LATER
+     * Constructs a character quad for GuiText and applies all relevant properties (except colors/gradients).
+     * This method is called by createGuis() above. It can be thought of as an analog to addCharacterToMesh()
+     * (which is used for PersistentGuiText).
      *
-     * @implNote Note that the y offset must be negated whereas the x offset must be kept as is. This is just the
-     * way font files are done.
+     * @implNote Note that the y offset must be negated whereas the x offset must be kept as is. This is just
+     * the way font files are done.
+     *
+     * @return the character quad
      */
     private static Gui addTextQuad(float cursorX, float cursorY, FontInfo font, float fontSize, 
                                    Character character, Gui parent) {
@@ -122,7 +130,13 @@ public class TextMeshCreator {
         return guiForCharacter;
     }
 
-    // TODO: 2024-12-27 color parameter will somehow have to be changed in the future
+    /**
+     * Method called by PersistentGuiText to prepare for the construction of the single text mesh, after all
+     * properties of the text have been decided upon. Once preparation is done, createMeshInstance() is called
+     * to actually construct the mesh.
+     *
+     * @return the single text mesh
+     */
     public static Gui createMesh(Position position, float[] singleColor, TextColorRules textColorRules,
                                  String originalText, FontInfo font, float fontSize, List<Line> lines,
                                  TextAlignment alignment, boolean justified) {
@@ -175,6 +189,13 @@ public class TextMeshCreator {
         return createMeshInstance(position, singleColor, textColorRules, originalText, font.textureAtlasPath, vertexPositions, indices, textureCoords);
     }
 
+    /**
+     * Converts the object arrays for vertex positions, indices, and texture coordinates into their respective
+     * raw types. Constructs the single text mesh and applies all relevant properties. Also handles applying
+     * colors/gradients to the text. This method is called by createMesh() above.
+     *
+     * @return the single text mesh
+     */
     private static Gui createMeshInstance(Position position, float[] singleColor, TextColorRules textColorRules,
                                           String originalText, String textureAtlasPath, List<Float> vertexPositions,
                                           List<Integer> indices, List<Float> textureCoords) {
@@ -239,7 +260,7 @@ public class TextMeshCreator {
                 }
             }
 
-             mesh.setColors(finalColorsArray);
+            mesh.setColors(finalColorsArray);
         }
 
         // Final applying
@@ -249,6 +270,11 @@ public class TextMeshCreator {
         return mesh;
     }
 
+    /**
+     * Adds a single character to the text mesh that will be used by PersistentGuiText. Populates the vertex
+     * positions, indices, and texture coordinates lists with data for the character. This method is called
+     * by createMesh() above. It can be thought of as an analog to addTextQuad() (which is used for GuiText).
+     */
     private static void addCharacterToMesh(float cursorX, float cursorY, int imageWidth, int imageHeight,
                                            float fontSize, Character character, int currentCharacterIndex,
                                            List<Float> vertexPositions, List<Integer> indices,

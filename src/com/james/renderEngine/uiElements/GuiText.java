@@ -11,10 +11,22 @@ import newStuff.*;
 import java.util.List;
 
 /**
- * Creates a new text gui.
+ * Creates a new text gui where each character in the text is a separate gui quad. Thus, with GuiText, one
+ * VAO is shared among all characters, and each quad is simply scaled as needed. GuiText is well suited for
+ * editable text fields, for text that uses updating color rules, and for text where characters are to be
+ * additionally scaled independently of each other, among other applications. If it is not absolutely
+ * necessary to use GuiText for a given use case, then it is recommended to use PersistentGuiText, as it is
+ * a lot more efficient.
+ *
+ * @see PersistentGuiText
  */
 public class GuiText extends AbstractGuiText implements GuiGroup {
 
+    /**
+     * @implNote A StringBuilder is created here to facilitate text editing should this GuiText be used for
+     * editable text fields or similar applications. (This is exclusive to GuiText, as PersistentGuiText
+     * doesn't support text editing.)
+     */
     public GuiText(String text, FontInfo font, float fontSize, Position position) {
         super(text, font, fontSize, position);
         this.currentText = new StringBuilder(text);
@@ -35,7 +47,11 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
-    // TODO: 2024-12-29 This is going to have some interesting documentation!
+    /**
+     * This is a method that is exclusive to GuiText, which allows for changing the individual character
+     * colors for the text. To use it, a function must be passed in which outputs color based on inputs
+     * of index and character. Note that this can only be called after apply() has already been called.
+     */
     public void modifyColors(GuiTextFunction function) {
         char[] characters = super.text.replace(" ", "").toCharArray();
 
@@ -45,6 +61,12 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    /**
+     * This is a method that is exclusive to GuiText, which allows for changing the individual character
+     * scales for the text. To use it, a function must be passed in which outputs an x scale and a y scale
+     * based on inputs of index and character. Note that this can only be called after apply() has already
+     * been called.
+     */
     public void modifyScales(GuiTextFunction function) {
         char[] characters = super.text.replace(" ", "").toCharArray();
 
@@ -55,6 +77,14 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    /**
+     * This is a method that is exclusive to GuiText. Updates the color information for every character of
+     * the text, in case a ColorContents object has changed its progress value. This method should be called
+     * from Screen subclasses, in the update() method.
+     *
+     * @implNote To update every character, calls applyUpdatedColorContentsForCharIndex() for each character
+     * (excluding whitespaces).
+     */
     public void applyUpdatedColorContentsForAllChars() {
         char[] charactersWithoutSpaces = text.replace(" ", "").toCharArray();
 
@@ -63,8 +93,25 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
-    // TODO: 2025-06-23 When writing up the documentation, note the similarities between this method and
-    // TODO: 2025-06-23 what is found in the TextMeshCreator
+    /**
+     * This is a method that is exclusive to GuiText. Updates the color information for a single character
+     * of the text, in case its ColorContents object has changed its progress value. This method should be
+     * called from Screen subclasses, in the update() method. In addition, it is also called from the more
+     * general applyUpdatedColorContentsForAllChars() method.
+     *
+     * Note that there is some similarity between this method and createGuis() found in TextMeshCreator.
+     * @see TextMeshCreator
+     *
+     * @param index the position of the character in the text, excluding whitespaces
+     * @param charactersWithoutSpaces if called from a Screen subclass, pass in null, and the method will
+     *                                retrieve the charactersWithoutSpaces array itself; if the
+     *                                charactersWithoutSpaces array is passed in manually, the method will
+     *                                not need to retrieve it
+     *
+     * @implNote Passing in the charactersWithoutSpaces array manually is useful if the method is being
+     * called from applyUpdatedColorContentsForAllChars(). This is so that the array won't need to be
+     * continuously retrieved redundantly for every loop iteration of applyUpdatedColorContentsForAllChars().
+     */
     public void applyUpdatedColorContentsForCharIndex(int index, char[] charactersWithoutSpaces) {
         if (charactersWithoutSpaces == null) {
             charactersWithoutSpaces = text.replace(" ", "").toCharArray();
@@ -90,6 +137,13 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
     private Screen screen;
     private int maxCharCount;
 
+    /**
+     * Allows the text for this GuiText to be edited at any time.
+     *
+     * @param screen the Screen that this GuiText belongs to; this is needed for adding and removing guis, which
+     *               will happen frequently for editable text
+     * @param maxCharCount the maximum number of characters; if 0 is passed in, there is no maximum
+     */
     public void makeEditable(Screen screen, int maxCharCount) {
         if (maxCharCount < 0)
             throw new RuntimeException();
@@ -98,6 +152,9 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         this.maxCharCount = maxCharCount;
     }
 
+    /**
+     * Adds a character to the text of this GuiText. makeEditable() must have been called first.
+     */
     public void append(char character) {
         if (character == '\n' && maxLength == 0) {
             return;
@@ -112,6 +169,10 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    /**
+     * Removes the last character from the text of this GuiText (if there are still characters remaining).
+     * makeEditable() must have been called first.
+     */
     public void backspace() {
         if (currentText.length() > 0) {
             screen.removeGuis(master.children);
@@ -122,6 +183,10 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    /**
+     * Entirely overwrites the current text with some new text for this GuiText. makeEditable() must have been
+     * called first.
+     */
     public void setText(String newText) {
         screen.removeGuis(master.children);
         currentText.replace(0, currentText.length(), newText);

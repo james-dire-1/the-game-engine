@@ -12,6 +12,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A single, general-purpose gui element.
+ */
 public class Gui {
 
     public final float[] vertexPositions;
@@ -75,8 +78,6 @@ public class Gui {
      * @implNote x, y, widthToSample, and heightToSample are measured in pixels, but OpenGL expects the data
      * to be normalized, so first we must normalize the data if it isn't normalized already
      */
-    // TODO: 2024-12-23 There should be a method for unconventional texture and sampling data, just like how we are
-    // TODO: 2024-12-23 able to have unconventional vertexPositions and indices arrays
     // TODO: 2024-12-24 Also, there should be some check to see if this method is being called for a gui that is
     // TODO: 2024-12-24 using conventional vertexPositions and indices arrays
     public void setTextureAndSamplingData(String path, int x, int y, int widthToSample, int heightToSample, boolean normalized) {
@@ -118,8 +119,8 @@ public class Gui {
     }
 
     /**
-     * Overload of setTextureAndSamplingData() to be used for unconventional texture coordinates. Useful for text
-     * rendering.
+     * Overload of setTextureAndSamplingData() to be used for unconventional texture coordinates. Useful for
+     * text rendering.
      */
     public void setTextureAndSamplingData(String path, float[] textureCoords) {
         this.textureCoords = textureCoords;

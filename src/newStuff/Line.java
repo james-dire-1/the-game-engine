@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a line of text to be rendered on screen. Used for multi line text.
+ * Represents a line of text to be rendered on screen. Used mostly for multi line text.
+ *
+ * @see TextOrganizer
+ * @see TextMeshCreator
  */
 public class Line {
 
@@ -17,11 +20,19 @@ public class Line {
     private float whitespaceLength;
     private float maxLength;
 
+    /**
+     * Constructor to be used for multi-line text.
+     */
     public Line(Character whitespace, float fontSize, float maxLength) {
         this.whitespaceLength = whitespace.xAdvance * fontSize;
         this.maxLength = maxLength;
     }
 
+    /**
+     * Constructor to be used for single line text. All the text is represented in a single line. This is
+     * necessary because TextMeshCreator expects lists of Lines, regardless of whether text is single line
+     * or multi line.
+     */
     public Line(byte[] asciiCodesToAdd, FontInfo font, float fontSize) {
         this.currentLength = TextOrganizer.getTotalWidthOfSingleLineText(font, fontSize, asciiCodesToAdd);
 
@@ -35,10 +46,12 @@ public class Line {
 
     /**
      * If there is room on the line, the word will be added.
-     * @return whether the word was successfully added
-     * @implNote If this the first word being added to the line, then the check for space on the line is
+     *
+     * @implNote If this is the first word being added to the line, then the check for space on the line is
      * skipped. This is to prevent a case where a very long word that is longer than the max length will
      * repeatedly attempt to occupy successive lines.
+     *
+     * @return whether the word was successfully added
      */
     public boolean attemptToAddWord(Word word) {
         boolean success;
@@ -56,6 +69,7 @@ public class Line {
 
     /**
      * If there is room on the line, the whitespace will be added.
+     *
      * @return whether the whitespace was successfully added
      */
     public boolean attemptToAddWhitespace() {
@@ -72,7 +86,10 @@ public class Line {
         return success;
     }
 
-    // TODO: 2024-12-30 There is something interesting here which should be considered
+    /**
+     * If the line ends with a whitespace, it will be removed. This is called in TextOrganizer after all Line
+     * objects have already been set up and finalized.
+     */
     public void trimSingleTrailingWhitespace() {
         int lastIndex = asciiCodes.size()-1;
         if (lastIndex == -1) return;

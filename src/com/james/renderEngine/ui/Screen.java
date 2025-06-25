@@ -46,6 +46,10 @@ public class Screen {
         }
     }
 
+    /**
+     * Removes a gui from the list of guis present in this class, and from the list made for rendering in the
+     * UiHandler class.
+     */
     public void removeGui(Gui gui) {
         boolean success1 = guisOfScreen.remove(gui);
         boolean success2 = UiHandler.guisToRender.remove(gui);
@@ -54,6 +58,9 @@ public class Screen {
             throw new RuntimeException();
     }
 
+    /**
+     * Plural version of above method. Is useful for GuiGroups, such as GuiTexts.
+     */
     public void removeGuis(List<Gui> guis) {
         for (Gui gui : guis) {
             removeGui(gui);

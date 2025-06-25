@@ -6,9 +6,18 @@ import com.james.renderEngine.textRendering.FontInfo;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Various utility functions for organizing text.
+ */
 public class TextOrganizer {
 
-    // TODO: 2024-12-27 make a comment about not adding whitespace
+    /**
+     * Organizes a string of text to be arranged in individual lines. Necessary for multi line text.
+     * @param maxLength the maximum length of a line
+     * @param asciiCodes the string of text
+     *
+     * @return a list of Line objects
+     */
     public static List<Line> organizeMultiLineText(FontInfo fontInfo, float fontSize, float maxLength, byte[] asciiCodes) {
         Character whitespace = fontInfo.getCharacterInfo(FontInfo.SPACE_ASCII);
         List<Line> allLines = new ArrayList<>();
@@ -71,7 +80,7 @@ public class TextOrganizer {
     }
 
     /**
-     * Gets the starting cursor position for both single-line and multi-line text.
+     * Gets the starting cursor position for both single line and multi line text.
      */
     public static float getStartCursorPosition(TextAlignment alignment, Line line, boolean justified, boolean lastLine) {
         float length = (justified && !lastLine) ? line.getMaxLength() : line.currentLength;
@@ -100,6 +109,9 @@ public class TextOrganizer {
         return totalWidthOfText;
     }
 
+    /**
+     * Gets the horizontal length that a whitespace should be if text is justified.
+     */
     public static float getWhitespaceLengthForJustifiedText(FontInfo font, float fontSize, Line line) {
         int numberOfWhitespaces = 0;
         float lengthWithoutWhitespaces = line.currentLength;

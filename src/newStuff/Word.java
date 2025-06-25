@@ -15,10 +15,16 @@ public class Word {
 
     private final float fontSize;
 
+    /**
+     * Constructs a new Word. Requires font size for determining the length of Characters.
+     */
     public Word(float fontSize) {
         this.fontSize = fontSize;
     }
 
+    /**
+     * Adds a Character to the Word and updates its current length.
+     */
     public void addCharacter(Character character) {
         asciiCodes.add(character.id);
         currentLength += character.xAdvance * fontSize;

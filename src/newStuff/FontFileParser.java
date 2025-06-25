@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Utility class for parsing font (.fnt) files. Also specifies some padding constants that are applied on top
+ * of the information given in font files.
+ */
 public class FontFileParser {
 
     public static final int DESIRED_PADDING = 3;
@@ -20,10 +24,11 @@ public class FontFileParser {
     private static final int PAD_BOTTOM = 2;
     private static final int PAD_RIGHT = 3;
 
-    // TODO: 2025-06-22 Update documentation here?
     /**
-     * Reads in a font file and returns a map of Ascii codes to their respective Character instances
-     * @implNote Padding corrections are done here
+     * Reads in a font file and returns a map of ascii codes to their respective Character instances, as well
+     * as the line height suggested by the font file. Padding corrections are done too.
+     *
+     * @see Character
      */
     public static FontFileContents parseFontFile(String fontFile) {
         Map<Integer, Character> characters = new HashMap<>();
