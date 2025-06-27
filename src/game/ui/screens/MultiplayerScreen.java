@@ -6,6 +6,7 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
@@ -17,7 +18,6 @@ import org.lwjgl.glfw.GLFW;
 public class MultiplayerScreen extends Screen {
 
     private static GuiText field;
-    private TitleButton joinServer;
 
     public MultiplayerScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
@@ -41,7 +41,7 @@ public class MultiplayerScreen extends Screen {
 
         new TitleButton("");
 
-        joinServer = new TitleButton("Connect");
+        TitleButton joinServer = new TitleButton("Connect");
         joinServer.button.setAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
@@ -50,18 +50,12 @@ public class MultiplayerScreen extends Screen {
         });
         super.addGuis(joinServer.getAllGuis());
 
-//        GuiText text = new GuiText("Proper multiplayer coming soon! :)", Main.rowdies, 0.5f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -400)));
-//        text.setAlignment(TextAlignment.CENTER_ALIGNED);
-//        text.apply();
-//        super.addGuis(text.getAllGuis());
-
         GuiText prompt = new GuiText("Enter server address:", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -310)));
         prompt.apply();
         super.addGuis(prompt.getAllGuis());
 
         field = new GuiText("localhost", Main.rowdies, 0.4f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -345)));
         field.setAlignment(TextAlignment.LEFT_ALIGNED);
-//        field.wrapAndSetMaxLength(400);
         field.makeEditable(this, 30);
         field.apply();
         super.addGuis(field.getAllGuis());

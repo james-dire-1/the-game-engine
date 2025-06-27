@@ -145,6 +145,8 @@ public class Screen {
                         ((ScreenPosition) gui.position).x = (int) finalValue;
                     else if (gui.position instanceof MixedPosition)
                         ((MixedPosition) gui.position).offset.x = (int) finalValue;
+                    else
+                        throw new RuntimeException();
 
                 } else if (data.attribute == GuiAnimationData.Attribute.PositionY) {
 
@@ -154,6 +156,8 @@ public class Screen {
                         ((ScreenPosition) gui.position).y = (int) finalValue;
                     else if (gui.position instanceof MixedPosition)
                         ((MixedPosition) gui.position).offset.y = (int) finalValue;
+                    else
+                        throw new RuntimeException();
 
                 }
 

@@ -5,7 +5,7 @@ import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.GuiGroup;
 import com.james.renderEngine.ui.dataTypes.*;
 import com.james.renderEngine.uiElements.GuiButton;
-import com.james.renderEngine.uiElements.GuiText;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.tools.ColorUtils;
 import game.main.Main;
 import com.james.renderEngine.textRendering.TextAlignment;
@@ -20,7 +20,7 @@ public class TitleButton implements GuiGroup {
     private static final int DISTANCE_BETWEEN_BUTTONS = 75;
 
     public final GuiButton button;
-    public final GuiText guiText;
+    public final PersistentGuiText persistentGuiText;
     private final List<Gui> guis = new ArrayList<>();
 
     public TitleButton(String text) {
@@ -29,10 +29,10 @@ public class TitleButton implements GuiGroup {
         button.apply();
         guis.add(button);
 
-        this.guiText = new GuiText(text.toUpperCase(Locale.ROOT), Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-10)));
-        guiText.setAlignment(TextAlignment.CENTER_ALIGNED);
-        guiText.apply();
-        guis.addAll(guiText.getAllGuis());
+        this.persistentGuiText = new PersistentGuiText(text.toUpperCase(Locale.ROOT), Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-10)));
+        persistentGuiText.setAlignment(TextAlignment.CENTER_ALIGNED);
+        persistentGuiText.apply();
+        guis.add(persistentGuiText.getMesh());
 
         currentVerticalPosition += DISTANCE_BETWEEN_BUTTONS;
     }

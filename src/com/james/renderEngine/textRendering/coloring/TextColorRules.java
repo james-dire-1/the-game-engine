@@ -19,7 +19,8 @@ import java.util.function.Supplier;
  *
  * (Note that for the case of multi pure color text with GuiText mentioned above, the workaround for avoiding
  * TextColorRules is to use modifyColors() in GuiText. However, it is still recommended to use TextColorRules
- * for consistency.)
+ * for consistency. Also, modifyColors() is slightly less efficient because it must be called after the
+ * meshes for GuiText have been created.)
  *
  * TextColorRules supports both single color text rules and flexible rules (with CharacterColor). However,
  * the use of TextColorRules for the former case is overkill, as the only real benefit gained from using it

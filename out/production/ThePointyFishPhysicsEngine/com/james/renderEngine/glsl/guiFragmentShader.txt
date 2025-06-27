@@ -17,11 +17,6 @@ void main(void) {
     } else if (renderingMode == 3.0) {
         out_Color = vec4(singleColor, 1.0);
     } else if (renderingMode == 4.0) {
-        // if (texture(textureSampler, pass_textureCoords).a > 0.5) {
-        //     out_Color = vec4(singleColor, 1.0);
-        // } else {
-        //     discard;
-        // }
         float alpha = texture(textureSampler, pass_textureCoords).a;
         out_Color = vec4(singleColor, alpha);
     } else if (renderingMode == 5.0) {
