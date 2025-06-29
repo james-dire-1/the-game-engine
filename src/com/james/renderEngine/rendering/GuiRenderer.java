@@ -32,19 +32,17 @@ public class GuiRenderer {
 
             if (    gui.renderingMode == Gui.RenderingMode.Texture ||
                     gui.renderingMode == Gui.RenderingMode.Text ||
-                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer)
+                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer ||
+                    gui.renderingMode == Gui.RenderingMode.TextureAndSingleColor) {
                 glEnableVertexAttribArray(1);
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
+            }
 
             if (    gui.renderingMode == Gui.RenderingMode.ColorGradient ||
                     gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer)
                 glEnableVertexAttribArray(2);
-
-            if (    gui.renderingMode == Gui.RenderingMode.Texture ||
-                    gui.renderingMode == Gui.RenderingMode.Text ||
-                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer) {
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
-            }
 
             Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
             shader.loadTransformationMatrix(transformationMatrix);
@@ -52,7 +50,8 @@ public class GuiRenderer {
             shader.loadRenderingMode(gui.renderingMode);
 
             if (    gui.renderingMode == Gui.RenderingMode.SingleColor ||
-                    gui.renderingMode == Gui.RenderingMode.Text)
+                    gui.renderingMode == Gui.RenderingMode.Text ||
+                    gui.renderingMode == Gui.RenderingMode.TextureAndSingleColor)
                 shader.loadSingleColor(gui.singleColor);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);

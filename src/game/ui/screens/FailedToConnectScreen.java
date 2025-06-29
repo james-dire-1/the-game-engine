@@ -31,7 +31,7 @@ public class FailedToConnectScreen extends Screen {
         TitleButton.resetCurrentVerticalPosition();
 
         TitleButton okButton = new TitleButton("OK");
-        okButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        okButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new MultiplayerScreen());

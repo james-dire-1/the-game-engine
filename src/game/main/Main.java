@@ -29,13 +29,14 @@ public class Main {
 
     public static final FontInfo arial = new FontInfo("/arial.fnt", "/arial.png");
     public static final FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
+    public static final FontInfo dustismo = new FontInfo("/dustismo2.fnt", "/dustismo2.png");
 
     private static long lastTime2 = System.nanoTime()/1000000;
     private static long fps;
 
     public static void main(String[] args) {
         TextureBank.init("/hello.png", "/stall.png", "/rowdies.png", "/arial.png", "/GameInventorySlot.png",
-                "/cobblestone_wall.png", "/white_image.png");
+                "/cobblestone_wall.png", "/white_image.png", "/title-button.png", "/dustismo2.png");
         ModelLoader.init("res/stall.obj", "res/abstract_art.dae", "res/one-sided-wall5.dae", "res/test_environment_7.dae");
 
         ModelMeshBankInR3.init("res/one-sided-wall5.dae", "res/test_environment_7.dae");

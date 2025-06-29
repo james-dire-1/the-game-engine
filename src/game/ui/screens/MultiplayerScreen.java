@@ -6,7 +6,6 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
-import com.james.renderEngine.uiElements.PersistentGuiText;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
@@ -28,10 +27,10 @@ public class MultiplayerScreen extends Screen {
         TitleHeader header = new TitleHeader("Join Online Game");
         super.addGuis(header.getAllGuis());
 
-        TitleButton.resetCurrentVerticalPosition();
+        TitleButton.resetCurrentVerticalPosition(350);
 
         TitleButton goBackButton = new TitleButton("Go Back");
-        goBackButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        goBackButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new TitleScreen());
@@ -42,7 +41,7 @@ public class MultiplayerScreen extends Screen {
         new TitleButton("");
 
         TitleButton joinServer = new TitleButton("Connect");
-        joinServer.button.setAction((ClickedComponent.MouseButton button) -> {
+        joinServer.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new ConnectingScreen(field.text));
@@ -50,11 +49,11 @@ public class MultiplayerScreen extends Screen {
         });
         super.addGuis(joinServer.getAllGuis());
 
-        GuiText prompt = new GuiText("Enter server address:", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -310)));
+        GuiText prompt = new GuiText("Enter server address:", Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -410)));
         prompt.apply();
         super.addGuis(prompt.getAllGuis());
 
-        field = new GuiText("localhost", Main.rowdies, 0.4f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -345)));
+        field = new GuiText("localhost", Main.dustismo, 0.35f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -445)));
         field.setAlignment(TextAlignment.LEFT_ALIGNED);
         field.makeEditable(this, 30);
         field.apply();

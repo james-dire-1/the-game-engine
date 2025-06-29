@@ -51,8 +51,8 @@ public class TitleScreen extends Screen {
 
         TitleButton.resetCurrentVerticalPosition();
 
-        TitleButton playButton = new TitleButton("Play");
-        playButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        TitleButton playButton = new TitleButton("Play", blue);
+        playButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new LoadingScreen());
@@ -61,8 +61,8 @@ public class TitleScreen extends Screen {
         });
         super.addGuis(playButton.getAllGuis());
 
-        TitleButton joinOnlineGameButton = new TitleButton("Join Online Game");
-        joinOnlineGameButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        TitleButton joinOnlineGameButton = new TitleButton("Join Online Game", yellow);
+        joinOnlineGameButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new MultiplayerScreen());
@@ -70,8 +70,8 @@ public class TitleScreen extends Screen {
         });
         super.addGuis(joinOnlineGameButton.getAllGuis());
 
-        TitleButton settingsButton = new TitleButton("Settings...");
-        settingsButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        TitleButton settingsButton = new TitleButton("Settings...", pink);
+        settingsButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new SettingsScreen(SettingsScreen.PreviousScreen.TITLE_SCREEN));

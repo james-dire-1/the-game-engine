@@ -24,7 +24,7 @@ public class SettingsScreen extends Screen {
         TitleButton.resetCurrentVerticalPosition();
 
         TitleButton doneButton = new TitleButton("Done");
-        doneButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        doneButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             super.markForDeletion();
 
             if (prevScreen == PreviousScreen.TITLE_SCREEN) {

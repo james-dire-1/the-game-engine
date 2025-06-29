@@ -41,6 +41,7 @@ public class GuiShader extends Shader {
         else if (renderingMode == Gui.RenderingMode.SingleColor) toLoad = 3;
         else if (renderingMode == Gui.RenderingMode.Text) toLoad = 4;
         else if (renderingMode == Gui.RenderingMode.TextWithColorBuffer) toLoad = 5;
+        else if (renderingMode == Gui.RenderingMode.TextureAndSingleColor) toLoad = 6;
         else throw new RuntimeException();
 
         super.loadFloatToUniform(location_renderingMode, toLoad);

@@ -26,7 +26,7 @@ public class PauseScreen extends Screen {
         TitleButton.resetCurrentVerticalPosition();
 
         TitleButton resumeButton = new TitleButton("Resume Game");
-        resumeButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        resumeButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 if (isOpen) {
                     close();
@@ -36,7 +36,7 @@ public class PauseScreen extends Screen {
         super.addGuis(resumeButton.getAllGuis());
 
         TitleButton settingsButton = new TitleButton("Settings...");
-        settingsButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        settingsButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 tempClose();
                 queueScreenForAddition(new SettingsScreen(SettingsScreen.PreviousScreen.PAUSE_SCREEN));
@@ -46,7 +46,7 @@ public class PauseScreen extends Screen {
         super.addGuis(settingsButton.getAllGuis());
 
         TitleButton quitButton = new TitleButton("Quit");
-        quitButton.button.setAction((ClickedComponent.MouseButton button) -> {
+        quitButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 isOpen = false;

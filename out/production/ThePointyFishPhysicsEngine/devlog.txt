@@ -1,3 +1,0 @@
-2023
-June 19 Programmed new Screen class, and all the functionality surrounding it (ex. changing UiHandler class
-to handle Screens)

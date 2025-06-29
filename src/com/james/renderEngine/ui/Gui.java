@@ -166,15 +166,16 @@ public class Gui {
      */
     public void apply() {
         if (textureCoords != null && colors == null && singleColor == null && !isText)
-            renderingMode = RenderingMode.Texture;
+            renderingMode = RenderingMode.Texture; // 1
         else if (textureCoords == null && colors != null && singleColor == null && !isText)
-            renderingMode = RenderingMode.ColorGradient;
+            renderingMode = RenderingMode.ColorGradient; // 2
         else if (textureCoords == null && colors == null && singleColor != null && !isText)
-            renderingMode = RenderingMode.SingleColor;
-        else if (textureCoords != null && colors == null && singleColor != null && isText)
-            renderingMode = RenderingMode.Text;
+            renderingMode = RenderingMode.SingleColor; // 3
+        else if (textureCoords != null && colors == null && singleColor != null)
+            if (isText) renderingMode = RenderingMode.Text; // 4
+            else renderingMode = RenderingMode.TextureAndSingleColor; // 6
         else if (textureCoords != null && colors != null && singleColor == null && isText)
-            renderingMode = RenderingMode.TextWithColorBuffer;
+            renderingMode = RenderingMode.TextWithColorBuffer; // 5
         else
             throw new RuntimeException();
 
@@ -182,7 +183,7 @@ public class Gui {
     }
 
     public enum RenderingMode {
-        Texture, ColorGradient, SingleColor, Text, TextWithColorBuffer
+        Texture, ColorGradient, SingleColor, Text, TextWithColorBuffer, TextureAndSingleColor
     }
 
 }

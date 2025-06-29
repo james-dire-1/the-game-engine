@@ -1,5 +1,6 @@
 package com.james.renderEngine.ui;
 
+import com.james.renderEngine.uiElements.GuiButton;
 import com.james.tools.RenderingMath;
 import com.james.input.ClickInput;
 import com.james.renderEngine.ui.dataTypes.MixedPosition;
@@ -25,16 +26,25 @@ public class Screen {
     private boolean shouldDelete = false;
     public boolean shouldDelete() { return shouldDelete; }
 
+    private final List<GuiButton> guiButtons = new ArrayList<>();
+
     private final Map<Gui, List<GuiAnimationData>> animatedGuis = new HashMap<>();
 
     /**
      * Adds a gui to the list of guis present in this class, and adds it to the list made for rendering in the
      * UiHandler class. This method should only be called in subclasses of Screen, as when creating guis for a
      * screen, that should always be done in a child of the screen.
+     *
+     * Also, if the gui is an instance of GuiButton, adds it to the GuiButton list. This list is used for
+     * handling hover states of these special Guis. (Check the update() method.)
      */
     public void addGui(Gui gui) {
         guisOfScreen.add(gui);
         UiHandler.guisToRender.add(gui);
+
+        if (gui instanceof GuiButton) {
+            guiButtons.add((GuiButton) gui);
+        }
     }
 
     /**
@@ -49,6 +59,8 @@ public class Screen {
     /**
      * Removes a gui from the list of guis present in this class, and from the list made for rendering in the
      * UiHandler class.
+     *
+     * Also, if the gui is an instance of GuiButton, removes it from the GuiButton list.
      */
     public void removeGui(Gui gui) {
         boolean success1 = guisOfScreen.remove(gui);
@@ -56,6 +68,13 @@ public class Screen {
 
         if (!success1 || !success2)
             throw new RuntimeException();
+
+        if (gui instanceof GuiButton) {
+            boolean success3 = guiButtons.remove((GuiButton) gui);
+
+            if (!success3)
+                throw new RuntimeException();
+        }
     }
 
     /**
@@ -87,6 +106,10 @@ public class Screen {
      * functionality. Updates the guis of this screen. To be called once per frame.
      */
     public void update() {
+        for (GuiButton button : guiButtons) {
+            button.resetHoverState();
+        }
+
         for (Gui gui : guisOfScreen) {
             if (gui instanceof HoveredComponent && gui.isEnabled && UiHandler.isMouseOver(gui)) {
                 ((HoveredComponent) gui).onHovered();
@@ -99,6 +122,10 @@ public class Screen {
                     }
                 }
             }
+        }
+
+        for (GuiButton button : guiButtons) {
+            button.checkHoverStateChanged();
         }
 
         animateGuis();

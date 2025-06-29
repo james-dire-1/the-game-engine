@@ -16,6 +16,8 @@ import java.util.Locale;
 
 public class TitleButton implements GuiGroup {
 
+    private static final float[] GRAY_WHITE = new float[] {0.85f, 0.85f, 0.85f};
+
     private static int currentVerticalPosition;
     private static final int DISTANCE_BETWEEN_BUTTONS = 75;
 
@@ -23,26 +25,55 @@ public class TitleButton implements GuiGroup {
     public final PersistentGuiText persistentGuiText;
     private final List<Gui> guis = new ArrayList<>();
 
+    private final float[] normalColor;
+    private float[] highlightColor = new float[] {1, 1, 1};
+
     public TitleButton(String text) {
-        this.button = new GuiButton(new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition)), new ScreenSize(400, 50), null);
-        button.setColors(ColorUtils.asNormalizedRGBArray(0x42f5bc, 0x42f58d, 0x42eff5, 0x42f5bc));
+        this(text, GRAY_WHITE);
+    }
+
+    public TitleButton(String text, float[] normalColor) {
+        this.button = new GuiButton(new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition)), new ScreenSize(449 * 0.9f, 46 * 0.9f), null);
+        button.setTextureAndSamplingData("/title-button.png");
+        button.setSingleColor(normalColor[0], normalColor[1], normalColor[2]);
+        button.setHoverStateChangeAction(this::setHighlighted);
+
         button.apply();
         guis.add(button);
 
-        this.persistentGuiText = new PersistentGuiText(text.toUpperCase(Locale.ROOT), Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-10)));
+        this.persistentGuiText = new PersistentGuiText(text, Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-7)));
         persistentGuiText.setAlignment(TextAlignment.CENTER_ALIGNED);
         persistentGuiText.apply();
         guis.add(persistentGuiText.getMesh());
 
+        this.normalColor = normalColor;
+
         currentVerticalPosition += DISTANCE_BETWEEN_BUTTONS;
     }
 
-    public static void resetCurrentVerticalPosition() {
-        currentVerticalPosition = 250;
+    public void setHighlightColor(float[] highlightColor) {
+        this.highlightColor = highlightColor;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        if (highlighted) {
+            button.setSingleColor(highlightColor[0], highlightColor[1], highlightColor[2]);
+        } else {
+            button.setSingleColor(normalColor[0], normalColor[1], normalColor[2]);
+        }
     }
 
     @Override
     public List<Gui> getAllGuis() {
         return guis;
     }
+
+    public static void resetCurrentVerticalPosition() {
+        resetCurrentVerticalPosition(250);
+    }
+
+    public static void resetCurrentVerticalPosition(int position) {
+        currentVerticalPosition = position;
+    }
+
 }

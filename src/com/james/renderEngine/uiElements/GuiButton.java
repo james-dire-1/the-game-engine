@@ -10,24 +10,63 @@ import java.util.function.Consumer;
 
 public class GuiButton extends Gui implements HoveredComponent, ClickedComponent {
 
-    private Consumer<MouseButton> action;
-    public void setAction(Consumer<MouseButton> action) {
-        this.action = action;
+    private boolean hovered = false;
+    private boolean lastHovered = false;
+
+    private Consumer<MouseButton> clickAction;
+    public void setClickAction(Consumer<MouseButton> clickAction) {
+        this.clickAction = clickAction;
+    }
+
+    private Action hoverAction;
+    public void setHoverAction(Action hoverAction) {
+        this.hoverAction = hoverAction;
+    }
+
+    private Consumer<Boolean> hoverStateChangeAction;
+    public void setHoverStateChangeAction(Consumer<Boolean> hoverStateChangeAction) {
+        this.hoverStateChangeAction = hoverStateChangeAction;
     }
 
     public GuiButton(Position position, Size size, Gui parent) {
         super(position, size, parent);
     }
 
+    public void resetHoverState() {
+        hovered = false;
+    }
+
+    public void checkHoverStateChanged() {
+        if (hoverStateChangeAction != null) {
+            if (hovered && !lastHovered) {
+                hoverStateChangeAction.accept(true);
+            } else if (!hovered && lastHovered) {
+                hoverStateChangeAction.accept(false);
+            }
+        }
+
+        lastHovered = hovered;
+    }
+
     @Override
     public void onHovered() {
+        if (hoverAction != null) {
+            hoverAction.invoke();
+        }
+
+        hovered = true;
     }
 
     @Override
     public void onClicked(MouseButton mouseButton) {
-        if (action != null) {
-            action.accept(mouseButton);
+        if (clickAction != null) {
+            clickAction.accept(mouseButton);
         }
+    }
+
+    @FunctionalInterface
+    public interface Action {
+        void invoke();
     }
 
 }
