@@ -42,6 +42,7 @@ public class TitleScreen extends Screen {
         float[] blue = ColorUtils.asNormalizedRGBArray(0x2eeeff);
         float[] yellow = ColorUtils.asNormalizedRGBArray(0xe7fa1b);
         float[] pink = ColorUtils.asNormalizedRGBArray(0xfa2ddb);
+        float[] lime = ColorUtils.asNormalizedRGBArray(0x50ed2d);
         rules.addCharacterColor(CharacterColor.setSingleColor(blue[0], blue[1], blue[2]));
         rules.addCharacterColor(CharacterColor.setSingleColor(yellow[0], yellow[1], yellow[2]));
         rules.addCharacterColor(CharacterColor.setSingleColor(pink[0], pink[1], pink[2]));
@@ -51,17 +52,7 @@ public class TitleScreen extends Screen {
 
         TitleButton.resetCurrentVerticalPosition();
 
-        TitleButton playButton = new TitleButton("Play", blue);
-        playButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
-            if (button == ClickedComponent.MouseButton.LEFT) {
-                super.markForDeletion();
-                queueScreenForAddition(new LoadingScreen());
-                Main.gameLoader = new LocalGameLoader();
-            }
-        });
-        super.addGuis(playButton.getAllGuis());
-
-        TitleButton joinOnlineGameButton = new TitleButton("Join Online Game", yellow);
+        TitleButton joinOnlineGameButton = new TitleButton("Join Online Game", blue);
         joinOnlineGameButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
@@ -70,7 +61,7 @@ public class TitleScreen extends Screen {
         });
         super.addGuis(joinOnlineGameButton.getAllGuis());
 
-        TitleButton settingsButton = new TitleButton("Settings...", pink);
+        TitleButton settingsButton = new TitleButton("Settings...", yellow);
         settingsButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
@@ -78,6 +69,27 @@ public class TitleScreen extends Screen {
             }
         });
         super.addGuis(settingsButton.getAllGuis());
+
+        TitleButton aboutButton = new TitleButton("About", pink);
+        aboutButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
+            if (button == ClickedComponent.MouseButton.LEFT) {
+                super.markForDeletion();
+                queueScreenForAddition(new AboutScreen());
+            }
+        });
+        super.addGuis(aboutButton.getAllGuis());
+
+        TitleButton.resetCurrentVerticalPosition(700);
+
+        TitleButton playButton = new TitleButton("Debug Mode", lime);
+        playButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
+            if (button == ClickedComponent.MouseButton.LEFT) {
+                super.markForDeletion();
+                queueScreenForAddition(new LoadingScreen());
+                Main.gameLoader = new LocalGameLoader();
+            }
+        });
+        super.addGuis(playButton.getAllGuis());
 
         PersistentGuiText versionNumber = new PersistentGuiText("In Development!", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.BOTTOM_RIGHT, new ScreenSize(-15, 40)));
         versionNumber.setAlignment(TextAlignment.RIGHT_ALIGNED);

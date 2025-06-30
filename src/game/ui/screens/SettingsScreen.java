@@ -23,7 +23,7 @@ public class SettingsScreen extends Screen {
 
         TitleButton.resetCurrentVerticalPosition();
 
-        TitleButton doneButton = new TitleButton("Done");
+        TitleButton doneButton = new TitleButton("Go Back");
         doneButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             super.markForDeletion();
 
