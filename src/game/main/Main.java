@@ -13,7 +13,6 @@ import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
-import game.ui.screens.MultiplayerScreen;
 import game.ui.screens.TitleScreen;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
