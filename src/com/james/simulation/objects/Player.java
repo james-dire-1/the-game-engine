@@ -3,9 +3,12 @@ package com.james.simulation.objects;
 import com.james.common.simulation.LevelProperties;
 import com.james.serverSide.simulation.objects.MovableObject;
 import com.james.common.simulation.objects.PhysicalObjectType;
+import com.james.tools.Time;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Player extends MovableObject {
+
+    public float lastTime = Time.getCurrentTime();
 
     private final Vector3f prevPosition;
     public Vector3f getPrevPosition() { return prevPosition; }
@@ -16,9 +19,7 @@ public class Player extends MovableObject {
     }
 
     public void updatePrevPosition() {
-        this.prevPosition.x = this.position.x;
-        this.prevPosition.y = this.position.y;
-        this.prevPosition.z = this.position.z;
+        this.prevPosition.set(this.position);
     }
 
 }

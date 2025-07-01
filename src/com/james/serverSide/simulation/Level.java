@@ -34,6 +34,7 @@ public class Level extends LevelProperties {
     private final List<ServerThreadManager.Action> actionsCopied = new ArrayList<>();
 
     private final Vector3f prevPosition = new Vector3f();
+    private final Vector3f prevRotation = new Vector3f();
 
     public Level(String name, ServerPacketSendEvents events) {
         this.events = events;
@@ -74,11 +75,17 @@ public class Level extends LevelProperties {
 
                     if (!movableObj.isAffectedByAABBCollisions) {
                         prevPosition.set(movableObj.getPosition());
+                        prevRotation.set(movableObj.getRotation());
                         movableObj.moveUpdate();
 
                         Vector3f newPosition = movableObj.getPosition();
                         if (!newPosition.equals(prevPosition)) {
                             events.sendPhysicalObjectMoved(movableObj.id, newPosition.x, newPosition.y, newPosition.z);
+                        }
+
+                        Vector3f newRotation = movableObj.getRotation();
+                        if (!newRotation.equals(prevRotation)) {
+                            events.sendPhysicalObjectRotated(movableObj.id, newRotation.x, newRotation.y, newRotation.z);
                         }
                     }
                 }

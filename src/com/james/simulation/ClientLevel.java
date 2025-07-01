@@ -97,6 +97,10 @@ public class ClientLevel extends LevelProperties {
         return cachedConnectedPlayers.get(id);
     }
 
+    public Collection<CachedConnectedPlayer> getCachedConnectedPlayers() {
+        return cachedConnectedPlayers.values();
+    }
+
     private static ClientLevel instance;
     public static ClientLevel get() { return instance; }
     public static void delete() { instance = null; }

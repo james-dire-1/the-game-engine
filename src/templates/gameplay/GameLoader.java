@@ -12,6 +12,7 @@ import com.james.renderEngine.rendering.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.simulation.ClientLevel;
+import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
@@ -37,7 +38,6 @@ public abstract class GameLoader {
     protected final ClientLevel clientLevel;
     private final PlayerHandler playerHandler;
 
-    public static float lastTimeCachedPhysicalObjectsPosition;
     private long lastTimeBackground;
     private float lastTimePlayerPosition;
     private final Random r = new Random();
@@ -71,7 +71,12 @@ public abstract class GameLoader {
         ParticleHandler.update();
 
         for (CachedPhysicalObject object : clientLevel.getCachedPhysicalObjects()) {
-            GameObjectInterpolator.interpolate(object.getPrevPosition(), object.getPosition(), object.getGameObject().getPosition(), lastTimeCachedPhysicalObjectsPosition, Time.getCurrentTime());
+            GameObjectInterpolator.interpolate(object.getPrevPosition(), object.getPosition(), object.getGameObject().getPosition(), object.lastTime, Time.getCurrentTime());
+            GameObjectInterpolator.interpolate(object.getPrevRotation(), object.getRotation(), object.getGameObject().getRotation(), object.lastTime, Time.getCurrentTime());
+        }
+        for (CachedConnectedPlayer player : clientLevel.getCachedConnectedPlayers()) {
+            GameObjectInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), player.getGameObject().getPosition(), player.lastTime, Time.getCurrentTime());
+            GameObjectInterpolator.interpolate(player.getPrevRotation(), player.getRotation(), player.getGameObject().getRotation(), player.lastTime, Time.getCurrentTime());
         }
 
         if (Time.getCurrentTime() - lastTimePlayerPosition >= SECONDS_PER_SEND) {

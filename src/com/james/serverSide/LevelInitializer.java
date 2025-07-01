@@ -62,7 +62,7 @@ public class LevelInitializer implements Runnable {
             private boolean firstTime = true;
 
             @Override
-            public boolean update() {
+            public void moveUpdate() {
                 if (firstTime) {
                     firstTime = false;
                     isAffectedByGravity = false;
@@ -75,7 +75,9 @@ public class LevelInitializer implements Runnable {
                     setVelocity(6, 0, 0);
                 }
 
-                return super.update();
+                rotate(0, 10, 0);
+
+                super.moveUpdate();
             }
         };
         level.add(abstractArt);

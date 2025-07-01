@@ -44,7 +44,7 @@ public class ClientPacketReceiveActions {
             model = ModelBank.getAbstractArt();
         }
 
-        GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), object.getRotation(), scale);
+        GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
         GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
         object.setGameObject(gameObject);
@@ -58,8 +58,7 @@ public class ClientPacketReceiveActions {
         if (object != null) {
             object.updatePrevPosition();
             object.setPosition(x, y, z);
-
-            GameLoader.lastTimeCachedPhysicalObjectsPosition = Time.getCurrentTime();
+            object.lastTime = Time.getCurrentTime();
         } else {
             Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
         }
@@ -70,7 +69,9 @@ public class ClientPacketReceiveActions {
 
         CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
         if (object != null) {
+            object.updatePrevRotation();
             object.setRotation(rotX, rotY, rotZ);
+            object.lastTime = Time.getCurrentTime();
         } else {
             Warnings.printClientServerDeSyncWarning("Attempting to rotate a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
         }
@@ -94,11 +95,14 @@ public class ClientPacketReceiveActions {
 
         CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
         if (object != null) {
+            object.updatePrevPosition();
+            object.updatePrevRotation();
             object.setPosition(position.x, position.y, position.z);
             object.setRotation(rotation.x, rotation.y, rotation.z);
             object.setScale(scale);
             // This must be done manually since scale is a value type, not a reference type
             object.getGameObject().setScale(scale);
+            object.lastTime = Time.getCurrentTime();
         } else {
             Warnings.printClientServerDeSyncWarning("Attempting to transform a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
         }
@@ -120,19 +124,23 @@ public class ClientPacketReceiveActions {
         }
 
         Model model = ModelBank.getAbstractArt();
-        GameObject gameObject = new GameObject(model, cachedConnectedPlayer.getPosition(), cachedConnectedPlayer.getRotation(), 1);
+        GameObject gameObject = new GameObject(model, new Vector3f(cachedConnectedPlayer.getPosition()), new Vector3f(cachedConnectedPlayer.getRotation()), 1);
         GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
         cachedConnectedPlayer.setGameObject(gameObject);
     }
 
+    // TODO: 2025-07-01 Make a method that separates transform and rotation perhaps
     public static void connectedPlayerTransformChangedReceived(int id, float x, float y, float z, float rotY) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerMovedReceived");
 
         CachedConnectedPlayer cachedConnectedPlayer = ClientLevel.get().getCachedConnectedPlayer(id);
         if (cachedConnectedPlayer != null) {
+            cachedConnectedPlayer.updatePrevPosition();
+            cachedConnectedPlayer.updatePrevRotation();
             cachedConnectedPlayer.setPosition(x, y, z);
             cachedConnectedPlayer.setRotation(0, rotY, 0);
+            cachedConnectedPlayer.lastTime = Time.getCurrentTime();
         } else {
             Warnings.printClientServerDeSyncWarning("Attempting to move a ConnectedPlayer client-side by id, but that ConnectedPlayer doesn't exist client-side");
         }

@@ -32,9 +32,6 @@ public class PlayerHandler {
     private final Vector2f forwardDirectionVector = new Vector2f();
     private final Vector2f rightDirectionVector = new Vector2f();
 
-    // TODO: 2025-07-01 Find a way to combine this lastTime and the one in GameLoader
-    private float lastTime = Time.getCurrentTime();
-
     private static final float SPEED = 15;
 
     /**
@@ -64,10 +61,10 @@ public class PlayerHandler {
 
         player.getRotation().y = -camera.getYaw();
 
-        if (Time.getCurrentTime() - lastTime >= levelProperties.secondsPerGameTick) {
+        if (Time.getCurrentTime() - player.lastTime >= levelProperties.secondsPerGameTick) {
             player.updatePrevPosition();
 
-            lastTime = Time.getCurrentTime();
+            player.lastTime = Time.getCurrentTime();
             calculateDirectionVectors();
 
             float forwardSpeed = 0;
@@ -91,7 +88,7 @@ public class PlayerHandler {
             ClientLevel.get().update();
         }
 
-        GameObjectInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), lastTime, Time.getCurrentTime());
+        GameObjectInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), player.lastTime, Time.getCurrentTime());
 
         camController.update();
     }
