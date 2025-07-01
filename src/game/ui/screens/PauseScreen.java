@@ -72,6 +72,16 @@ public class PauseScreen extends Screen {
         super.addGuis(quitButton.getAllGuis());
     }
 
+    @Override
+    public void update() {
+        if (ClientLevel.get() == null) {
+             super.markForDeletion();
+             isOpen = false;
+        }
+
+        super.update();
+    }
+
     public static void toggle() {
         if (!isInSettingsMenu) {
             if (isOpen) {

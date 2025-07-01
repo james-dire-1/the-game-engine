@@ -27,8 +27,6 @@ public class Client implements Runnable {
     private final Map<PacketType, Consumer<Object[]>> readListeners = new HashMap<>();
     private volatile BiConsumer<Exception, Client> onServerDisconnectListener;
 
-    private Exception e;
-
     // TODO: 2024-09-26 Why does preConnectTasks have to be done on this thread? Can in work in the run method?
     public Client(String host, int port) {
         preConnectTasks();
@@ -68,6 +66,8 @@ public class Client implements Runnable {
 
         onSuccessfulConnection();
 
+        Exception exception = null;
+
         try {
             while (true) {
                 Packet packet = (Packet) input.readObject();
@@ -82,17 +82,17 @@ public class Client implements Runnable {
                 listener.accept(packet.data);
             }
         } catch (EOFException e) {
-            this.e = e;
+            exception = e;
             disconnect();
         } catch (SocketException e) {
-            this.e = e;
+            exception = e;
         } catch (IOException | ClassNotFoundException e) {
-            this.e = e;
+            exception = e;
             e.printStackTrace();
             disconnect();
         } finally {
             if (onServerDisconnectListener != null) {
-                onServerDisconnectListener.accept(e, this);
+                onServerDisconnectListener.accept(exception, this);
             }
         }
     }

@@ -7,6 +7,7 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import game.main.Main;
+import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
@@ -19,15 +20,15 @@ public class AboutScreen extends Screen {
             "features for a simple game to be made in it. Thus, Laser Tag was created, and is the first game to be made in " +
             "the game engine.\n\n" +
             "Technical details:\n\n" +
-            "The engine and game are programmed in Java. Models are made in Blender. Textures are made in Krita. Code is " +
-            "uploaded on GitHub. If you would like to see it, let James know. \n\n";
+            "The engine and game are programmed in Java. The IntelliJ IDE was used. Models are made in Blender. Textures are " +
+            "made in Krita. Code is uploaded on GitHub. If you would like to see it, let James know. \n\n";
 
     public AboutScreen() {
         SolidBackground background = new SolidBackground(0xdb5151);
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("About:");
-        super.addGuis(header.getAllGuis());
+        PersistentTitleHeader header = new PersistentTitleHeader("About:");
+        super.addGui(header.getMesh());
 
         PersistentGuiText text = new PersistentGuiText(ABOUT_TEXT, Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-300, -250)));
         text.wrapAndSetMaxLength(600);

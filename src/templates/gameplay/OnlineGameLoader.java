@@ -2,7 +2,11 @@ package templates.gameplay;
 
 import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.networking.Client;
+import com.james.renderEngine.ui.UiHandler;
+import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
+import game.main.Main;
+import game.ui.screens.DisconnectedScreen;
 import templates.communication.OnlineClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketReceiveActions;
@@ -136,6 +140,17 @@ public class OnlineGameLoader extends GameLoader {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.levelGravityChangedReceived(x, y, z);
+        });
+    }
+
+    public static void onServerClosed(Exception e, Client client) {
+        ThreadManager.executeOnMainThread(() -> {
+            UiHandler.screens.add(new DisconnectedScreen(e));
+
+            client.disconnect();
+
+            ClientLevel.delete();
+            Main.gameLoader = null;
         });
     }
 

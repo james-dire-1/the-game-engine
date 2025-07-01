@@ -3,7 +3,6 @@ package templates.communication;
 import com.james.common.networking.Packet;
 import templates.common.networking.PacketType;
 import com.james.networking.Client;
-import templates.communication.ClientPacketSendEvents;
 
 import static templates.common.GlobalConstants.IS_DETAILED_NETWORK_DEBUG;
 import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
