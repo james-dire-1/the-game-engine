@@ -13,7 +13,6 @@ import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
-import game.ui.screens.DisconnectedScreen;
 import game.ui.screens.TitleScreen;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
@@ -35,11 +34,11 @@ public class Main {
     private static long fps;
 
     public static void main(String[] args) {
-        TextureBank.init("/hello.png", "/stall.png", "/rowdies.png", "/arial.png", "/GameInventorySlot.png",
-                "/cobblestone_wall.png", "/white_image.png", "/title-button.png", "/dustismo2.png");
-        ModelLoader.init("res/stall.obj", "res/abstract_art.dae", "res/one-sided-wall5.dae", "res/test_environment_7.dae");
+        TextureBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png", "/textures/inventory-slot.png",
+                "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png", "/fonts/dustismo2.png");
+        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae");
 
-        ModelMeshBankInR3.init("res/one-sided-wall5.dae", "res/test_environment_7.dae");
+        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
         GLFWUtilities.init();

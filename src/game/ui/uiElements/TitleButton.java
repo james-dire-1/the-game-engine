@@ -6,13 +6,11 @@ import com.james.renderEngine.ui.GuiGroup;
 import com.james.renderEngine.ui.dataTypes.*;
 import com.james.renderEngine.uiElements.GuiButton;
 import com.james.renderEngine.uiElements.PersistentGuiText;
-import com.james.tools.ColorUtils;
 import game.main.Main;
 import com.james.renderEngine.textRendering.TextAlignment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class TitleButton implements GuiGroup {
 
@@ -34,7 +32,7 @@ public class TitleButton implements GuiGroup {
 
     public TitleButton(String text, float[] normalColor) {
         this.button = new GuiButton(new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition)), new ScreenSize(449 * 0.9f, 46 * 0.9f), null);
-        button.setTextureAndSamplingData("/title-button.png");
+        button.setTextureAndSamplingData("/textures/title-button.png");
         button.setSingleColor(normalColor[0], normalColor[1], normalColor[2]);
         button.setHoverStateChangeAction(this::setHighlighted);
 

@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class TextureBank {
 
@@ -20,7 +21,7 @@ public class TextureBank {
     private static BufferedImage getImage(String path) {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(ImageTexture.class.getResourceAsStream(path));
+            image = ImageIO.read(Objects.requireNonNull(ImageTexture.class.getResourceAsStream(path)));
         } catch (IOException e) {
             System.err.println("Unable to load texture");
         }

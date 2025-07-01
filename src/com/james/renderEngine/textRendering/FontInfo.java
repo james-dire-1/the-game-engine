@@ -1,6 +1,7 @@
 package com.james.renderEngine.textRendering;
 
 import com.james.renderEngine.textRendering.dataTypes.Character;
+import templates.common.GlobalConstants;
 
 import java.util.Map;
 
@@ -21,10 +22,13 @@ public class FontInfo {
         if (!fontFilePath.endsWith(".fnt") || !textureAtlasPath.endsWith(".png"))
             throw new IllegalStateException("Incorrect file extensions for files. Verify that you are passing in correct files.");
 
-        FontFileParser.FontFileContents contents = FontFileParser.parseFontFile(fontFilePath);
+        String fullFontFilePath = GlobalConstants.FONTS_BASE_DIRECTORY + fontFilePath;
+        String fullTextureAtlasPath = GlobalConstants.FONTS_BASE_DIRECTORY + textureAtlasPath;
+
+        FontFileParser.FontFileContents contents = FontFileParser.parseFontFile(fullFontFilePath);
         this.characters = contents.characters;
         this.lineHeight = contents.lineHeight;
-        this.textureAtlasPath = textureAtlasPath;
+        this.textureAtlasPath = fullTextureAtlasPath;
     }
 
     /**
