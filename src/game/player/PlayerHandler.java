@@ -1,7 +1,6 @@
 package game.player;
 
 import com.james.common.simulation.LevelProperties;
-import com.james.input.KeyInput;
 import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.CameraController;
@@ -10,12 +9,14 @@ import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.tools.Time;
-import templates.communication.ClientPacketReceiveActions;
+import newStuff.GameObjectInterpolator;
+import org.lwjgl.util.vector.Vector3f;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static com.james.input.KeyInput.isKeyPressed;
 
 /**
  * Client-side class which handles much of the player logic, including aspects regarding simulation,
@@ -26,28 +27,30 @@ public class PlayerHandler {
     private final Player player;
     private final LevelProperties levelProperties;
     private final CameraController camController;
+    private final GameObject gameObject;
 
     private final Vector2f forwardDirectionVector = new Vector2f();
     private final Vector2f rightDirectionVector = new Vector2f();
 
+    // TODO: 2025-07-01 Find a way to combine this lastTime and the one in GameLoader
     private float lastTime = Time.getCurrentTime();
 
     private static final float SPEED = 15;
 
     /**
-     * Creates the Player, its GameObject, its CameraController, and sets relevant fields in
-     * ClientPacketReceiveActions.
-     * @see ClientPacketReceiveActions
+     * Gets the Player, creates its GameObject and its CameraController.
      */
     public PlayerHandler(BatchedGameObjectsList batchedGameObjectsList, LevelProperties levelProperties, Camera camera) {
         this.player = ClientLevel.get().getPlayer();
 
         Model model = ModelBank.getAbstractArt();
-        GameObject gameObject = new GameObject(model, player.getPosition(), player.getRotation(), 1);
+        this.gameObject = new GameObject(model, new Vector3f(player.getPosition()), player.getRotation(), 1);
         batchedGameObjectsList.addGameObject(gameObject);
 
         this.levelProperties = levelProperties;
         this.camController = new CameraController(camera, gameObject.getPosition(), 20);
+
+        GameObjectInterpolator.secondsPerGameTick = levelProperties.secondsPerGameTick;
     }
 
     /**
@@ -62,30 +65,33 @@ public class PlayerHandler {
         player.getRotation().y = -camera.getYaw();
 
         if (Time.getCurrentTime() - lastTime >= levelProperties.secondsPerGameTick) {
+            player.updatePrevPosition();
+
             lastTime = Time.getCurrentTime();
             calculateDirectionVectors();
 
             float forwardSpeed = 0;
-            if (KeyInput.isKeyPressed(GLFW_KEY_W)) {
+            if (isKeyPressed(GLFW_KEY_W)) {
                 forwardSpeed += SPEED;
             }
-            if (KeyInput.isKeyPressed(GLFW_KEY_S)) {
+            if (isKeyPressed(GLFW_KEY_S)) {
                 forwardSpeed -= SPEED;
             }
             float rightSpeed = 0;
-            if (KeyInput.isKeyPressed(GLFW_KEY_D)) {
+            if (isKeyPressed(GLFW_KEY_D)) {
                 rightSpeed += SPEED;
             }
-            if (KeyInput.isKeyPressed(GLFW_KEY_A)) {
+            if (isKeyPressed(GLFW_KEY_A)) {
                 rightSpeed -= SPEED;
             }
 
             Vector2f velocity = Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), null);
             player.setVelocity(velocity.x, 0, -velocity.y);
 
-//            player.update();
             ClientLevel.get().update();
         }
+
+        GameObjectInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), lastTime, Time.getCurrentTime());
 
         camController.update();
     }

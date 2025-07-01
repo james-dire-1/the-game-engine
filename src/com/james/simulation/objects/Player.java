@@ -7,10 +7,18 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Player extends MovableObject {
 
+    private final Vector3f prevPosition;
+    public Vector3f getPrevPosition() { return prevPosition; }
+
     public Player(LevelProperties levelProperties, Vector3f position) {
         super(levelProperties, PhysicalObjectType.Other, position, new Vector3f(), 1);
+        this.prevPosition = new Vector3f(position);
     }
 
-
+    public void updatePrevPosition() {
+        this.prevPosition.x = this.position.x;
+        this.prevPosition.y = this.position.y;
+        this.prevPosition.z = this.position.z;
+    }
 
 }

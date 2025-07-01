@@ -9,6 +9,7 @@ import com.james.simulation.objects.CachedConnectedPlayer;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,6 @@ public class ClientLevel extends LevelProperties {
     private final Player player;
     public Player getPlayer() { return player; }
 
-    // TODO: 2024-07-12 Should we have a specific CachedConnectedPlayer class for this?
     private final Map<Integer, CachedPhysicalObject> cachedPhysicalObjects = new HashMap<>();
     private final Map<Integer, CachedConnectedPlayer> cachedConnectedPlayers = new HashMap<>();
     private final ClientCollisionHandler clientCollisionHandler;
@@ -66,6 +66,10 @@ public class ClientLevel extends LevelProperties {
 
     public CachedPhysicalObject getCachedPhysicalObject(int id) {
         return cachedPhysicalObjects.get(id);
+    }
+
+    public Collection<CachedPhysicalObject> getCachedPhysicalObjects() {
+        return cachedPhysicalObjects.values();
     }
 
     public void addCachedAABBHitbox(CachedAABBHitbox cachedAABBHitbox) {

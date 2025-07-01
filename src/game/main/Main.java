@@ -2,6 +2,7 @@ package game.main;
 
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
+import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.tools.Time;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.particles.ParticleHandler;
@@ -14,6 +15,7 @@ import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import game.ui.screens.TitleScreen;
+import newStuff.GameObjectInterpolator;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
 import templates.rendering.Renderers;
@@ -62,6 +64,8 @@ public class Main {
             UiHandler.update();
             if (gameLoader != null && ClientLevel.get().isReady) gameLoader.update();
 
+            ThreadManager.updateMain();
+
             // rendering
             MasterRenderer.preRender();
             if (gameLoader != null && ClientLevel.get().isReady) gameLoader.render();
@@ -75,8 +79,6 @@ public class Main {
                 System.out.println("FPS: " + fps);
                 fps = 0;
             }
-
-            ThreadManager.updateMain();
         }
 
         MasterRenderer.cleanUp();

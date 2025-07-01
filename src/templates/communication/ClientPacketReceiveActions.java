@@ -6,6 +6,7 @@ import com.james.renderEngine.models.Model;
 import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
+import com.james.tools.Time;
 import templates.gameplay.GameLoader;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
@@ -43,7 +44,7 @@ public class ClientPacketReceiveActions {
             model = ModelBank.getAbstractArt();
         }
 
-        GameObject gameObject = new GameObject(model, object.getPosition(), object.getRotation(), scale);
+        GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), object.getRotation(), scale);
         GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
         object.setGameObject(gameObject);
@@ -55,7 +56,10 @@ public class ClientPacketReceiveActions {
 
         CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
         if (object != null) {
+            object.updatePrevPosition();
             object.setPosition(x, y, z);
+
+            GameLoader.lastTimeCachedPhysicalObjectsPosition = Time.getCurrentTime();
         } else {
             Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
         }

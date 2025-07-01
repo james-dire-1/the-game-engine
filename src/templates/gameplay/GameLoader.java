@@ -12,12 +12,14 @@ import com.james.renderEngine.rendering.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.simulation.ClientLevel;
+import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.MousePicker;
 import com.james.tools.Time;
 import game.player.PlayerHandler;
 import game.ui.screens.PauseScreen;
+import newStuff.GameObjectInterpolator;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
@@ -35,6 +37,7 @@ public abstract class GameLoader {
     protected final ClientLevel clientLevel;
     private final PlayerHandler playerHandler;
 
+    public static float lastTimeCachedPhysicalObjectsPosition;
     private long lastTimeBackground;
     private float lastTimePlayerPosition;
     private final Random r = new Random();
@@ -66,6 +69,10 @@ public abstract class GameLoader {
         input();
         playerHandler.update();
         ParticleHandler.update();
+
+        for (CachedPhysicalObject object : clientLevel.getCachedPhysicalObjects()) {
+            GameObjectInterpolator.interpolate(object.getPrevPosition(), object.getPosition(), object.getGameObject().getPosition(), lastTimeCachedPhysicalObjectsPosition, Time.getCurrentTime());
+        }
 
         if (Time.getCurrentTime() - lastTimePlayerPosition >= SECONDS_PER_SEND) {
             lastTimePlayerPosition = Time.getCurrentTime();
