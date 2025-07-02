@@ -14,6 +14,7 @@ import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import game.ui.screens.TitleScreen;
+import newStuff.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
 import templates.rendering.Renderers;
@@ -41,7 +42,7 @@ public class Main {
         ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
-        GLFWUtilities.init();
+        GLFWUtilities.init(GLFWWindowTitles.MAIN);
         ParticleHandler.init();
         TypingInputNotifier.init();
 

@@ -5,6 +5,7 @@ import com.james.input.KeyInput;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
 import com.james.input.TypingInput;
+import newStuff.GLFWWindowTitles;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -20,7 +21,9 @@ public class GLFWUtilities {
 
     private static boolean cursorLocked = false;
 
-    public static void init() {
+    private static String currentWindowTitle;
+
+    public static void init(String windowTitle) {
         if (!glfwInit()) throw new RuntimeException("Cannot initialize glfw");
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -29,10 +32,11 @@ public class GLFWUtilities {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        window = glfwCreateWindow(WindowResizeInput.width, WindowResizeInput.height, "Hello there", NULL, NULL);
+        window = glfwCreateWindow(WindowResizeInput.width, WindowResizeInput.height, windowTitle, NULL, NULL);
         if (window == NULL) throw new RuntimeException("Cannot create window");
 
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        assert vidmode != null;
         glfwSetWindowPos(window, (vidmode.width() - WindowResizeInput.width) / 2, (vidmode.height() - WindowResizeInput.height) / 2);
         glfwSetKeyCallback(window, new KeyInput());
         glfwSetWindowSizeCallback(window, new WindowResizeInput());
@@ -45,6 +49,8 @@ public class GLFWUtilities {
         GL.createCapabilities();
 
         System.out.println("OpenGL version " + glGetString(GL_VERSION));
+
+        currentWindowTitle = windowTitle;
     }
 
     public static void pollEvents() {
@@ -71,6 +77,13 @@ public class GLFWUtilities {
 
     public static boolean isCursorLocked() {
         return cursorLocked;
+    }
+
+    public static void setWindowTitle(String windowTitle) {
+        if (!currentWindowTitle.equals(windowTitle)) {
+            glfwSetWindowTitle(window, windowTitle);
+            currentWindowTitle = windowTitle;
+        }
     }
 
     public static void cleanUp() {

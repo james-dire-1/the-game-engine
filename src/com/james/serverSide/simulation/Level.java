@@ -75,31 +75,33 @@ public class Level extends LevelProperties {
 
                     if (!movableObj.isAffectedByAABBCollisions) {
                         prevPosition.set(movableObj.getPosition());
-                        prevRotation.set(movableObj.getRotation());
                         movableObj.moveUpdate();
 
                         Vector3f newPosition = movableObj.getPosition();
                         if (!newPosition.equals(prevPosition)) {
                             events.sendPhysicalObjectMoved(movableObj.id, newPosition.x, newPosition.y, newPosition.z);
                         }
-
-                        Vector3f newRotation = movableObj.getRotation();
-                        if (!newRotation.equals(prevRotation)) {
-                            events.sendPhysicalObjectRotated(movableObj.id, newRotation.x, newRotation.y, newRotation.z);
-                        }
                     }
                 }
             }
             collisionHandler.update();
 
-            // Other logic other than move
+            // Other logic other than move (including rotations!)
             Iterator<PhysicalObject> iterator = physicalObjects.iterator();
             while (iterator.hasNext()) {
                 PhysicalObject obj = iterator.next();
 
+                prevRotation.set(obj.getRotation());
                 boolean shouldDelete = obj.update();
+
                 if (shouldDelete) {
+                    // TODO: 2025-07-02 At the moment, we don't have a way of removing PhysicalObjects client side
                     iterator.remove();
+                } else {
+                    Vector3f newRotation = obj.getRotation();
+                    if (!newRotation.equals(prevRotation)) {
+                        events.sendPhysicalObjectRotated(obj.id, newRotation.x, newRotation.y, newRotation.z);
+                    }
                 }
             }
 

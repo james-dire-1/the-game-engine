@@ -5,6 +5,7 @@ import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
+import com.james.simulation.ClientLevel;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
@@ -42,6 +43,17 @@ public class SettingsScreen extends Screen {
         comingSoon.wrapAndSetMaxLength(300);
         comingSoon.apply();
         super.addGui(comingSoon.getMesh());
+    }
+
+    // TODO: 2025-07-02 In the future, there should be a better way for deleting ANY screen as a result of the
+    // TODO: 2025-07-02 DisconnectedScreen appearing
+    @Override
+    public void update() {
+        if (ClientLevel.get() == null) {
+            super.markForDeletion();
+        }
+
+        super.update();
     }
 
     public enum PreviousScreen {

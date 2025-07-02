@@ -5,7 +5,7 @@ import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.simulation.objects.Player;
 
 /**
- * Ellipsoid hitbox to be used client-side for the Player.
+ * Ellipsoid hitbox to be used client side for the Player.
  */
 public class PlayerHitbox extends AbstractEllipsoidHitbox {
 

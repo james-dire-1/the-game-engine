@@ -5,3 +5,5 @@ Add documentation for OnlineClientPacketSendEvents
 Move things in the glsl folder
 
 Maybe write documentation for GuiButton?
+
+Note that rotations should be done in update() whereas regular movements, in moveUpdate()

@@ -62,6 +62,13 @@ public class LevelInitializer implements Runnable {
             private boolean firstTime = true;
 
             @Override
+            public boolean update() {
+                rotate(0, 10, 0);
+
+                return super.update();
+            }
+
+            @Override
             public void moveUpdate() {
                 if (firstTime) {
                     firstTime = false;
@@ -74,8 +81,6 @@ public class LevelInitializer implements Runnable {
                 } else if (getPosition().x <= -10) {
                     setVelocity(6, 0, 0);
                 }
-
-                rotate(0, 10, 0);
 
                 super.moveUpdate();
             }

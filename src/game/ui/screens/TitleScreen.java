@@ -10,9 +10,11 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.PersistentGuiText;
+import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.ui.uiElements.PersistentTitleHeader;
+import newStuff.GLFWWindowTitles;
 import templates.gameplay.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
@@ -26,6 +28,8 @@ public class TitleScreen extends Screen {
     private final float instantiationTime = Time.getCurrentTime();
 
     public TitleScreen() {
+        GLFWUtilities.setWindowTitle(GLFWWindowTitles.MAIN);
+
         SolidBackground background = new SolidBackground(0x423227);
         super.addGui(background);
 
