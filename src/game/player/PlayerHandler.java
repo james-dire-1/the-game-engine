@@ -3,7 +3,7 @@ package game.player;
 import com.james.common.simulation.LevelProperties;
 import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
-import com.james.tools.CameraController;
+import templates.gameplay.CameraController;
 import com.james.common.tools.Mth;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
@@ -34,6 +34,9 @@ public class PlayerHandler {
 
     private static final float SPEED = 15;
 
+    public CameraController getCamController() { return camController; }
+    public GameObject getGameObject() { return gameObject; }
+
     /**
      * Gets the Player, creates its GameObject and its CameraController.
      */
@@ -42,10 +45,12 @@ public class PlayerHandler {
 
         Model model = ModelBank.getAbstractArt();
         this.gameObject = new GameObject(model, new Vector3f(player.getPosition()), player.getRotation(), 1);
+        gameObject.isVisible = false;
         batchedGameObjectsList.addGameObject(gameObject);
 
         this.levelProperties = levelProperties;
-        this.camController = new CameraController(camera, gameObject.getPosition(), 20);
+        this.camController = new CameraController(camera, gameObject.getPosition(), 15);
+        camController.setFirstPersonOffset(0, 1.75f, 0);
 
         GameObjectInterpolator.secondsPerGameTick = levelProperties.secondsPerGameTick;
     }

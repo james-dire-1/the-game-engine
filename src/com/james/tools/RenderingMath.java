@@ -1,6 +1,7 @@
 package com.james.tools;
 
 import com.james.input.WindowResizeInput;
+import newStuff.UserSettings;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -10,7 +11,6 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class RenderingMath {
 
-    private static final float FOV = 70;
     private static final float FAR_PLANE = 1000;
     private static final float NEAR_PLANE = 0.1f;
 
@@ -37,7 +37,7 @@ public class RenderingMath {
 
     public static Matrix4f createProjectionMatrix(int width, int height) {
         float aspectRatio = (float) width / (float) height;
-        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
+        float y_scale = (float) ((1f / Math.tan(Math.toRadians(UserSettings.FOV / 2f))) * aspectRatio);
         float x_scale = y_scale / aspectRatio;
         float frustum_length = FAR_PLANE - NEAR_PLANE;
 

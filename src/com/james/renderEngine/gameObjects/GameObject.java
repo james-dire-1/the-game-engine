@@ -6,14 +6,14 @@ import templates.communication.ClientPacketReceiveActions;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- * Representation of an object that can be rendered on the client-side. However, there is no simulation
+ * Representation of an object that can be rendered on the client side. However, there is no simulation
  * handled here.
  * @implNote Position and rotation are made final because you shouldn't be reassigning their references!
- * Only the values at these references. This is why they are also private, to prevent any other class
- * from reassigning these variables' references.
- * One side effect of this is that I can just use references from CachedPhysicalObjects as references in
- * this class, and thus when CachedPhysicalObjects are moved, GameObjects are moved automatically. This
- * behaviour can be seen in ClientPacketReceiveActions.
+ * Only the values at these references.
+ * One side effect of this is that the progrmmer can just use references from CachedPhysicalObjects as
+ * references in this class, and thus when CachedPhysicalObjects are moved, GameObjects are moved
+ * automatically. This behaviour can be seen in ClientPacketReceiveActions. However, this technique can't
+ * be used for smooth interpolating.
  * @see CachedPhysicalObject
  * @see ClientPacketReceiveActions
  */
@@ -27,6 +27,8 @@ public class GameObject {
     public Vector3f getPosition() { return position; }
     public Vector3f getRotation() { return rotation; }
     public float getScale() { return scale; }
+
+    public boolean isVisible = true;
 
     public GameObject(Model model, Vector3f position, Vector3f rotation, float scale) {
         this.model = model;

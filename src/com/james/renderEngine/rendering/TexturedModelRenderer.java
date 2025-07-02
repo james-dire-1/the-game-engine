@@ -52,6 +52,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
             glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
+                if (!gameObject.isVisible) continue;
+
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 

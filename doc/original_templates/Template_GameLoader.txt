@@ -51,7 +51,7 @@ public abstract class GameLoader {
         batchedGameObjectsList = new BatchedGameObjectsList();
         Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
 
-        this.clientLevel = new ClientLevel(events, new Vector3f(-5, 8, 0));
+        this.clientLevel = new ClientLevel(events, new Vector3f(-5, 25, 0));
         this.playerHandler = new PlayerHandler(batchedGameObjectsList, this.clientLevel, focusCamera);
 
         Player player = ClientLevel.get().getPlayer();
@@ -113,6 +113,14 @@ public abstract class GameLoader {
     }
 
     private void input() {
+        if (KeyInput.isKeyDown(GLFW_KEY_BACKSLASH)) {
+            if (MasterRenderer.currentCamera.equals(Camera.defaultCamera)) {
+                MasterRenderer.currentCamera = focusCamera;
+            } else if (MasterRenderer.currentCamera.equals(focusCamera)) {
+                MasterRenderer.currentCamera = Camera.defaultCamera;
+            }
+        }
+
         if (KeyInput.isKeyDown(GLFW.GLFW_KEY_R)) {
             GLFWUtilities.lockCursor(!GLFWUtilities.isCursorLocked());
         }
@@ -121,12 +129,33 @@ public abstract class GameLoader {
             PauseScreen.toggle();
         }
 
-        if (KeyInput.isKeyPressed(GLFW_KEY_F)) {
-            playerHandler.getCamController().firstPerson = false;
-            playerHandler.getGameObject().isVisible = true;
-        } else {
-            playerHandler.getCamController().firstPerson = true;
-            playerHandler.getGameObject().isVisible = false;
+        if (KeyInput.isKeyPressed(GLFW.GLFW_KEY_W)) {
+            Camera.defaultCamera.translate(new Vector3f(0, 0, -.1f));
+        }
+        if (KeyInput.isKeyPressed(GLFW.GLFW_KEY_S)) {
+            Camera.defaultCamera.translate(new Vector3f(0, 0, .1f));
+        }
+        if (KeyInput.isKeyPressed(GLFW.GLFW_KEY_A)) {
+            Camera.defaultCamera.translate(new Vector3f(-.1f, 0, 0));
+        }
+        if (KeyInput.isKeyPressed(GLFW.GLFW_KEY_D)) {
+            Camera.defaultCamera.translate(new Vector3f(.1f, 0, 0));
+        }
+
+        if (KeyInput.isKeyPressed(GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            Camera.defaultCamera.increasePitch((float) (0.2 * MouseMoveInput.getDeltaY()));
+            Camera.defaultCamera.increaseYaw((float) (0.2 * MouseMoveInput.getDeltaX()));
+        }
+
+        if (KeyInput.isKeyDown(GLFW_KEY_5)) {
+            new Particle(new Vector3f(0, 10, 0), new Vector3f(0, -10f, 0), 0, 1, 1, 10);
+        }
+
+        if (KeyInput.isKeyDown(GLFW_KEY_6)) {
+            ComplexParticleSettings settings = new ComplexParticleSettings();
+            settings.addTargetKeyframe(0, FloatType.GravityMultiplier, 0);
+            settings.addTargetKeyframe(10, FloatType.Rotation, 360);
+            new ComplexParticle(10, settings);
         }
     }
 
