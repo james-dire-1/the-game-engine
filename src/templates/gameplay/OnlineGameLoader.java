@@ -147,14 +147,14 @@ public class OnlineGameLoader extends GameLoader {
         });
     }
 
-    public static void onServerClosed(Exception e, Client client) {
+    public static void onConnectionException(Exception e, Client client) {
         ThreadManager.executeOnMainThread(() -> {
-            UiHandler.screens.add(new DisconnectedScreen(e));
+             if (!e.getMessage().equals("Socket closed")) {
+                UiHandler.screens.add(new DisconnectedScreen(e));
 
-            client.disconnect();
-
-            ClientLevel.delete();
-            Main.gameLoader = null;
+                ClientLevel.delete();
+                Main.gameLoader = null;
+             }
         });
     }
 

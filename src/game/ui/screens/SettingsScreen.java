@@ -15,6 +15,8 @@ import com.james.renderEngine.textRendering.TextAlignment;
 
 public class SettingsScreen extends Screen {
 
+    private final PreviousScreen prevScreen;
+
     public SettingsScreen(PreviousScreen prevScreen) {
         SolidBackground background = new SolidBackground(0xf27a5c);
         super.addGui(background);
@@ -43,13 +45,15 @@ public class SettingsScreen extends Screen {
         comingSoon.wrapAndSetMaxLength(300);
         comingSoon.apply();
         super.addGui(comingSoon.getMesh());
+
+        this.prevScreen = prevScreen;
     }
 
     // TODO: 2025-07-02 In the future, there should be a better way for deleting ANY screen as a result of the
     // TODO: 2025-07-02 DisconnectedScreen appearing
     @Override
     public void update() {
-        if (ClientLevel.get() == null) {
+        if (ClientLevel.get() == null && prevScreen == PreviousScreen.PAUSE_SCREEN) {
             super.markForDeletion();
         }
 

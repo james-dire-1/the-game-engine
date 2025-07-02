@@ -24,7 +24,7 @@ public class FailedToConnectScreen extends Screen {
         TitleHeader header = new TitleHeader("Failed to connect to \"" + host + "\"");
         super.addGuis(header.getAllGuis());
 
-        PersistentGuiText text = new PersistentGuiText(e.getMessage(), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
+        PersistentGuiText text = new PersistentGuiText(e.toString(), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
         text.setAlignment(TextAlignment.CENTER_ALIGNED);
         text.apply();
         super.addGui(text.getMesh());

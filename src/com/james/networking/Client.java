@@ -47,6 +47,15 @@ public class Client implements Runnable {
      * that disconnect() won't be called twice. (Remember that this clause can only run if disconnect()
      * had been called previously to forcibly close the connection, so it doesn't make sense to call it
      * again in the SocketException clause.)
+     *
+     * Update July 2025: Actually, there is more nuance to what is stated above. The EOFException clause
+     * will run if the server was PROPERLY closed (i.e. closed by closing the streams and socket).
+     * However, if the server was not properly closed (such as by pressing the X icon to forcibly close
+     * the server window), then the SocketException clause will run instead. Thus, the way to determine
+     * whether a SocketException was caused by the server closing the connection or by the client closing
+     * the connection is to see the exception message. A message of "Connection reset" means the server
+     * closed the connection (improperly) and a message of "Socket closed" means the client closed the
+     * connection. With this in mind, the code below has been updated.
      */
     @Override
     public void run() {
@@ -86,6 +95,13 @@ public class Client implements Runnable {
             disconnect();
         } catch (SocketException e) {
             exception = e;
+
+            // If the message is not "Socket closed", then that means the exception was not thrown due to us
+            // calling disconnect(). Thus, disconnect() hasn't been called yet, and so we need to call it.
+            if (!e.getMessage().equals("Socket closed")) {
+                e.printStackTrace();
+                disconnect();
+            }
         } catch (IOException | ClassNotFoundException e) {
             exception = e;
             e.printStackTrace();

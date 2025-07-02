@@ -22,7 +22,7 @@ public class DisconnectedScreen extends Screen {
         header.modifyGlobalColor(1, 1, 1);
         super.addGui(header.getMesh());
 
-        PersistentGuiText text = new PersistentGuiText(e.getMessage(), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
+        PersistentGuiText text = new PersistentGuiText(e.toString(), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
         text.setAlignment(TextAlignment.CENTER_ALIGNED);
         text.setSingleColor(1, 1, 1);
         text.apply();
