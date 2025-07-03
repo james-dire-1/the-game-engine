@@ -1,9 +1,11 @@
 Maybe add documentation for GameLoader, LocalGameLoader, and OnlineGameLoader?
 
-Add documentation for OnlineClientPacketSendEvents
+Add documentation for OnlineClientPacketSendEvents and other networking classes perhaps
 
 Move things in the glsl folder
 
 Maybe write documentation for GuiButton?
 
 Note that rotations should be done in update() whereas regular movements, in moveUpdate()
+
+Provide documentation for GeneralSphereHitbox

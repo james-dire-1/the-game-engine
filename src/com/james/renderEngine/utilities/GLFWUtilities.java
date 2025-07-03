@@ -5,7 +5,6 @@ import com.james.input.KeyInput;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
 import com.james.input.TypingInput;
-import newStuff.GLFWWindowTitles;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 

@@ -81,7 +81,9 @@ public class TextMeshCreator {
                 guiForCharacter.apply();
             }
         } else {
-            char[] charactersWithoutSpaces = originalText.replace(" ", "").toCharArray();
+            char[] charactersWithoutSpaces = originalText
+                    .replace(" ", "")
+                    .replace("\n", "").toCharArray();
 
             for (int i = 0; i < charactersWithoutSpaces.length; i++) {
                 float[] colors = textColorRules.getCharacterColor(i, charactersWithoutSpaces[i]);
@@ -230,7 +232,9 @@ public class TextMeshCreator {
         if (textColorRules == null) {
             mesh.setSingleColor(singleColor[0], singleColor[1], singleColor[2]);
         } else {
-            char[] charactersWithoutSpaces = originalText.replace(" ", "").toCharArray();
+            char[] charactersWithoutSpaces = originalText
+                    .replace(" ", "")
+                    .replace("\n", "").toCharArray();
             float[] finalColorsArray = new float[charactersWithoutSpaces.length * 4 * 3];
 
             for (int i = 0; i < charactersWithoutSpaces.length; i++) {

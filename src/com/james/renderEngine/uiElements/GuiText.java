@@ -33,6 +33,11 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         this.currentText = new StringBuilder(text);
     }
 
+    public GuiText(List<Line> lines, FontInfo font, float fontSize, Position position) {
+        super(lines, font, fontSize, position);
+        this.currentText = new StringBuilder(super.text);
+    }
+
     @Override
     public void modifyGlobalColor(float r, float g, float b) {
         for (Gui textQuad : master.children) {
@@ -200,8 +205,11 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
 
     @Override
     public void apply() {
-        List<Line> lines = super.getLines();
-        this.master = TextMeshCreator.createGuis(position, singleColor, textColorRules, text, font, fontSize, lines, alignment, justified);
+        List<Line> finalLines;
+        if (this.lines == null) finalLines = super.getLines();
+        else finalLines = this.lines;
+
+        this.master = TextMeshCreator.createGuis(position, singleColor, textColorRules, text, font, fontSize, finalLines, alignment, justified);
     }
 
     @Override

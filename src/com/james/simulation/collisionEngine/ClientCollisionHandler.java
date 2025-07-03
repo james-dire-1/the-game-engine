@@ -6,12 +6,14 @@ import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.collisionEngine.hitboxes.PlayerHitbox;
 import com.james.simulation.objects.Player;
+import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Collision handler to be used client-side.
+ * Collision handler to be used client-side. This collision handler is used for ellipsoid vs triangle
+ * collisions.
  */
 public class ClientCollisionHandler {
 
@@ -21,11 +23,10 @@ public class ClientCollisionHandler {
     private final LevelProperties levelProperties;
     private final Player player;
 
-
-    public ClientCollisionHandler(LevelProperties levelProperties, Player player) {
+    public ClientCollisionHandler(LevelProperties levelProperties, Player player, Vector3f radius) {
         this.levelProperties = levelProperties;
         this.player = player;
-        this.playerHitbox = new PlayerHitbox(player, EllipsoidDimensions.get(1, 1, 1));
+        this.playerHitbox = new PlayerHitbox(player, EllipsoidDimensions.get(radius.x, radius.y, radius.z));
     }
 
     /**

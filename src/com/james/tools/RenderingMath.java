@@ -1,7 +1,7 @@
 package com.james.tools;
 
 import com.james.input.WindowResizeInput;
-import newStuff.UserSettings;
+import templates.settings.UserSettings;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;

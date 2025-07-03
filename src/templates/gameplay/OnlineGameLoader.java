@@ -8,7 +8,7 @@ import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
 import game.main.Main;
 import game.ui.screens.DisconnectedScreen;
-import newStuff.GLFWWindowTitles;
+import templates.settings.GLFWWindowTitles;
 import templates.communication.OnlineClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketReceiveActions;

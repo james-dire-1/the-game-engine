@@ -6,6 +6,8 @@ import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
+import newStuff.GeneralSphereCollisionHandler;
+import newStuff.GeneralSphereHitbox;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -29,12 +31,14 @@ public class ClientLevel extends LevelProperties {
     private final Map<Integer, CachedPhysicalObject> cachedPhysicalObjects = new HashMap<>();
     private final Map<Integer, CachedConnectedPlayer> cachedConnectedPlayers = new HashMap<>();
     private final ClientCollisionHandler clientCollisionHandler;
+    private final GeneralSphereCollisionHandler generalSphereCollisionHandler;
 
-    public ClientLevel(ClientPacketSendEvents events, Vector3f position) {
+    public ClientLevel(ClientPacketSendEvents events, Vector3f playerPosition, Vector3f playerHitboxRadius) {
         this.events = events;
 
-        this.player = new Player(this, position);
-        this.clientCollisionHandler = new ClientCollisionHandler(this, this.player);
+        this.player = new Player(this, playerPosition);
+        this.clientCollisionHandler = new ClientCollisionHandler(this, this.player, playerHitboxRadius);
+        this.generalSphereCollisionHandler = new GeneralSphereCollisionHandler();
 
         instance = this;
     }
@@ -49,6 +53,8 @@ public class ClientLevel extends LevelProperties {
         }
 
         clientCollisionHandler.update();
+
+        // todo
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {
@@ -87,6 +93,10 @@ public class ClientLevel extends LevelProperties {
         }
 
         return alreadyExists;
+    }
+
+    public void addGeneralSphereHitbox(GeneralSphereHitbox generalSphereHitbox) {
+        generalSphereCollisionHandler.generalSphereHitboxes.add(generalSphereHitbox);
     }
 
     public CachedConnectedPlayer removeCachedConnectedPlayer(int id) {

@@ -1,13 +1,8 @@
 package templates.gameplay;
 
 import com.james.input.KeyInput;
-import com.james.input.MouseMoveInput;
 import com.james.renderEngine.gameObjects.Camera;
-import com.james.renderEngine.particles.ComplexParticle;
-import com.james.renderEngine.particles.ComplexParticleSettings;
-import com.james.renderEngine.particles.Particle;
 import com.james.renderEngine.particles.ParticleHandler;
-import com.james.renderEngine.particles.dataTypes.FloatType;
 import com.james.renderEngine.rendering.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
@@ -20,7 +15,7 @@ import com.james.tools.MousePicker;
 import com.james.tools.Time;
 import game.player.PlayerHandler;
 import game.ui.screens.PauseScreen;
-import newStuff.GameObjectInterpolator;
+import com.james.tools.GameObjectInterpolator;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
@@ -51,7 +46,7 @@ public abstract class GameLoader {
         batchedGameObjectsList = new BatchedGameObjectsList();
         Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
 
-        this.clientLevel = new ClientLevel(events, new Vector3f(-5, 8, 0));
+        this.clientLevel = new ClientLevel(events, new Vector3f(-5, 8, 0), new Vector3f(1, 1, 1));
         this.playerHandler = new PlayerHandler(batchedGameObjectsList, this.clientLevel, focusCamera);
 
         Player player = ClientLevel.get().getPlayer();

@@ -33,11 +33,48 @@ public abstract class AbstractGuiText {
     protected int maxLength;
     protected boolean justified = false;
 
+    protected final List<Line> lines;
+
+    /**
+     * Makes a new text gui with ordinary text. This is the constructor that should be used most of the time.
+     */
     public AbstractGuiText(String text, FontInfo font, float fontSize, Position position) {
         this.text = text;
         this.font = font;
         this.fontSize = fontSize;
         this.position = position;
+
+        this.lines = null;
+    }
+
+    /**
+     * Makes a new text gui with the list of Lines already created. This constructor should only be used in
+     * specific situations where it would not be ideal to create the list of Lines during the apply() stage.
+     * For instance, this constructor could be useful for creating a chat system with messages, where each
+     * Line needs to be in a separate text gui in a scroll pane. With the above constructor, this is not
+     * possible, as Lines are created during apply(), and they will all belong to the same text gui.
+     *
+     * @implNote Assigning to the lines field is only done in this constructor.
+     */
+    public AbstractGuiText(List<Line> lines, FontInfo font, float fontSize, Position position) {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < lines.size(); i++) {
+            for (int asciiCode : lines.get(i).asciiCodes) {
+                char character = (char) asciiCode;
+                text.append(character);
+            }
+
+            if (i != lines.size() - 1) {
+                text.append("\n");
+            }
+        }
+
+        this.text = text.toString();
+        this.font = font;
+        this.fontSize = fontSize;
+        this.position = position;
+
+        this.lines = lines;
     }
 
     /**

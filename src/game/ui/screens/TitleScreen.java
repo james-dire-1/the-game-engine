@@ -1,24 +1,31 @@
 package game.ui.screens;
 
 import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.renderEngine.textRendering.TextOrganizer;
 import com.james.renderEngine.textRendering.coloring.CharacterColor;
 import com.james.renderEngine.textRendering.coloring.ColorContents;
 import com.james.renderEngine.textRendering.coloring.TextColorRules;
+import com.james.renderEngine.textRendering.dataTypes.Line;
 import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
+import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.ui.uiElements.PersistentTitleHeader;
-import newStuff.GLFWWindowTitles;
+import templates.settings.GLFWWindowTitles;
 import templates.gameplay.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 
 public class TitleScreen extends Screen {
 
@@ -101,6 +108,20 @@ public class TitleScreen extends Screen {
         versionNumber.setSingleColor(limeGreen[0], limeGreen[1], limeGreen[2]);
         versionNumber.apply();
         super.addGui(versionNumber.getMesh());
+
+        String message = "Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh ";
+        List<Line> lines = TextOrganizer.organizeMultiLineText(Main.dustismo, 0.3f, 300, message.getBytes(StandardCharsets.US_ASCII));
+
+        int yPosition = 30;
+        for (Line line : lines) {
+            yPosition += -60;
+
+            PersistentGuiText testing = new PersistentGuiText(Collections.singletonList(line), Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP_LEFT, new ScreenSize(30, yPosition)));
+            testing.wrapAndSetMaxLength(300);
+            testing.setSingleColor(1, 0, 0);
+            testing.apply();
+            super.addGui(testing.getMesh());
+        }
     }
 
     @Override

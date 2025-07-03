@@ -1,4 +1,4 @@
-package newStuff;
+package templates.settings;
 
 public class UserSettings {
 

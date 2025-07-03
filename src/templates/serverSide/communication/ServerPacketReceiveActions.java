@@ -59,6 +59,8 @@ public class ServerPacketReceiveActions {
     }
 
     public static void playerLeftReceived(PlayerInfo playerInfo) {
+        if (IS_NETWORK_DEBUG) System.out.println("ServerPacketReceiveActions.playerLeftReceived");
+
         Level playerLevel = playerInfo.level;
         ConnectedPlayer connectedPlayer = playerLevel.removeConnectedPlayer(playerInfo);
 

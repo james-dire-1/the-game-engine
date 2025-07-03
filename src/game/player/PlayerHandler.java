@@ -9,7 +9,7 @@ import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.tools.Time;
-import newStuff.GameObjectInterpolator;
+import com.james.tools.GameObjectInterpolator;
 import org.lwjgl.util.vector.Vector3f;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;

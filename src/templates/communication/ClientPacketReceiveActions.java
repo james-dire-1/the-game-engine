@@ -7,6 +7,7 @@ import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.tools.Time;
+import newStuff.GeneralSphereHitbox;
 import templates.gameplay.GameLoader;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
@@ -128,6 +129,9 @@ public class ClientPacketReceiveActions {
         GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
         cachedConnectedPlayer.setGameObject(gameObject);
+
+        GeneralSphereHitbox generalSphereHitbox = new GeneralSphereHitbox(id, 1);
+        ClientLevel.get().addGeneralSphereHitbox(generalSphereHitbox);
     }
 
     // TODO: 2025-07-01 Make a method that separates transform and rotation perhaps

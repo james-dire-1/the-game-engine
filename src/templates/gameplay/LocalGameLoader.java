@@ -2,8 +2,7 @@ package templates.gameplay;
 
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
-import newStuff.GLFWWindowTitles;
-import templates.gameplay.GameLoader;
+import templates.settings.GLFWWindowTitles;
 import templates.communication.LocalClientPacketSendEvents;
 import templates.communication.LocalServerPacketSendEvents;
 

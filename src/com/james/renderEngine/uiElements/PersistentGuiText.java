@@ -22,6 +22,10 @@ public class PersistentGuiText extends AbstractGuiText {
         super(text, font, fontSize, position);
     }
 
+    public PersistentGuiText(List<Line> lines, FontInfo font, float fontSize, Position position) {
+        super(lines, font, fontSize, position);
+    }
+
     @Override
     public void modifyGlobalColor(float r, float g, float b) {
         mesh.setSingleColor(r, g, b);
@@ -36,8 +40,11 @@ public class PersistentGuiText extends AbstractGuiText {
 
     @Override
     public void apply() {
-        List<Line> lines = super.getLines();
-        this.mesh = TextMeshCreator.createMesh(position, singleColor, textColorRules, text, font, fontSize, lines, alignment, justified);
+        List<Line> finalLines;
+        if (this.lines == null) finalLines = super.getLines();
+        else finalLines = this.lines;
+
+        this.mesh = TextMeshCreator.createMesh(position, singleColor, textColorRules, text, font, fontSize, finalLines, alignment, justified);
     }
 
     public Gui getMesh() {

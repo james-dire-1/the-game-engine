@@ -3,7 +3,7 @@ package templates.gameplay;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.MouseMoveInput;
 import com.james.renderEngine.utilities.GLFWUtilities;
-import newStuff.UserSettings;
+import templates.settings.UserSettings;
 import org.lwjgl.util.vector.Vector3f;
 
 public class CameraController {

@@ -1,7 +1,5 @@
 package com.james.renderEngine.textRendering.coloring;
 
-import com.james.renderEngine.textRendering.coloring.CharacterColor;
-import com.james.renderEngine.textRendering.coloring.ColorContents;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.tools.RenderingMath;
 
