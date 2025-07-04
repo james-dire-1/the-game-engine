@@ -7,8 +7,11 @@ import java.util.List;
 
 public class WindowResizeInput extends GLFWWindowSizeCallback {
 
-    public static int width = 800;
-    public static int height = 600;
+//    public static int width = 800;
+//    public static int height = 600;
+
+    public static int width = 1400;
+    public static int height = 750;
 
     private static final List<Action> listeners = new ArrayList<>();
 

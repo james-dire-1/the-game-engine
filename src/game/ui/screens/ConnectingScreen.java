@@ -11,6 +11,7 @@ import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
+import newStuff.ChatScreen;
 import templates.gameplay.OnlineGameLoader;
 import com.james.renderEngine.textRendering.TextAlignment;
 import templates.common.networking.PacketType;
@@ -73,6 +74,8 @@ public class ConnectingScreen extends Screen {
 
         if (level != null && level.isReady) {
             super.markForDeletion();
+            queueScreenForAddition(new ChatScreen());
+
             GLFWUtilities.lockCursor(true);
         }
 

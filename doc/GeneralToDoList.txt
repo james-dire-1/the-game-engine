@@ -9,3 +9,7 @@ Maybe write documentation for GuiButton?
 Note that rotations should be done in update() whereas regular movements, in moveUpdate()
 
 Provide documentation for GeneralSphereHitbox
+
+Provide documentation for ChatScreen
+
+Add parenting capabilities to GuiText and PersistentGuiText

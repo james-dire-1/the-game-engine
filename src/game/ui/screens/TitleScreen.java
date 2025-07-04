@@ -108,20 +108,6 @@ public class TitleScreen extends Screen {
         versionNumber.setSingleColor(limeGreen[0], limeGreen[1], limeGreen[2]);
         versionNumber.apply();
         super.addGui(versionNumber.getMesh());
-
-        String message = "Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh Lorem ipsum lorem ipsum dfasdf asdfasdf dfsdf dfd dsf etht fhsa hh rdg sdfgsdg fhfhfghfh ";
-        List<Line> lines = TextOrganizer.organizeMultiLineText(Main.dustismo, 0.3f, 300, message.getBytes(StandardCharsets.US_ASCII));
-
-        int yPosition = 30;
-        for (Line line : lines) {
-            yPosition += -60;
-
-            PersistentGuiText testing = new PersistentGuiText(Collections.singletonList(line), Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP_LEFT, new ScreenSize(30, yPosition)));
-            testing.wrapAndSetMaxLength(300);
-            testing.setSingleColor(1, 0, 0);
-            testing.apply();
-            super.addGui(testing.getMesh());
-        }
     }
 
     @Override

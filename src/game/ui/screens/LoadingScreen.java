@@ -3,12 +3,14 @@ package game.ui.screens;
 import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
+import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
 import com.james.renderEngine.textRendering.TextAlignment;
+import newStuff.ChatScreen;
 
 public class LoadingScreen extends Screen {
 
@@ -26,6 +28,18 @@ public class LoadingScreen extends Screen {
     public void update() {
         if (ClientLevel.get().isReady) {
             super.markForDeletion();
+            ChatScreen chatScreen = new ChatScreen();
+            queueScreenForAddition(chatScreen);
+            chatScreen.appendChat("pointyfish", "Ok so we are testing this right now at the moment, let's see it in action man! I just can't wait!");
+            chatScreen.appendChat("pointyfish", "public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum ");
+            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", "Ok so we are testing this right now at the moment, let's see it in action man! I just can't wait!");
+            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("someone else", "hee hee hee hee");
+
             GLFWUtilities.lockCursor(true);
         }
 
