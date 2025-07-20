@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class MultiplayerScreen extends Screen {
 
-    private static GuiText field;
+    private GuiText field;
 
     public MultiplayerScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
@@ -53,7 +53,7 @@ public class MultiplayerScreen extends Screen {
         prompt.apply();
         super.addGuis(prompt.getAllGuis());
 
-        field = new GuiText("localhost", Main.dustismo, 0.35f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -445)));
+        this.field = new GuiText("localhost", Main.dustismo, 0.35f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -445)));
         field.setAlignment(TextAlignment.LEFT_ALIGNED);
         field.makeEditable(this, 30);
         field.apply();

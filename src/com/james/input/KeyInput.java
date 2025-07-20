@@ -10,6 +10,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyInput extends GLFWKeyCallback {
 
+    public static boolean isTypingContext = true;
+
     private static final boolean[] keysPressed = new boolean[GLFW_KEY_LAST];
     private static final boolean[] keysDown = new boolean[GLFW_KEY_LAST];
 
@@ -30,10 +32,20 @@ public class KeyInput extends GLFWKeyCallback {
     }
 
     public static boolean isKeyPressed(int key) {
-        return keysPressed[key];
+        if (!isTypingContext) return keysPressed[key];
+        else return false;
     }
 
     public static boolean isKeyDown(int key) {
+        if (!isTypingContext) return keysDown[key];
+        else return false;
+    }
+
+    public static boolean isKeyPressedIgnoreTypingContext(int key) {
+        return keysPressed[key];
+    }
+
+    public static boolean isKeyDownIgnoreTypingContext(int key) {
         return keysDown[key];
     }
 

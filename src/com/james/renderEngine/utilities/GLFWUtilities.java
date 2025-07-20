@@ -5,6 +5,7 @@ import com.james.input.KeyInput;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
 import com.james.input.TypingInput;
+import newStuff.ScrollInput;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
@@ -42,6 +43,7 @@ public class GLFWUtilities {
         glfwSetCursorPosCallback(window, new MouseMoveInput());
         glfwSetMouseButtonCallback(window, new ClickInput());
         glfwSetCharCallback(window, new TypingInput());
+        glfwSetScrollCallback(window, new ScrollInput());
         glfwShowWindow(window);
 
         glfwMakeContextCurrent(window);
@@ -56,10 +58,13 @@ public class GLFWUtilities {
         KeyInput.resetValues();
         MouseMoveInput.resetValues();
         ClickInput.resetValues();
+        ScrollInput.resetValues();
 
         glfwPollEvents();
 
-        if (glfwWindowShouldClose(window) || KeyInput.isKeyPressed(GLFW_KEY_ESCAPE)) {
+        if (glfwWindowShouldClose(window) || (
+                KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_ESCAPE) &&
+                KeyInput.isKeyPressedIgnoreTypingContext(GLFW_KEY_D))) {
             shouldClose = true;
         }
     }

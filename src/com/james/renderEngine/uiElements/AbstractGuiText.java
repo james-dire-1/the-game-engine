@@ -121,6 +121,11 @@ public abstract class AbstractGuiText {
     public abstract void modifyGlobalScale(float globalScaleX, float globalScaleY);
 
     /**
+     * Makes the text gui visible or invisible.
+     */
+    public abstract void setVisibility(boolean visible);
+
+    /**
      * Sets the text gui to use a maximum line length, so that any text that exceeds this line length will
      * be placed on the next line.
      */
