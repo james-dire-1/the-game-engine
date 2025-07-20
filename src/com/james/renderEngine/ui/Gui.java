@@ -22,6 +22,7 @@ public class Gui {
     private float[] textureCoords;
     private float[] colors;
     public float[] singleColor;
+    public float alpha = 1.0f;
     private boolean isText = false;
 
     private GuiMeshData mesh;

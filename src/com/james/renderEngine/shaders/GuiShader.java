@@ -11,6 +11,7 @@ public class GuiShader extends Shader {
     private int location_transformationMatrix;
     private int location_renderingMode;
     private int location_singleColor;
+    private int location_alpha;
 
     public GuiShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -28,6 +29,7 @@ public class GuiShader extends Shader {
         location_transformationMatrix = super.getUniformLocation("transformationMatrix");
         location_renderingMode = super.getUniformLocation("renderingMode");
         location_singleColor = super.getUniformLocation("singleColor");
+        location_alpha = super.getUniformLocation("alpha");
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
@@ -49,6 +51,10 @@ public class GuiShader extends Shader {
 
     public void loadSingleColor(float[] singleColor) {
         super.loadVector3fToUniform(location_singleColor, singleColor[0], singleColor[1], singleColor[2]);
+    }
+
+    public void loadAlpha(float alpha) {
+        super.loadFloatToUniform(location_alpha, alpha);
     }
 
 }

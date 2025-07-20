@@ -6,6 +6,7 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.tools.ColorUtils;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
@@ -30,15 +31,17 @@ public class LoadingScreen extends Screen {
             super.markForDeletion();
             ChatScreen chatScreen = new ChatScreen();
             queueScreenForAddition(chatScreen);
-            chatScreen.appendChat("pointyfish", "Ok so we are testing this right now at the moment, let's see it in action man! I just can't wait!");
-            chatScreen.appendChat("pointyfish", "public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum ");
-            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
-            chatScreen.appendChat("pointyfish", "Ok so we are testing this right now at the moment, let's see it in action man! I just can't wait!");
-            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
-            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
-            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
-            chatScreen.appendChat("pointyfish", "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
-            chatScreen.appendChat("someone else", "hee hee hee hee");
+            float[] red = new float[] {1, 0, 0};
+            float[] blue = new float[] {0, 0, 1};
+            chatScreen.appendChat("pointyfish", red, "Ok so we are testing this right now at the moment, let's see it in action man! I just can't wait!");
+            chatScreen.appendChat("pointyfish", red, "public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum public static void main lorem ipsum ");
+            chatScreen.appendChat("pointyfish", red, "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", blue, "Ok so we are testing this right now at the moment, let's see it in action man! I just can't wait!");
+            chatScreen.appendChat("pointyfish", red, "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", red, "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", red, "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("pointyfish", red, "Oh no! That can't be good. What was that funny noise I just heard.. I think something might be breaking here... :)");
+            chatScreen.appendChat("someone else", blue, "hee hee hee hee");
 
             GLFWUtilities.lockCursor(true);
         }

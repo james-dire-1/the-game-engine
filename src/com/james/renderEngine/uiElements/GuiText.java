@@ -33,6 +33,7 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         this.currentText = new StringBuilder(text);
     }
 
+    // TODO: 2025-07-19 Maybe the StringBuilder should only be created once it is decided that the text should be editable?
     public GuiText(List<Line> lines, FontInfo font, float fontSize, Position position) {
         super(lines, font, fontSize, position);
         this.currentText = new StringBuilder(super.text);
@@ -80,6 +81,13 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
             float[] scale = function.getProperty(i, characters[i]);
             ScreenSize size = (ScreenSize) master.children.get(i).size;
             size.setSize(scale[0] * size.originalX, scale[1] * size.originalY);
+        }
+    }
+
+    @Override
+    public void setVisibility(boolean visible) {
+        for (Gui gui : master.children) {
+            gui.isVisible = visible;
         }
     }
 
@@ -146,8 +154,8 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
     /**
      * Allows the text for this GuiText to be edited at any time.
      *
-     * @param screen the Screen that this GuiText belongs to; this is needed for adding and removing guis, which
-     *               will happen frequently for editable text
+     * @param screen the Screen that this GuiText belongs to; this is needed for adding and removing guis,
+     *               which will happen frequently for editable text
      * @param maxCharCount the maximum number of characters; if 0 is passed in, there is no maximum
      */
     public void makeEditable(Screen screen, int maxCharCount) {
@@ -159,6 +167,16 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
     }
 
     /**
+     * After editing the currentText (such as if this text gui is to be used as a text field), this method
+     * must be called in order for the text to change visually.
+     */
+    private void recreateTextQuads() {
+        screen.removeGuis(master.children);
+        apply();
+        screen.addGuis(master.children);
+    }
+
+    /**
      * Adds a character to the text of this GuiText. makeEditable() must have been called first.
      */
     public void append(char character) {
@@ -167,11 +185,9 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
 
         if (maxCharCount == 0 || currentText.length() < maxCharCount) {
-            screen.removeGuis(master.children);
             currentText.append(character);
             text = currentText.toString();
-            apply();
-            screen.addGuis(master.children);
+            recreateTextQuads();
         }
     }
 
@@ -181,11 +197,9 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
      */
     public void backspace() {
         if (currentText.length() > 0) {
-            screen.removeGuis(master.children);
             currentText.deleteCharAt(currentText.length() - 1);
             text = currentText.toString();
-            apply();
-            screen.addGuis(master.children);
+            recreateTextQuads();
         }
     }
 
@@ -194,11 +208,23 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
      * called first.
      */
     public void setText(String newText) {
-        screen.removeGuis(master.children);
         currentText.replace(0, currentText.length(), newText);
         text = currentText.toString();
-        apply();
-        screen.addGuis(master.children);
+        recreateTextQuads();
+    }
+
+    /**
+     * Whether to add a vertical bar after the text (this can be useful for text fields, where often a blinking
+     * vertical bar lets users know that they can input text).
+     */
+    public void displayCarat(boolean displayCarat) {
+        if (displayCarat) {
+            text = currentText.toString() + "|";
+        } else {
+            text = currentText.toString();
+        }
+
+        recreateTextQuads();
     }
 
     private Gui master;

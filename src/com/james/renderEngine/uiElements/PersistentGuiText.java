@@ -36,6 +36,11 @@ public class PersistentGuiText extends AbstractGuiText {
         ((ScreenSize) mesh.size).setSize(globalScaleX, globalScaleY);
     }
 
+    @Override
+    public void setVisibility(boolean visible) {
+        mesh.isVisible = visible;
+    }
+
     private Gui mesh;
 
     @Override
