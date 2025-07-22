@@ -39,8 +39,6 @@ public class ChatScreen extends Screen {
     private final List<PersistentGuiText> contentEntries = new ArrayList<>();
     private final List<Gui> entryBackgrounds = new ArrayList<>();
     private final Map<Integer, PersistentGuiText> senderEntriesMap = new HashMap<>();
-    // private final Map<Gui, Float> instantiationTimeMapBackground = new HashMap<>();
-    // private final Map<PersistentGuiText, Float> instantiationTimeMapText = new HashMap<>();
     private final Map<Integer, Float> instantiationTimeMap = new HashMap<>();
 
     private final GuiText field;
@@ -83,7 +81,6 @@ public class ChatScreen extends Screen {
             super.addGui(entryBackground);
 
             entryBackgrounds.add(entryBackground);
-//            instantiationTimeMapBackground.put(entryBackground, Time.getCurrentTime());
 
             ScreenPosition entryContentPosition = new ScreenPosition(screenX + senderWidth, 0);
 
@@ -94,7 +91,6 @@ public class ChatScreen extends Screen {
             super.addGui(contentEntry.getMesh());
 
             contentEntries.add(contentEntry);
-//            instantiationTimeMapText.put(contentEntry, Time.getCurrentTime());
 
             instantiationTimeMap.put(contentEntries.size()-1, Time.getCurrentTime());
 
@@ -108,7 +104,6 @@ public class ChatScreen extends Screen {
 
                 int senderEntryIndex = contentEntries.size()-1;
                 senderEntriesMap.put(senderEntryIndex, senderEntry);
-//                instantiationTimeMapText.put(senderEntry, Time.getCurrentTime());
             }
         }
 
@@ -144,35 +139,33 @@ public class ChatScreen extends Screen {
             }
             field.setVisibility(false);
 
-//            if (isOpen) {
-                int visibleEntryEndIndex = Math.min(contentEntries.size() - 1, rows - 1);
+            int visibleEntryEndIndex = Math.min(contentEntries.size() - 1, rows - 1);
 
-                for (int i = 0; i <= visibleEntryEndIndex; i++) {
-                    int currentContentIndex = entryContentIndex + i;
+            for (int i = 0; i <= visibleEntryEndIndex; i++) {
+                int currentContentIndex = entryContentIndex + i;
 
-                    if (isOpen || instantiationTimeMap.containsKey(currentContentIndex)) {
-                        int yPositionCurrentContent = screenY - i * (int) (font.lineHeight * fontSize + additionalLineSpacing);
-                        Gui currentContentEntry = contentEntries.get(currentContentIndex).getMesh();
-                        ((ScreenPosition) currentContentEntry.position).y = yPositionCurrentContent;
-                        currentContentEntry.isVisible = true;
+                if (isOpen || instantiationTimeMap.containsKey(currentContentIndex)) {
+                    int yPositionCurrentContent = screenY - i * (int) (font.lineHeight * fontSize + additionalLineSpacing);
+                    Gui currentContentEntry = contentEntries.get(currentContentIndex).getMesh();
+                    ((ScreenPosition) currentContentEntry.position).y = yPositionCurrentContent;
+                    currentContentEntry.isVisible = true;
 
-                        int yPositionCurrentBackground = yPositionCurrentContent - (int) ((font.lineHeight * fontSize + additionalLineSpacing) / 2);
-                        Gui currentEntryBackground = entryBackgrounds.get(currentContentIndex);
-                        ((ScreenPosition) currentEntryBackground.position).y = yPositionCurrentBackground;
-                        currentEntryBackground.isVisible = true;
+                    int yPositionCurrentBackground = yPositionCurrentContent - (int) ((font.lineHeight * fontSize + additionalLineSpacing) / 2);
+                    Gui currentEntryBackground = entryBackgrounds.get(currentContentIndex);
+                    ((ScreenPosition) currentEntryBackground.position).y = yPositionCurrentBackground;
+                    currentEntryBackground.isVisible = true;
 
-                        if (senderEntriesMap.containsKey(currentContentIndex)) {
-                            Gui currentSenderEntry = senderEntriesMap.get(currentContentIndex).getMesh();
-                            ((ScreenPosition) currentSenderEntry.position).y = yPositionCurrentContent;
-                            currentSenderEntry.isVisible = true;
-                        }
+                    if (senderEntriesMap.containsKey(currentContentIndex)) {
+                        Gui currentSenderEntry = senderEntriesMap.get(currentContentIndex).getMesh();
+                        ((ScreenPosition) currentSenderEntry.position).y = yPositionCurrentContent;
+                        currentSenderEntry.isVisible = true;
                     }
                 }
+            }
 
-                if (isOpen) {
-                    field.setVisibility(true);
-                }
-//            }
+            if (isOpen) {
+                field.setVisibility(true);
+            }
 
             if (instantiationTimeMap.isEmpty()) {
                 newChatMessages = false;
@@ -192,14 +185,6 @@ public class ChatScreen extends Screen {
 
         entryContentIndex = Math.max(entryContentIndex, 0);
         entryContentIndex = Math.min(entryContentIndex, Math.max(contentEntries.size() - rows, 0));
-
-        // TODO: 2025-07-03 to remove eventually
-
-        if (KeyInput.isKeyDown(GLFW_KEY_U)) {
-            appendChat("tomyleej", new float[] {0, 1, 0}, "what's good my g " + count);
-            needsToBeUpdated = true;
-            count++;
-        }
 
         if (!isOpen && (KeyInput.isKeyDown(GLFW_KEY_SLASH) ||
                         KeyInput.isKeyDown(GLFW_KEY_T) ||
