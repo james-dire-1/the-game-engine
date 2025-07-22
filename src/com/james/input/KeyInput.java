@@ -10,7 +10,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyInput extends GLFWKeyCallback {
 
-    public static boolean isTypingContext = true;
+    public static boolean isTypingContext = false;
 
     private static final boolean[] keysPressed = new boolean[GLFW_KEY_LAST];
     private static final boolean[] keysDown = new boolean[GLFW_KEY_LAST];

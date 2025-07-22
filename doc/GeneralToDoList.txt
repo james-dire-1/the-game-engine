@@ -13,3 +13,5 @@ Provide documentation for GeneralSphereHitbox
 Provide documentation for ChatScreen
 
 Add parenting capabilities to GuiText and PersistentGuiText
+
+Make emojis not crash the whole game

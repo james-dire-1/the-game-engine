@@ -33,18 +33,25 @@ public class ChatScreen extends Screen {
     private int screenY = 420;
     private int contentWidth = 600;
     private int senderWidth = 200;
+    private float messageShowTime = 7;
     private int additionalLineSpacing = 0;
 
     private final List<PersistentGuiText> contentEntries = new ArrayList<>();
     private final List<Gui> entryBackgrounds = new ArrayList<>();
     private final Map<Integer, PersistentGuiText> senderEntriesMap = new HashMap<>();
+    // private final Map<Gui, Float> instantiationTimeMapBackground = new HashMap<>();
+    // private final Map<PersistentGuiText, Float> instantiationTimeMapText = new HashMap<>();
+    private final Map<Integer, Float> instantiationTimeMap = new HashMap<>();
+
     private final GuiText field;
 
     private int entryContentIndex;
     private boolean needsToBeUpdated = true;
-    private boolean isOpen = true;
+    private boolean isOpen = false;
     private float lastBlinkTime = Time.getCurrentTime();
     private boolean blinkState;
+    private boolean newChatMessages = false;
+    private boolean justClosedChat = false; // to remove enter key bug
 
     public ChatScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
@@ -76,6 +83,7 @@ public class ChatScreen extends Screen {
             super.addGui(entryBackground);
 
             entryBackgrounds.add(entryBackground);
+//            instantiationTimeMapBackground.put(entryBackground, Time.getCurrentTime());
 
             ScreenPosition entryContentPosition = new ScreenPosition(screenX + senderWidth, 0);
 
@@ -86,6 +94,9 @@ public class ChatScreen extends Screen {
             super.addGui(contentEntry.getMesh());
 
             contentEntries.add(contentEntry);
+//            instantiationTimeMapText.put(contentEntry, Time.getCurrentTime());
+
+            instantiationTimeMap.put(contentEntries.size()-1, Time.getCurrentTime());
 
             if (i == 0) {
                 ScreenPosition entrySenderPosition = new ScreenPosition(screenX, 0);
@@ -97,10 +108,12 @@ public class ChatScreen extends Screen {
 
                 int senderEntryIndex = contentEntries.size()-1;
                 senderEntriesMap.put(senderEntryIndex, senderEntry);
+//                instantiationTimeMapText.put(senderEntry, Time.getCurrentTime());
             }
         }
 
         entryContentIndex = Math.max(contentEntries.size() - rows, 0);
+        newChatMessages = true;
     }
 
     private int count;
@@ -117,7 +130,7 @@ public class ChatScreen extends Screen {
             field.displayCarat(blinkState);
         }
 
-        if (needsToBeUpdated) {
+        if (needsToBeUpdated || newChatMessages) {
             needsToBeUpdated = false;
 
             for (PersistentGuiText contentEntry : contentEntries) {
@@ -131,46 +144,54 @@ public class ChatScreen extends Screen {
             }
             field.setVisibility(false);
 
-            if (isOpen) {
+//            if (isOpen) {
                 int visibleEntryEndIndex = Math.min(contentEntries.size() - 1, rows - 1);
 
                 for (int i = 0; i <= visibleEntryEndIndex; i++) {
                     int currentContentIndex = entryContentIndex + i;
 
-                    int yPositionCurrentContent = screenY - i * (int) (font.lineHeight * fontSize + additionalLineSpacing);
-                    Gui currentContentEntry = contentEntries.get(currentContentIndex).getMesh();
-                    ((ScreenPosition) currentContentEntry.position).y = yPositionCurrentContent;
-                    currentContentEntry.isVisible = true;
+                    if (isOpen || instantiationTimeMap.containsKey(currentContentIndex)) {
+                        int yPositionCurrentContent = screenY - i * (int) (font.lineHeight * fontSize + additionalLineSpacing);
+                        Gui currentContentEntry = contentEntries.get(currentContentIndex).getMesh();
+                        ((ScreenPosition) currentContentEntry.position).y = yPositionCurrentContent;
+                        currentContentEntry.isVisible = true;
 
-                    int yPositionCurrentBackground = yPositionCurrentContent - (int) ((font.lineHeight * fontSize + additionalLineSpacing) / 2);
-                    Gui currentEntryBackground = entryBackgrounds.get(currentContentIndex);
-                    ((ScreenPosition) currentEntryBackground.position).y = yPositionCurrentBackground;
-                    currentEntryBackground.isVisible = true;
+                        int yPositionCurrentBackground = yPositionCurrentContent - (int) ((font.lineHeight * fontSize + additionalLineSpacing) / 2);
+                        Gui currentEntryBackground = entryBackgrounds.get(currentContentIndex);
+                        ((ScreenPosition) currentEntryBackground.position).y = yPositionCurrentBackground;
+                        currentEntryBackground.isVisible = true;
 
-                    if (senderEntriesMap.containsKey(currentContentIndex)) {
-                        Gui currentSenderEntry = senderEntriesMap.get(currentContentIndex).getMesh();
-                        ((ScreenPosition) currentSenderEntry.position).y = yPositionCurrentContent;
-                        currentSenderEntry.isVisible = true;
+                        if (senderEntriesMap.containsKey(currentContentIndex)) {
+                            Gui currentSenderEntry = senderEntriesMap.get(currentContentIndex).getMesh();
+                            ((ScreenPosition) currentSenderEntry.position).y = yPositionCurrentContent;
+                            currentSenderEntry.isVisible = true;
+                        }
                     }
                 }
 
-                field.setVisibility(true);
+                if (isOpen) {
+                    field.setVisibility(true);
+                }
+//            }
+
+            if (instantiationTimeMap.isEmpty()) {
+                newChatMessages = false;
             }
         }
 
-        if (KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_DOWN) || ScrollInput.getYOffset() < -0.5f) {
-            entryContentIndex++;
-            needsToBeUpdated = true;
-        }
-        if (KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_UP) || ScrollInput.getYOffset() > 0.5f) {
-            entryContentIndex--;
-            needsToBeUpdated = true;
+        if (isOpen) {
+            if (KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_DOWN) || ScrollInput.getYOffset() < -0.5f) {
+                entryContentIndex++;
+                needsToBeUpdated = true;
+            }
+            if (KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_UP) || ScrollInput.getYOffset() > 0.5f) {
+                entryContentIndex--;
+                needsToBeUpdated = true;
+            }
         }
 
         entryContentIndex = Math.max(entryContentIndex, 0);
         entryContentIndex = Math.min(entryContentIndex, Math.max(contentEntries.size() - rows, 0));
-
-        super.update();
 
         // TODO: 2025-07-03 to remove eventually
 
@@ -180,16 +201,27 @@ public class ChatScreen extends Screen {
             count++;
         }
 
-        if (!isOpen && KeyInput.isKeyDown(GLFW_KEY_SLASH)) {
-            isOpen = true;
-            needsToBeUpdated = true;
-            KeyInput.isTypingContext = true;
+        if (!isOpen && (KeyInput.isKeyDown(GLFW_KEY_SLASH) ||
+                        KeyInput.isKeyDown(GLFW_KEY_T) ||
+                        (KeyInput.isKeyDown(GLFW_KEY_ENTER) && !justClosedChat))) {
+            openChat();
         }
         if (isOpen && KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_ESCAPE)) {
-            isOpen = false;
-            needsToBeUpdated = true;
-            KeyInput.isTypingContext = false;
+            closeChat();
         }
+
+        Iterator<Map.Entry<Integer, Float>> iterator = instantiationTimeMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Float> entry = iterator.next();
+            float instantiationTime = entry.getValue();
+
+            if (Time.getCurrentTime() - instantiationTime >= messageShowTime) {
+                iterator.remove();
+            }
+        }
+
+        justClosedChat = false;
+        super.update();
     }
 
     public void onTypingInput(char character, int key) {
@@ -199,7 +231,13 @@ public class ChatScreen extends Screen {
             } else if (key == GLFW_KEY_BACKSPACE) {
                 field.backspace();
             } else if (key == GLFW_KEY_ENTER) {
-                // TODO: 2025-07-19 Send the chat message
+                String trimmedChatMessage = field.getCurrentText().trim();
+                if (!trimmedChatMessage.equals("")) {
+                    field.setText("");
+                    appendChat("Player", new float[]{1, 1, 0}, trimmedChatMessage);
+                }
+
+                closeChat();
             }
 
             if (character != '\u0000' || key == GLFW_KEY_BACKSPACE) {
@@ -207,6 +245,21 @@ public class ChatScreen extends Screen {
                 field.displayCarat(true);
             }
         }
+    }
+
+    private void openChat() {
+        isOpen = true;
+        needsToBeUpdated = true;
+        KeyInput.isTypingContext = true;
+    }
+
+    private void closeChat() {
+        isOpen = false;
+        needsToBeUpdated = true;
+        KeyInput.isTypingContext = false;
+
+        entryContentIndex = Math.max(contentEntries.size() - rows, 0);
+        justClosedChat = true;
     }
 
 }

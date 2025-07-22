@@ -151,6 +151,8 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
     private Screen screen;
     private int maxCharCount;
 
+    public String getCurrentText() { return currentText.toString(); }
+
     /**
      * Allows the text for this GuiText to be edited at any time.
      *
