@@ -15,3 +15,5 @@ Provide documentation for ChatScreen
 Add parenting capabilities to GuiText and PersistentGuiText
 
 Make emojis not crash the whole game
+
+Inconsistency with ScreenSize and ScreenPosition (float vs int)

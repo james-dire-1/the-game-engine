@@ -91,6 +91,20 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    @Override
+    public void setAlpha(float alpha) {
+        for (Gui gui : master.children) {
+            gui.alpha = alpha;
+        }
+    }
+
+    @Override
+    public void changeAlpha(float deltaAlpha) {
+        for (Gui gui : master.children) {
+            gui.alpha += deltaAlpha;
+        }
+    }
+
     /**
      * This is a method that is exclusive to GuiText. Updates the color information for every character of
      * the text, in case a ColorContents object has changed its progress value. This method should be called

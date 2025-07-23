@@ -13,6 +13,11 @@ public class MixedSize extends Size {
         this.offset = offset;
     }
 
+    public MixedSize(float normalizedX, float normalizedY, int screenX, int screenY) {
+        this.size = new NormalizedSize(normalizedX, normalizedY);
+        this.offset = new ScreenSize(screenX, screenY);
+    }
+
     @Override
     public Vector2f normalized() {
         return RenderingMath.add(size.normalized(), offset.normalized());

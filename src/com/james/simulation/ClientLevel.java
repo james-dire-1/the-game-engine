@@ -23,7 +23,7 @@ import java.util.Map;
 public class ClientLevel extends LevelProperties {
 
     public final ClientPacketSendEvents events;
-    public boolean isReady;
+    public boolean isReady = false;
 
     private final Player player;
     public Player getPlayer() { return player; }

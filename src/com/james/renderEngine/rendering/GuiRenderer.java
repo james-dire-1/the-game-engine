@@ -55,7 +55,8 @@ public class GuiRenderer {
                 shader.loadSingleColor(gui.singleColor);
 
             if (    gui.renderingMode == Gui.RenderingMode.ColorGradient ||
-                    gui.renderingMode == Gui.RenderingMode.SingleColor)
+                    gui.renderingMode == Gui.RenderingMode.SingleColor ||
+                    gui.renderingMode == Gui.RenderingMode.Text)
                 shader.loadAlpha(gui.alpha);
 
             glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);

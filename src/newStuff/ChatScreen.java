@@ -7,9 +7,7 @@ import com.james.renderEngine.textRendering.dataTypes.Line;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.TypingInputNotifier;
-import com.james.renderEngine.ui.dataTypes.NormalizedPosition;
-import com.james.renderEngine.ui.dataTypes.ScreenPosition;
-import com.james.renderEngine.ui.dataTypes.ScreenSize;
+import com.james.renderEngine.ui.dataTypes.*;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.simulation.ClientLevel;
@@ -33,8 +31,9 @@ public class ChatScreen extends Screen {
     private int screenY = 420;
     private int contentWidth = 600;
     private int senderWidth = 200;
-    private float messageShowTime = 7;
     private int additionalLineSpacing = 0;
+    private float messageShowTime = 7f;
+    private float messageFadeOutTime = 1.5f;
 
     private final List<PersistentGuiText> contentEntries = new ArrayList<>();
     private final List<Gui> entryBackgrounds = new ArrayList<>();
@@ -42,6 +41,7 @@ public class ChatScreen extends Screen {
     private final Map<Integer, Float> instantiationTimeMap = new HashMap<>();
 
     private final GuiText field;
+    private final Gui fieldBackground;
 
     private int entryContentIndex;
     private boolean needsToBeUpdated = true;
@@ -54,15 +54,21 @@ public class ChatScreen extends Screen {
     public ChatScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
 
-        Gui gui = new Gui(new NormalizedPosition(1, 1), new ScreenSize(100, 100), null);
-        gui.setSingleColor(0, 1, 0);
-        gui.apply();
-        super.addGui(gui);
-
         this.field = new GuiText("", Main.dustismo, fieldFontSize, new ScreenPosition(screenX, (int) (font.lineHeight * fieldFontSize)));
         field.setSingleColor(1, 1, 1);
         field.makeEditable(this, 1000);
-        field.apply();
+        field.apply(); // note that we don't have to call super.addGuis()
+        field.setVisibility(false);
+
+        MixedPosition fieldBackgroundPosition = new MixedPosition(0, -1f, 0, (int)(font.lineHeight * fieldFontSize / 2));
+        ScreenSize fieldBackgroundSize = new ScreenSize(5000, (int)(font.lineHeight * fieldFontSize));
+
+        this.fieldBackground = new Gui(fieldBackgroundPosition, fieldBackgroundSize, null);
+        fieldBackground.setSingleColor(0, 0, 0);
+        fieldBackground.apply();
+        fieldBackground.isVisible = false;
+        fieldBackground.alpha = 0.25f;
+        super.addGui(fieldBackground);
     }
 
     public void appendChat(String sender, float[] senderColor, String fullText) {
@@ -111,7 +117,6 @@ public class ChatScreen extends Screen {
         newChatMessages = true;
     }
 
-    private int count;
     @Override
     public void update() {
         if (ClientLevel.get() == null) {
@@ -123,6 +128,37 @@ public class ChatScreen extends Screen {
             blinkState = !blinkState;
 
             field.displayCarat(blinkState);
+        }
+
+        Iterator<Map.Entry<Integer, Float>> iterator = instantiationTimeMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Float> entry = iterator.next();
+            float instantiationTime = entry.getValue();
+
+            if (Time.getCurrentTime() - instantiationTime >= messageShowTime) {
+                int currentContentIndex = entry.getKey();
+                float deltaAlpha = -Time.getDeltaTime() / messageFadeOutTime;
+
+                PersistentGuiText currentContentEntry = contentEntries.get(currentContentIndex);
+                currentContentEntry.changeAlpha(deltaAlpha);
+
+                Gui currentEntryBackground = entryBackgrounds.get(currentContentIndex);
+                currentEntryBackground.alpha += 0.25f * deltaAlpha;
+
+                PersistentGuiText currentSenderEntry = null;
+                if (senderEntriesMap.containsKey(currentContentIndex)) {
+                    currentSenderEntry = senderEntriesMap.get(currentContentIndex);
+                    currentSenderEntry.changeAlpha(deltaAlpha);
+                }
+
+                if (currentEntryBackground.alpha <= 0) {
+                    iterator.remove();
+
+                    currentContentEntry.setAlpha(1f);
+                    currentEntryBackground.alpha = 0.25f;
+                    if (currentSenderEntry != null) currentSenderEntry.setAlpha(1f);
+                }
+            }
         }
 
         if (needsToBeUpdated || newChatMessages) {
@@ -137,15 +173,17 @@ public class ChatScreen extends Screen {
             for (PersistentGuiText senderEntry : senderEntriesMap.values()) {
                 senderEntry.getMesh().isVisible = false;
             }
-            field.setVisibility(false);
+            field.setVisibility(isOpen);
+            fieldBackground.isVisible = isOpen;
 
             int visibleEntryEndIndex = Math.min(contentEntries.size() - 1, rows - 1);
 
             for (int i = 0; i <= visibleEntryEndIndex; i++) {
                 int currentContentIndex = entryContentIndex + i;
+                int currentContentPositionIndex = i + Math.max(rows - contentEntries.size(), 0);
 
                 if (isOpen || instantiationTimeMap.containsKey(currentContentIndex)) {
-                    int yPositionCurrentContent = screenY - i * (int) (font.lineHeight * fontSize + additionalLineSpacing);
+                    int yPositionCurrentContent = screenY - currentContentPositionIndex * (int) (font.lineHeight * fontSize + additionalLineSpacing);
                     Gui currentContentEntry = contentEntries.get(currentContentIndex).getMesh();
                     ((ScreenPosition) currentContentEntry.position).y = yPositionCurrentContent;
                     currentContentEntry.isVisible = true;
@@ -155,16 +193,19 @@ public class ChatScreen extends Screen {
                     ((ScreenPosition) currentEntryBackground.position).y = yPositionCurrentBackground;
                     currentEntryBackground.isVisible = true;
 
+                    Gui currentSenderEntry = null;
                     if (senderEntriesMap.containsKey(currentContentIndex)) {
-                        Gui currentSenderEntry = senderEntriesMap.get(currentContentIndex).getMesh();
+                        currentSenderEntry = senderEntriesMap.get(currentContentIndex).getMesh();
                         ((ScreenPosition) currentSenderEntry.position).y = yPositionCurrentContent;
                         currentSenderEntry.isVisible = true;
                     }
-                }
-            }
 
-            if (isOpen) {
-                field.setVisibility(true);
+                    if (isOpen && instantiationTimeMap.containsKey(currentContentIndex)) {
+                        currentContentEntry.alpha = 1f;
+                        currentEntryBackground.alpha = 0.25f;
+                        if (currentSenderEntry != null) currentSenderEntry.alpha = 1f;
+                    }
+                }
             }
 
             if (instantiationTimeMap.isEmpty()) {
@@ -193,16 +234,6 @@ public class ChatScreen extends Screen {
         }
         if (isOpen && KeyInput.isKeyDownIgnoreTypingContext(GLFW_KEY_ESCAPE)) {
             closeChat();
-        }
-
-        Iterator<Map.Entry<Integer, Float>> iterator = instantiationTimeMap.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Integer, Float> entry = iterator.next();
-            float instantiationTime = entry.getValue();
-
-            if (Time.getCurrentTime() - instantiationTime >= messageShowTime) {
-                iterator.remove();
-            }
         }
 
         justClosedChat = false;

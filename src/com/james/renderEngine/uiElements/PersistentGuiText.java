@@ -41,6 +41,17 @@ public class PersistentGuiText extends AbstractGuiText {
         mesh.isVisible = visible;
     }
 
+    @Override
+    public void setAlpha(float alpha) {
+        mesh.alpha = alpha;
+    }
+
+    // TODO: 2025-07-22 Alpha changing is not working for text at all! Maybe it's something in the shaders causing this?
+    @Override
+    public void changeAlpha(float deltaAlpha) {
+        mesh.alpha += deltaAlpha;
+    }
+
     private Gui mesh;
 
     @Override
