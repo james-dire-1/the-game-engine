@@ -16,7 +16,7 @@ import templates.communication.ClientPacketReceiveActions;
 public class OnlineGameLoader extends GameLoader {
 
     public OnlineGameLoader() {
-        super(new OnlineClientPacketSendEvents());
+        super(OnlineClientPacketSendEvents.get());
 
         GLFWUtilities.setWindowTitle(GLFWWindowTitles.MULTIPLAYER);
     }
@@ -28,6 +28,14 @@ public class OnlineGameLoader extends GameLoader {
     @Override
     protected void onGameClientClosing() {
         Client.get().disconnect();
+    }
+
+    public static void usernamePromptReceived(Object[] objects) {
+        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::usernamePromptReceived);
+    }
+
+    public static void usernameSuccessReceived(Object[] objects) {
+        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::usernameSuccessReceived);
     }
 
     public static void levelIsReadyReceived(Object[] objects) {
@@ -149,7 +157,9 @@ public class OnlineGameLoader extends GameLoader {
 
     public static void onConnectionException(Exception e, Client client) {
         ThreadManager.executeOnMainThread(() -> {
-             if (!e.getMessage().equals("Socket closed")) {
+            String exceptionMessage = e.getMessage();
+
+             if (exceptionMessage == null || !exceptionMessage.equals("Socket closed")) {
                 UiHandler.screens.add(new DisconnectedScreen(e));
 
                 ClientLevel.delete();

@@ -36,6 +36,8 @@ public class ConnectingScreen extends Screen {
         new Client(host, 6789) {
             @Override
             public void preConnectTasks() {
+                setReadListener(PacketType.USERNAME_PROMPT, OnlineGameLoader::usernamePromptReceived);
+                setReadListener(PacketType.USERNAME_SUCCESS, OnlineGameLoader::usernameSuccessReceived);
                 setReadListener(PacketType.LEVEL_IS_READY, OnlineGameLoader::levelIsReadyReceived);
                 setReadListener(PacketType.PHYSICAL_OBJECT_ADDED_TO_LEVEL, OnlineGameLoader::physicalObjectAddedReceived);
                 setReadListener(PacketType.PHYSICAL_OBJECT_MOVED, OnlineGameLoader::physicalObjectMovedReceived);
@@ -53,9 +55,6 @@ public class ConnectingScreen extends Screen {
 
             @Override
             public void onSuccessfulConnection() {
-                ThreadManager.executeOnMainThread(() -> {
-                    Main.gameLoader = new OnlineGameLoader();
-                });
             }
 
             @Override

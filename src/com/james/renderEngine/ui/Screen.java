@@ -221,7 +221,7 @@ public class Screen {
      * @implNote If it's the first screen being created (i.e. we are not currently iterating through the
      * screens list in UiHandler), then we can call UiHandler.screens.add() directly.
      */
-    protected static void queueScreenForAddition(Screen screen) {
+    public static void queueScreenForAddition(Screen screen) {
         screensToBeAdded.add(screen);
     }
 

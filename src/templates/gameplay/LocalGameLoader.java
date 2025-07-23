@@ -11,7 +11,7 @@ public class LocalGameLoader extends GameLoader {
     public LevelInitializer levelInitializer;
 
     public LocalGameLoader() {
-        super(new LocalClientPacketSendEvents());
+        super(LocalClientPacketSendEvents.get());
 
         GLFWUtilities.setWindowTitle(GLFWWindowTitles.DEBUG_MODE);
     }

@@ -9,6 +9,23 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
 
 public class OnlineClientPacketSendEvents implements ClientPacketSendEvents {
 
+    private static OnlineClientPacketSendEvents instance;
+    public static OnlineClientPacketSendEvents get() { return instance; }
+
+    public OnlineClientPacketSendEvents() {
+        instance = this;
+    }
+
+    @Override
+    public void sendPlayerUsername(String username) {
+        if (IS_NETWORK_DEBUG) System.out.println("OnlineClientPacketSendEvents.sendPlayerUsername");
+
+        Object[] objects = { username };
+
+        Packet packet = new Packet(PacketType.PLAYER_USERNAME, objects);
+        Client.get().sendPacket(packet);
+    }
+
     @Override
     public void sendPlayerJoined(float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("OnlineClientPacketSendEvents.sendPlayerJoined");

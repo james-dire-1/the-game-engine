@@ -7,6 +7,7 @@ package templates.communication;
  */
 public interface ClientPacketSendEvents {
 
+    void sendPlayerUsername(String username);
     // TODO: 2024-06-28 In the future, don't send the position of where the player should spawn server-side
     void sendPlayerJoined(float x, float y, float z, float rotY);
     // TODO: 2024-06-27 In the future, only send if player was moved, instead of all the time

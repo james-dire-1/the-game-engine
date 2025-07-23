@@ -65,8 +65,6 @@ public class MultiplayerScreen extends Screen {
             field.append(character);
         } else if (key == GLFW.GLFW_KEY_BACKSPACE) {
             field.backspace();
-        } else if (key == GLFW.GLFW_KEY_ENTER) {
-            field.append('\n');
         }
     }
 

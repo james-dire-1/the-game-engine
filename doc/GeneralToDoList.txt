@@ -17,3 +17,5 @@ Add parenting capabilities to GuiText and PersistentGuiText
 Make emojis not crash the whole game
 
 Inconsistency with ScreenSize and ScreenPosition (float vs int)
+
+Check consistency of printing in networking code IS_NETWORK_DEBUG etc...

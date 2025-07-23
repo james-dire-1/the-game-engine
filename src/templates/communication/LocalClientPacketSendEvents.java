@@ -20,6 +20,20 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
  */
 public class LocalClientPacketSendEvents implements ClientPacketSendEvents {
 
+    // TODO: 2025-07-23 Handle proper deleting of this
+    private static LocalClientPacketSendEvents instance;
+    public static LocalClientPacketSendEvents get() { return instance; }
+
+    public LocalClientPacketSendEvents() {
+        instance = this;
+    }
+
+    @Override
+    public void sendPlayerUsername(String username) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalClientPacketSendEvents.sendPlayerUsername");
+        // Do nothing; this is a local game!
+    }
+
     @Override
     public void sendPlayerJoined(float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalClientPacketSendEvents.sendPlayerJoined");

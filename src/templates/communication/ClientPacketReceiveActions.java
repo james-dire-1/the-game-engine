@@ -1,14 +1,19 @@
 package templates.communication;
 
+import com.james.renderEngine.ui.Screen;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
+import com.james.tools.ThreadManager;
 import com.james.tools.Time;
+import game.main.Main;
 import newStuff.GeneralSphereHitbox;
+import newStuff.UsernamePromptScreen;
 import templates.gameplay.GameLoader;
+import templates.gameplay.OnlineGameLoader;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
@@ -20,6 +25,18 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
  * Methods that handle what should happen on the client side when particular events occur on the server side.
  */
 public class ClientPacketReceiveActions {
+
+    public static void usernamePromptReceived() {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernamePromptReceived");
+
+        Screen.queueScreenForAddition(new UsernamePromptScreen());
+    }
+
+    public static void usernameSuccessReceived() {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernameSuccessReceived");
+
+        Main.gameLoader = new OnlineGameLoader();
+    }
 
     public static void levelIsReadyReceived() {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelIsReadyReceived");
@@ -55,13 +72,20 @@ public class ClientPacketReceiveActions {
     public static void physicalObjectMovedReceived(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectMovedReceived");
 
-        CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
-        if (object != null) {
-            object.updatePrevPosition();
-            object.setPosition(x, y, z);
-            object.lastTime = Time.getCurrentTime();
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedPhysicalObject object = level.getCachedPhysicalObject(id);
+
+            if (object != null) {
+                object.updatePrevPosition();
+                object.setPosition(x, y, z);
+                object.lastTime = Time.getCurrentTime();
+            } else {
+                Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
