@@ -1,6 +1,5 @@
 package com.james.common.simulation.collisionEngine.hitboxes;
 
-import com.james.simulation.collisionEngine.ClientCollisionHandler;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.serverSide.simulation.collisionEngine.CollisionHandler;
 import com.james.serverSide.simulation.objects.MovableObject;
@@ -32,8 +31,8 @@ public abstract class AbstractEllipsoidHitbox {
     /**
      * Enables the hitbox. This field is checked in the collision handlers to see if the collision routine
      * must be performed.
+     * See ClientCollisionHandler
      * @see CollisionHandler
-     * @see ClientCollisionHandler
      */
     public void enable() {
         this.movableObject.isAffectedByAABBCollisions = true;
@@ -42,8 +41,8 @@ public abstract class AbstractEllipsoidHitbox {
     /**
      * Disables the hitbox. This field is checked in the collision handlers to see if the collision routine
      * must be performed.
+     * See ClientCollisionHandler
      * @see CollisionHandler
-     * @see ClientCollisionHandler
      */
     public void disable() {
         this.movableObject.isAffectedByAABBCollisions = false;

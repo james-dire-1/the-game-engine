@@ -19,3 +19,9 @@ Make emojis not crash the whole game
 Inconsistency with ScreenSize and ScreenPosition (float vs int)
 
 Check consistency of printing in networking code IS_NETWORK_DEBUG etc...
+
+Remove isOnlineGame and lastInstance from LevelInitializer (not needed on the server side, so it's a bad place to put
+them)
+
+* PlayerInfo lacks consistency between client code and server code!
+* The same is true for GlobalConstants
