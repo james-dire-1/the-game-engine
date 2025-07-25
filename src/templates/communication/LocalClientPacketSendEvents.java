@@ -31,7 +31,7 @@ public class LocalClientPacketSendEvents implements ClientPacketSendEvents {
     @Override
     public void sendPlayerUsername(String username) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalClientPacketSendEvents.sendPlayerUsername");
-        // Do nothing; this is a local game!
+        LocalServerProperties.playerUsernameReceived(username);
     }
 
     @Override

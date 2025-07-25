@@ -41,8 +41,6 @@ public abstract class GameLoader {
     private static final float SECONDS_PER_SEND = 0.1f;
 
     public GameLoader(ClientPacketSendEvents events) {
-        additionalStartupActions();
-
         batchedGameObjectsList = new BatchedGameObjectsList();
         Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
 
@@ -57,7 +55,6 @@ public abstract class GameLoader {
         MasterRenderer.currentCamera = focusCamera;
     }
 
-    protected abstract void additionalStartupActions();
     protected abstract void onGameClientClosing();
 
     public void update() {

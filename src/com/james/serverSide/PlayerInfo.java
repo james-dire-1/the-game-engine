@@ -13,11 +13,8 @@ import templates.serverSide.communication.ServerPacketReceiveActions;
  */
 public class PlayerInfo {
 
+    public String username;
     public Level level;
-
-    public PlayerInfo(Level level) {
-        this.level = level;
-    }
 
     /**
      * Easy way to retrieve this PlayerInfo's ConnectedPlayer object.

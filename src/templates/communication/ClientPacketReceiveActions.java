@@ -1,18 +1,19 @@
 package templates.communication;
 
+import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.renderEngine.ui.Screen;
+import com.james.serverSide.LevelInitializer;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
-import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import com.james.tools.ThreadManager;
 import com.james.tools.Time;
 import game.main.Main;
 import newStuff.GeneralSphereHitbox;
 import newStuff.UsernamePromptScreen;
 import templates.gameplay.GameLoader;
+import templates.gameplay.LocalGameLoader;
 import templates.gameplay.OnlineGameLoader;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
@@ -29,13 +30,21 @@ public class ClientPacketReceiveActions {
     public static void usernamePromptReceived() {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernamePromptReceived");
 
-        Screen.queueScreenForAddition(new UsernamePromptScreen());
+        if (LevelInitializer.isOnlineGame) {
+            Screen.queueScreenForAddition(new UsernamePromptScreen());
+        } else {
+            new LocalClientPacketSendEvents().sendPlayerUsername("localplayer");
+        }
     }
 
     public static void usernameSuccessReceived() {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernameSuccessReceived");
 
-        Main.gameLoader = new OnlineGameLoader();
+        if (LevelInitializer.isOnlineGame) {
+            Main.gameLoader = new OnlineGameLoader();
+        } else {
+            Main.gameLoader = new LocalGameLoader();
+        }
     }
 
     public static void levelIsReadyReceived() {
@@ -92,44 +101,65 @@ public class ClientPacketReceiveActions {
     public static void physicalObjectRotatedReceived(int id, float rotX, float rotY, float rotZ) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectRotatedReceived");
 
-        CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
-        if (object != null) {
-            object.updatePrevRotation();
-            object.setRotation(rotX, rotY, rotZ);
-            object.lastTime = Time.getCurrentTime();
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
+
+            if (object != null) {
+                object.updatePrevRotation();
+                object.setRotation(rotX, rotY, rotZ);
+                object.lastTime = Time.getCurrentTime();
+            } else {
+                Warnings.printClientServerDeSyncWarning("Attempting to rotate a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to rotate a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            Warnings.printClientServerDeSyncWarning("Attempting to rotate a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
     public static void physicalObjectScaledReceived(int id, float scale) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectScaledReceived");
 
-        CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
-        if (object != null) {
-            object.setScale(scale);
-            // This must be done manually since scale is a value type, not a reference type
-            object.getGameObject().setScale(scale);
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
+
+            if (object != null) {
+                object.setScale(scale);
+                // This must be done manually since scale is a value type, not a reference type
+                object.getGameObject().setScale(scale);
+            } else {
+                Warnings.printClientServerDeSyncWarning("Attempting to scale a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to scale a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            Warnings.printClientServerDeSyncWarning("Attempting to scale a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
     public static void physicalObjectTransformChangedReceived(int id, Vector3f position, Vector3f rotation, float scale) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectTransformChangedReceived");
 
-        CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
-        if (object != null) {
-            object.updatePrevPosition();
-            object.updatePrevRotation();
-            object.setPosition(position.x, position.y, position.z);
-            object.setRotation(rotation.x, rotation.y, rotation.z);
-            object.setScale(scale);
-            // This must be done manually since scale is a value type, not a reference type
-            object.getGameObject().setScale(scale);
-            object.lastTime = Time.getCurrentTime();
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
+
+            if (object != null) {
+                object.updatePrevPosition();
+                object.updatePrevRotation();
+                object.setPosition(position.x, position.y, position.z);
+                object.setRotation(rotation.x, rotation.y, rotation.z);
+                object.setScale(scale);
+                // This must be done manually since scale is a value type, not a reference type
+                object.getGameObject().setScale(scale);
+                object.lastTime = Time.getCurrentTime();
+            } else {
+                Warnings.printClientServerDeSyncWarning("Attempting to transform a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to transform a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            Warnings.printClientServerDeSyncWarning("Attempting to transform a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
@@ -162,15 +192,21 @@ public class ClientPacketReceiveActions {
     public static void connectedPlayerTransformChangedReceived(int id, float x, float y, float z, float rotY) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerMovedReceived");
 
-        CachedConnectedPlayer cachedConnectedPlayer = ClientLevel.get().getCachedConnectedPlayer(id);
-        if (cachedConnectedPlayer != null) {
-            cachedConnectedPlayer.updatePrevPosition();
-            cachedConnectedPlayer.updatePrevRotation();
-            cachedConnectedPlayer.setPosition(x, y, z);
-            cachedConnectedPlayer.setRotation(0, rotY, 0);
-            cachedConnectedPlayer.lastTime = Time.getCurrentTime();
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedConnectedPlayer cachedConnectedPlayer = ClientLevel.get().getCachedConnectedPlayer(id);
+            if (cachedConnectedPlayer != null) {
+                cachedConnectedPlayer.updatePrevPosition();
+                cachedConnectedPlayer.updatePrevRotation();
+                cachedConnectedPlayer.setPosition(x, y, z);
+                cachedConnectedPlayer.setRotation(0, rotY, 0);
+                cachedConnectedPlayer.lastTime = Time.getCurrentTime();
+            } else {
+                Warnings.printClientServerDeSyncWarning("Attempting to transform a ConnectedPlayer client-side by id, but that ConnectedPlayer doesn't exist client-side");
+            }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to move a ConnectedPlayer client-side by id, but that ConnectedPlayer doesn't exist client-side");
+            Warnings.printClientServerDeSyncWarning("Attempting to transform a ConnectedPlayer client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 

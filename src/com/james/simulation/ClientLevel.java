@@ -53,8 +53,6 @@ public class ClientLevel extends LevelProperties {
         }
 
         clientCollisionHandler.update();
-
-        // todo
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {

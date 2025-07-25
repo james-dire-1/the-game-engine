@@ -16,12 +16,18 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class LevelInitializer implements Runnable {
 
+    public static boolean isOnlineGame;
+
+    public static LevelInitializer lastInstance;
+
     public volatile boolean shouldRun = true;
     public final Thread thread;
 
-    protected final Level level;
+    private final Level level;
 
     public LevelInitializer(String levelName, ServerPacketSendEvents events) {
+        LevelInitializer.lastInstance = this;
+
         this.level = new Level(levelName, events);
         this.thread = new Thread(this);
         thread.start();
@@ -85,8 +91,8 @@ public class LevelInitializer implements Runnable {
                 super.moveUpdate();
             }
         };
-        level.add(abstractArt);
 
+        level.add(abstractArt);
     }
 
 }

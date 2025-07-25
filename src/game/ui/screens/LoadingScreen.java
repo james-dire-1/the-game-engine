@@ -6,12 +6,15 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.serverSide.LevelInitializer;
 import com.james.tools.ColorUtils;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
 import com.james.renderEngine.textRendering.TextAlignment;
 import newStuff.ChatScreen;
+import templates.communication.LocalServerPacketSendEvents;
+import templates.communication.LocalServerProperties;
 
 public class LoadingScreen extends Screen {
 
@@ -23,11 +26,17 @@ public class LoadingScreen extends Screen {
         text.setAlignment(TextAlignment.CENTER_ALIGNED);
         text.apply();
         super.addGuis(text.getAllGuis());
+
+        new LevelInitializer("main", new LocalServerPacketSendEvents());
+        LevelInitializer.isOnlineGame = false;
+        LocalServerProperties.clientJoined();
     }
 
     @Override
     public void update() {
-        if (ClientLevel.get().isReady) {
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null && level.isReady) {
             super.markForDeletion();
             queueScreenForAddition(new ChatScreen());
 

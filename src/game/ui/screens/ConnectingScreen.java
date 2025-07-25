@@ -7,6 +7,7 @@ import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
 import game.main.Main;
@@ -29,6 +30,7 @@ public class ConnectingScreen extends Screen {
         text.apply();
         super.addGuis(text.getAllGuis());
 
+        LevelInitializer.isOnlineGame = true;
         connectToServer(host);
     }
 

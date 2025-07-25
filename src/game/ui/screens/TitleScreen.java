@@ -14,9 +14,11 @@ import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.serverSide.LevelInitializer;
 import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.ui.uiElements.PersistentTitleHeader;
+import templates.communication.LocalServerPacketSendEvents;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.LocalGameLoader;
 import game.main.Main;
@@ -97,7 +99,6 @@ public class TitleScreen extends Screen {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 queueScreenForAddition(new LoadingScreen());
-                Main.gameLoader = new LocalGameLoader();
             }
         });
         super.addGuis(playButton.getAllGuis());

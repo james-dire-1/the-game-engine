@@ -20,11 +20,23 @@ public class LocalServerProperties implements ServerProperties {
         LocalServerProperties.playerInfo = playerInfo;
     }
 
-    public static void playerJoinedReceived(float x, float y, float z, float rotY) {
-        LocalServerProperties properties = new LocalServerProperties();
+    public static void clientJoined() {
+        LocalServerProperties serverProperties = new LocalServerProperties();
 
         ServerThreadManager.executeOnALevelThread(Level.getByName("main"), () -> {
-            ServerPacketReceiveActions.playerJoinedReceived(properties, x, y, z, rotY);
+            ServerPacketReceiveActions.clientJoined(serverProperties);
+        });
+    }
+
+    public static void playerUsernameReceived(String username) {
+        ServerThreadManager.executeOnALevelThread(Level.getByName("main"), () -> {
+            ServerPacketReceiveActions.playerUsernameReceived(playerInfo, username);
+        });
+    }
+
+    public static void playerJoinedReceived(float x, float y, float z, float rotY) {
+        ServerThreadManager.executeOnALevelThread(Level.getByName("main"), () -> {
+            ServerPacketReceiveActions.playerJoinedReceived(playerInfo, x, y, z, rotY);
         });
     }
 

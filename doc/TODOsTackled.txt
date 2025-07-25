@@ -95,3 +95,7 @@ the TextMeshCreator [GuiText]
 
 // TO DO: 2024-07-12 Should we have a specific CachedConnectedPlayer class for this? [ClientLevel]
 -> Seems to have already been handled
+
+// TO DO: 2025-07-24 remove this section eventually [LocalGameLoader]
+
+// TO DO: 2025-07-23 Handle proper deleting of this [LevelInitializer]

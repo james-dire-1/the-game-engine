@@ -25,6 +25,20 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
 public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
     @Override
+    public void sendUsernamePrompt(PlayerInfo playerInfo) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendUsernamePrompt");
+
+        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::usernamePromptReceived);
+    }
+
+    @Override
+    public void notifyUsernameSuccess(PlayerInfo playerInfo) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.notifyUsernameSuccess");
+
+        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::usernameSuccessReceived);
+    }
+
+    @Override
     public void notifyThatLevelIsReady(PlayerInfo playerInfo) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.notifyThatLevelIsReady");
 

@@ -11,6 +11,8 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public interface ServerPacketSendEvents {
 
+    void sendUsernamePrompt(PlayerInfo playerInfo);
+    void notifyUsernameSuccess(PlayerInfo playerInfo);
     void notifyThatLevelIsReady(PlayerInfo playerInfo);
     void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale, PlayerInfo... playerInfoArray);
     void sendPhysicalObjectMoved(int id, float x, float y, float z);

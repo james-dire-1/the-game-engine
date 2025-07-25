@@ -22,10 +22,6 @@ public class OnlineGameLoader extends GameLoader {
     }
 
     @Override
-    protected void additionalStartupActions() {
-    }
-
-    @Override
     protected void onGameClientClosing() {
         Client.get().disconnect();
     }
