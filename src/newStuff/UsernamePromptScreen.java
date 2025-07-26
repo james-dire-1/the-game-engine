@@ -35,7 +35,7 @@ public class UsernamePromptScreen extends Screen {
 
         this.field = new GuiText("player", Main.dustismo, 0.35f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -250)));
         field.setAlignment(TextAlignment.LEFT_ALIGNED);
-        field.makeEditable(this, 30);
+        field.makeEditable(this, 20);
         field.apply();
         super.addGuis(field.getAllGuis());
 
@@ -47,7 +47,6 @@ public class UsernamePromptScreen extends Screen {
                 // TODO: 2025-07-23 Make this more general perhaps for local games too
                 super.markForDeletion();
                 new OnlineClientPacketSendEvents().sendPlayerUsername(field.text);
-                ChatScreen.localUsername = field.text;
             }
         });
         super.addGuis(submit.getAllGuis());

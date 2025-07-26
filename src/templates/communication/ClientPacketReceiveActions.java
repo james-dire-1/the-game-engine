@@ -8,6 +8,8 @@ import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
+import com.james.simulation.objects.Player;
+import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.main.Main;
 import newStuff.ChatScreen;
@@ -35,12 +37,14 @@ public class ClientPacketReceiveActions {
             Screen.queueScreenForAddition(new UsernamePromptScreen());
         } else {
             new LocalClientPacketSendEvents().sendPlayerUsername("localplayer");
-            ChatScreen.localUsername = "localplayer";
         }
     }
 
-    public static void usernameSuccessReceived() {
+    public static void usernameSuccessReceived(String username, int color) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernameSuccessReceived");
+
+        Player.localUsername = username;
+        Player.localColor = ColorUtils.asNormalizedRGBArray(color);
 
         if (LevelInitializer.isOnlineGame) {
             Main.gameLoader = new OnlineGameLoader();
@@ -171,10 +175,10 @@ public class ClientPacketReceiveActions {
         ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath));
     }
 
-    public static void connectedPlayerAddedReceived(int id, String username, float x, float y, float z, float rotY) {
+    public static void connectedPlayerAddedReceived(int id, String username, int color, float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerAddedReceived " + "{id=" + id + "}");
 
-        CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(username, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
+        CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(username, color, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
         boolean alreadyExists = ClientLevel.get().addCachedConnectedPlayer(id, cachedConnectedPlayer);
         if (alreadyExists) {
             Warnings.warn("ConnectedPlayer of id " + id + " already exists client-side");
@@ -247,7 +251,8 @@ public class ClientPacketReceiveActions {
             if (chatScreen != null) {
                 CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(playerId);
                 String username = cachedConnectedPlayer.username;
-                chatScreen.appendChat(username, ChatScreen.TEMP_SENDER_COLOR, message);
+                float[] color = cachedConnectedPlayer.color;
+                chatScreen.appendChat(username, color, message);
             } else {
                 Warnings.warn("Attempting to receive a chat message, but the client's ChatScreen object hasn't even been instantiated yet");
             }

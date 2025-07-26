@@ -31,7 +31,12 @@ public class OnlineGameLoader extends GameLoader {
     }
 
     public static void usernameSuccessReceived(Object[] objects) {
-        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::usernameSuccessReceived);
+        String username = (String) objects[0];
+        int color = (int) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.usernameSuccessReceived(username, color);
+        });
     }
 
     public static void levelIsReadyReceived(Object[] objects) {
@@ -104,13 +109,14 @@ public class OnlineGameLoader extends GameLoader {
     public static void connectedPlayerAddedReceived(Object[] objects) {
         int id = (int) objects[0];
         String username = (String) objects[1];
-        float x = (float) objects[2];
-        float y = (float) objects[3];
-        float z = (float) objects[4];
-        float rotY = (float) objects[5];
+        int color = (int) objects[2];
+        float x = (float) objects[3];
+        float y = (float) objects[4];
+        float z = (float) objects[5];
+        float rotY = (float) objects[6];
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.connectedPlayerAddedReceived(id, username, x, y, z, rotY);
+            ClientPacketReceiveActions.connectedPlayerAddedReceived(id, username, color, x, y, z, rotY);
         });
     }
 

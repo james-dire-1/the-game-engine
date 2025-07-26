@@ -32,10 +32,12 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void notifyUsernameSuccess(PlayerInfo playerInfo) {
+    public void notifyUsernameSuccess(PlayerInfo playerInfo, String username, int color) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.notifyUsernameSuccess");
 
-        ThreadManager.executeOnMainThread(ClientPacketReceiveActions::usernameSuccessReceived);
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.usernameSuccessReceived(username, color);
+        });
     }
 
     @Override
@@ -101,7 +103,7 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void sendConnectedPlayerAdded(int id, String username, float x, float y, float z, float rotY, PlayerInfo playerInfo) {
+    public void sendConnectedPlayerAdded(int id, String username, int color, float x, float y, float z, float rotY, PlayerInfo playerInfo) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendConnectedPlayerAdded " + "{id=" + id + "} to {id=" + playerInfo.getConnectedPlayer().id + "}");
 
         // Do nothing; this is a local game!

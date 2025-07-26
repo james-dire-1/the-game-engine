@@ -14,6 +14,8 @@ import templates.serverSide.communication.ServerPacketReceiveActions;
 public class PlayerInfo {
 
     public String username;
+    public int color;
+
     public Level level;
 
     /**

@@ -1,6 +1,7 @@
 package com.james.simulation.objects;
 
 import com.james.renderEngine.gameObjects.GameObject;
+import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -10,6 +11,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class CachedConnectedPlayer {
 
     public final String username;
+    public final float[] color;
 
     public float lastTime = Time.getCurrentTime();
 
@@ -26,8 +28,9 @@ public class CachedConnectedPlayer {
     public Vector3f getPrevPosition() { return prevPosition; }
     public Vector3f getPrevRotation() { return prevRotation; }
 
-    public CachedConnectedPlayer(String username, Vector3f position, Vector3f rotation) {
+    public CachedConnectedPlayer(String username, int color, Vector3f position, Vector3f rotation) {
         this.username = username;
+        this.color = ColorUtils.asNormalizedRGBArray(color);
 
         this.position = position;
         this.rotation = rotation;

@@ -12,6 +12,7 @@ import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
+import com.james.simulation.objects.Player;
 import com.james.tools.Time;
 import game.main.Main;
 import templates.communication.LocalClientPacketSendEvents;
@@ -23,10 +24,6 @@ import java.util.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ChatScreen extends Screen {
-
-    public static final float[] TEMP_SENDER_COLOR = {1f, 1f, 0f};
-
-    public static String localUsername;
 
     private static ChatScreen instance;
     public static ChatScreen get() { return instance; }
@@ -262,7 +259,7 @@ public class ChatScreen extends Screen {
                 String trimmedChatMessage = field.getCurrentText().trim();
                 if (!trimmedChatMessage.equals("")) {
                     field.setText("");
-                    appendChat(localUsername, new float[]{1, 1, 0}, trimmedChatMessage);
+                    appendChat(Player.localUsername, Player.localColor, trimmedChatMessage);
 
                     if (LevelInitializer.isOnlineGame) {
                         OnlineClientPacketSendEvents.get().sendChatMessage(1, trimmedChatMessage);
