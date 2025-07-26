@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.input;
 
 import org.lwjgl.glfw.GLFWScrollCallback;
 

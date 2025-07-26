@@ -13,7 +13,6 @@ import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.MousePicker;
 import com.james.tools.Time;
-import game.player.PlayerHandler;
 import game.ui.screens.PauseScreen;
 import com.james.tools.GameObjectInterpolator;
 import org.lwjgl.glfw.GLFW;

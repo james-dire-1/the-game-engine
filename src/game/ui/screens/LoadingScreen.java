@@ -3,16 +3,13 @@ package game.ui.screens;
 import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
-import com.james.renderEngine.ui.dataTypes.ScreenPosition;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
-import com.james.tools.ColorUtils;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
 import com.james.renderEngine.textRendering.TextAlignment;
-import newStuff.ChatScreen;
 import templates.communication.LocalServerPacketSendEvents;
 import templates.communication.LocalServerProperties;
 

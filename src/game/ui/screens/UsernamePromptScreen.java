@@ -1,4 +1,4 @@
-package newStuff;
+package game.ui.screens;
 
 import com.james.renderEngine.textRendering.TextAlignment;
 import com.james.renderEngine.ui.*;

@@ -1,4 +1,4 @@
-package game.player;
+package templates.gameplay;
 
 import com.james.common.simulation.LevelProperties;
 import com.james.simulation.objects.Player;

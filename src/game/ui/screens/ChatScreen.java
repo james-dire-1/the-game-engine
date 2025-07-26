@@ -1,4 +1,4 @@
-package newStuff;
+package game.ui.screens;
 
 import com.james.input.KeyInput;
 import com.james.renderEngine.textRendering.FontInfo;
@@ -15,6 +15,7 @@ import com.james.simulation.ClientLevel;
 import com.james.simulation.objects.Player;
 import com.james.tools.Time;
 import game.main.Main;
+import com.james.input.ScrollInput;
 import templates.communication.LocalClientPacketSendEvents;
 import templates.communication.OnlineClientPacketSendEvents;
 

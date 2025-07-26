@@ -4,6 +4,7 @@ import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.objects.ConnectedPlayer;
 import templates.serverSide.communication.ServerPacketReceiveActions;
 
+// TODO: 2025-07-26 Consider moving PlayerInfo to another package
 /**
  * General info for each player connected to the server, such as which Level the player is currently in.
  * Note that this does not represent physical players themselves; that is for ConnectedPlayers. Many of
