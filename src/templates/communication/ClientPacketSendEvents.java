@@ -13,5 +13,6 @@ public interface ClientPacketSendEvents {
     // TODO: 2024-06-27 In the future, only send if player was moved, instead of all the time
     void sendPlayerTransformChanged(float x, float y, float z, float rotY);
     void sendChangePauseState(boolean shouldPause);
+    void sendChatMessage(int localMessageId, String message);
 
 }

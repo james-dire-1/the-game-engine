@@ -53,4 +53,10 @@ public class LocalClientPacketSendEvents implements ClientPacketSendEvents {
         LocalServerProperties.changePauseStateReceived(shouldPause);
     }
 
+    @Override
+    public void sendChatMessage(int localMessageId, String message) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalClientPacketSendEvents.sendChatMessage");
+        LocalServerProperties.chatMessageReceived(localMessageId, message);
+    }
+
 }

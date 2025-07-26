@@ -103,13 +103,14 @@ public class OnlineGameLoader extends GameLoader {
 
     public static void connectedPlayerAddedReceived(Object[] objects) {
         int id = (int) objects[0];
-        float x = (float) objects[1];
-        float y = (float) objects[2];
-        float z = (float) objects[3];
-        float rotY = (float) objects[4];
+        String username = (String) objects[1];
+        float x = (float) objects[2];
+        float y = (float) objects[3];
+        float z = (float) objects[4];
+        float rotY = (float) objects[5];
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.connectedPlayerAddedReceived(id, x, y, z, rotY);
+            ClientPacketReceiveActions.connectedPlayerAddedReceived(id, username, x, y, z, rotY);
         });
     }
 
@@ -148,6 +149,23 @@ public class OnlineGameLoader extends GameLoader {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.levelGravityChangedReceived(x, y, z);
+        });
+    }
+
+    public static void chatMessageReceptionConfirmationReceived(Object[] objects) {
+        int localMessageId = (int) objects[0];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.chatMessageReceptionConfirmationReceived(localMessageId);
+        });
+    }
+
+    public static void chatMessageReceived(Object[] objects) {
+        int playerId = (int) objects[0];
+        String message = (String) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.chatMessageReceived(playerId, message);
         });
     }
 

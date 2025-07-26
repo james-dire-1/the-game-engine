@@ -10,9 +10,12 @@ import com.james.renderEngine.ui.TypingInputNotifier;
 import com.james.renderEngine.ui.dataTypes.*;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
+import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
 import com.james.tools.Time;
 import game.main.Main;
+import templates.communication.LocalClientPacketSendEvents;
+import templates.communication.OnlineClientPacketSendEvents;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -20,6 +23,13 @@ import java.util.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ChatScreen extends Screen {
+
+    public static final float[] TEMP_SENDER_COLOR = {1f, 1f, 0f};
+
+    public static String localUsername;
+
+    private static ChatScreen instance;
+    public static ChatScreen get() { return instance; }
 
     private static final float BLINK_TIME = 0.5f;
 
@@ -69,6 +79,8 @@ public class ChatScreen extends Screen {
         fieldBackground.isVisible = false;
         fieldBackground.alpha = 0.25f;
         super.addGui(fieldBackground);
+
+        instance = this;
     }
 
     public void appendChat(String sender, float[] senderColor, String fullText) {
@@ -250,7 +262,13 @@ public class ChatScreen extends Screen {
                 String trimmedChatMessage = field.getCurrentText().trim();
                 if (!trimmedChatMessage.equals("")) {
                     field.setText("");
-                    appendChat("Player", new float[]{1, 1, 0}, trimmedChatMessage);
+                    appendChat(localUsername, new float[]{1, 1, 0}, trimmedChatMessage);
+
+                    if (LevelInitializer.isOnlineGame) {
+                        OnlineClientPacketSendEvents.get().sendChatMessage(1, trimmedChatMessage);
+                    } else {
+                        LocalClientPacketSendEvents.get().sendChatMessage(1, trimmedChatMessage);
+                    }
                 }
 
                 closeChat();

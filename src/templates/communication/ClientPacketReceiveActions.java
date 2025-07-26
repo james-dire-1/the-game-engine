@@ -10,6 +10,7 @@ import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.tools.Time;
 import game.main.Main;
+import newStuff.ChatScreen;
 import newStuff.GeneralSphereHitbox;
 import newStuff.UsernamePromptScreen;
 import templates.gameplay.GameLoader;
@@ -34,6 +35,7 @@ public class ClientPacketReceiveActions {
             Screen.queueScreenForAddition(new UsernamePromptScreen());
         } else {
             new LocalClientPacketSendEvents().sendPlayerUsername("localplayer");
+            ChatScreen.localUsername = "localplayer";
         }
     }
 
@@ -59,7 +61,7 @@ public class ClientPacketReceiveActions {
         CachedPhysicalObject object = new CachedPhysicalObject(new Vector3f(position), new Vector3f(rotation), scale);
         boolean alreadyExists = ClientLevel.get().addCachedPhysicalObject(id, object);
         if (alreadyExists) {
-            Warnings.printClientServerDeSyncWarning("PhysicalObject of id " + id + " and of type " + type + " already exists client-side");
+            Warnings.warn("PhysicalObject of id " + id + " and of type " + type + " already exists client-side");
         }
 
         Model model = null;
@@ -91,10 +93,10 @@ public class ClientPacketReceiveActions {
                 object.setPosition(x, y, z);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
             }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to move a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn("Attempting to move a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
@@ -104,17 +106,17 @@ public class ClientPacketReceiveActions {
         ClientLevel level = ClientLevel.get();
 
         if (level != null) {
-            CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
+            CachedPhysicalObject object = level.getCachedPhysicalObject(id);
 
             if (object != null) {
                 object.updatePrevRotation();
                 object.setRotation(rotX, rotY, rotZ);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.printClientServerDeSyncWarning("Attempting to rotate a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn("Attempting to rotate a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
             }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to rotate a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn("Attempting to rotate a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
@@ -124,17 +126,17 @@ public class ClientPacketReceiveActions {
         ClientLevel level = ClientLevel.get();
 
         if (level != null) {
-            CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
+            CachedPhysicalObject object = level.getCachedPhysicalObject(id);
 
             if (object != null) {
                 object.setScale(scale);
                 // This must be done manually since scale is a value type, not a reference type
                 object.getGameObject().setScale(scale);
             } else {
-                Warnings.printClientServerDeSyncWarning("Attempting to scale a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn("Attempting to scale a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
             }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to scale a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn("Attempting to scale a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
@@ -144,7 +146,7 @@ public class ClientPacketReceiveActions {
         ClientLevel level = ClientLevel.get();
 
         if (level != null) {
-            CachedPhysicalObject object = ClientLevel.get().getCachedPhysicalObject(id);
+            CachedPhysicalObject object = level.getCachedPhysicalObject(id);
 
             if (object != null) {
                 object.updatePrevPosition();
@@ -156,10 +158,10 @@ public class ClientPacketReceiveActions {
                 object.getGameObject().setScale(scale);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.printClientServerDeSyncWarning("Attempting to transform a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn("Attempting to transform a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
             }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to transform a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn("Attempting to transform a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
@@ -169,13 +171,13 @@ public class ClientPacketReceiveActions {
         ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath));
     }
 
-    public static void connectedPlayerAddedReceived(int id, float x, float y, float z, float rotY) {
+    public static void connectedPlayerAddedReceived(int id, String username, float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerAddedReceived " + "{id=" + id + "}");
 
-        CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
+        CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(username, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
         boolean alreadyExists = ClientLevel.get().addCachedConnectedPlayer(id, cachedConnectedPlayer);
         if (alreadyExists) {
-            Warnings.printClientServerDeSyncWarning("ConnectedPlayer of id " + id + " already exists client-side");
+            Warnings.warn("ConnectedPlayer of id " + id + " already exists client-side");
         }
 
         Model model = ModelBank.getAbstractArt();
@@ -195,7 +197,7 @@ public class ClientPacketReceiveActions {
         ClientLevel level = ClientLevel.get();
 
         if (level != null) {
-            CachedConnectedPlayer cachedConnectedPlayer = ClientLevel.get().getCachedConnectedPlayer(id);
+            CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(id);
             if (cachedConnectedPlayer != null) {
                 cachedConnectedPlayer.updatePrevPosition();
                 cachedConnectedPlayer.updatePrevRotation();
@@ -203,10 +205,10 @@ public class ClientPacketReceiveActions {
                 cachedConnectedPlayer.setRotation(0, rotY, 0);
                 cachedConnectedPlayer.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.printClientServerDeSyncWarning("Attempting to transform a ConnectedPlayer client-side by id, but that ConnectedPlayer doesn't exist client-side");
+                Warnings.warn("Attempting to transform a ConnectedPlayer client-side by id, but that ConnectedPlayer doesn't exist client-side");
             }
         } else {
-            Warnings.printClientServerDeSyncWarning("Attempting to transform a ConnectedPlayer client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn("Attempting to transform a ConnectedPlayer client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
@@ -227,6 +229,31 @@ public class ClientPacketReceiveActions {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelGravityChangedReceived");
 
         ClientLevel.get().gravity.set(x, y, z);
+    }
+
+    public static void chatMessageReceptionConfirmationReceived(int localMessageId) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.chatMessageReceptionConfirmationReceived");
+
+        // TODO: 2025-07-25  
+    }
+
+    public static void chatMessageReceived(int playerId, String message) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.chatMessageReceived");
+
+        ClientLevel level = ClientLevel.get();
+        ChatScreen chatScreen = ChatScreen.get();
+
+        if (level != null) {
+            if (chatScreen != null) {
+                CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(playerId);
+                String username = cachedConnectedPlayer.username;
+                chatScreen.appendChat(username, ChatScreen.TEMP_SENDER_COLOR, message);
+            } else {
+                Warnings.warn("Attempting to receive a chat message, but the client's ChatScreen object hasn't even been instantiated yet");
+            }
+        } else {
+            Warnings.warn("Attempting to receive a chat message, but the client's ClientLevel object hasn't even been instantiated yet");
+        }
     }
 
 }

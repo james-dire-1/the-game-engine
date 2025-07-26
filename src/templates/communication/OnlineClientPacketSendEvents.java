@@ -9,6 +9,7 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
 
 public class OnlineClientPacketSendEvents implements ClientPacketSendEvents {
 
+    // TODO: 2025-07-23 Handle proper deleting of this
     private static OnlineClientPacketSendEvents instance;
     public static OnlineClientPacketSendEvents get() { return instance; }
 
@@ -53,6 +54,16 @@ public class OnlineClientPacketSendEvents implements ClientPacketSendEvents {
         Object[] objects = { shouldPause };
 
         Packet packet = new Packet(PacketType.LEVEL_CHANGE_PAUSE_STATE, objects);
+        Client.get().sendPacket(packet);
+    }
+
+    @Override
+    public void sendChatMessage(int localMessageId, String message) {
+        if (IS_NETWORK_DEBUG) System.out.println("OnlineClientPacketSendEvents.sendChatMessage");
+
+        Object[] objects = { localMessageId, message };
+
+        Packet packet = new Packet(PacketType.CHAT_MESSAGE, objects);
         Client.get().sendPacket(packet);
     }
 

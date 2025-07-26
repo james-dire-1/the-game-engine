@@ -101,7 +101,7 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void sendConnectedPlayerAdded(int id, float x, float y, float z, float rotY, PlayerInfo playerInfo) {
+    public void sendConnectedPlayerAdded(int id, String username, float x, float y, float z, float rotY, PlayerInfo playerInfo) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendConnectedPlayerAdded " + "{id=" + id + "} to {id=" + playerInfo.getConnectedPlayer().id + "}");
 
         // Do nothing; this is a local game!
@@ -137,6 +137,22 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.levelGravityChangedReceived(x, y, z);
         });
+    }
+
+    @Override
+    public void confirmChatMessageReception(PlayerInfo playerInfo, int localMessageId) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.confirmChatMessageReception");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.chatMessageReceptionConfirmationReceived(localMessageId);
+        });
+    }
+
+    @Override
+    public void broadcastChatMessage(int playerId, String message, PlayerInfo exceptPlayerInfo) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.broadcastChatMessage");
+
+        // Do nothing; this is a local game!
     }
 
 }

@@ -47,6 +47,7 @@ public class UsernamePromptScreen extends Screen {
                 // TODO: 2025-07-23 Make this more general perhaps for local games too
                 super.markForDeletion();
                 new OnlineClientPacketSendEvents().sendPlayerUsername(field.text);
+                ChatScreen.localUsername = field.text;
             }
         });
         super.addGuis(submit.getAllGuis());

@@ -59,4 +59,10 @@ public class LocalServerProperties implements ServerProperties {
         });
     }
 
+    public static void chatMessageReceived(int localMessageId, String message) {
+        ServerThreadManager.executeOnALevelThread(playerInfo.level, () -> {
+            ServerPacketReceiveActions.chatMessageReceived(playerInfo, localMessageId, message);
+        });
+    }
+
 }

@@ -9,6 +9,8 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class CachedConnectedPlayer {
 
+    public final String username;
+
     public float lastTime = Time.getCurrentTime();
 
     private GameObject gameObject;
@@ -24,7 +26,9 @@ public class CachedConnectedPlayer {
     public Vector3f getPrevPosition() { return prevPosition; }
     public Vector3f getPrevRotation() { return prevRotation; }
 
-    public CachedConnectedPlayer(Vector3f position, Vector3f rotation) {
+    public CachedConnectedPlayer(String username, Vector3f position, Vector3f rotation) {
+        this.username = username;
+
         this.position = position;
         this.rotation = rotation;
         this.prevPosition = new Vector3f(position);
