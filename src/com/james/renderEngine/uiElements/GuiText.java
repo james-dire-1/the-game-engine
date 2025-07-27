@@ -8,6 +8,7 @@ import com.james.renderEngine.ui.GuiGroup;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.Position;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
+import com.james.renderEngine.uiElements.tools.CaratBlinker;
 
 import java.util.List;
 
@@ -232,10 +233,20 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
     /**
      * Whether to add a vertical bar after the text (this can be useful for text fields, where often a blinking
      * vertical bar lets users know that they can input text).
+     *
+     * @implNote Note that calling this method ALWAYS recreates the text quads, even if it turns out that it is
+     * unnecessary to do so. Not only is this inefficient, but this also clears visibility state from the text
+     * (i.e. if the text was previously invisible, it will now be reset to visible). Thus, use this method
+     * sparingly. The field stateChangedThisFrame in CaratBlinker can be used to help with this.
+     *
+     * @see CaratBlinker
      */
     public void displayCarat(boolean displayCarat) {
+        boolean full = currentText.toString().length() == maxCharCount;
+        if (full) displayCarat = false;
+
         if (displayCarat) {
-            text = currentText.toString() + "|";
+            text = currentText + "|";
         } else {
             text = currentText.toString();
         }

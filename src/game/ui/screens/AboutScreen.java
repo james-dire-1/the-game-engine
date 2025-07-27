@@ -20,8 +20,9 @@ public class AboutScreen extends Screen {
             "features for a simple game to be made in it. Thus, Laser Tag was created, and is the first game to be made in " +
             "the game engine.\n\n" +
             "Technical details:\n\n" +
-            "The engine and game are programmed in Java. The IntelliJ IDE was used. Models are made in Blender. Textures are " +
-            "made in Krita. Code is uploaded on GitHub. If you would like to see it, let James know. \n\n";
+            "The engine and game are programmed in Java. LWJGL was used for graphics rendering (it includes Java bindings " +
+            "to OpenGL). The IntelliJ IDE was used. Models are made in Blender. Textures are made in Krita. Code is uploaded" +
+            " on GitHub. If you would like to see it, let James know. \n\n";
 
     public AboutScreen() {
         SolidBackground background = new SolidBackground(0xdb5151);
@@ -30,7 +31,7 @@ public class AboutScreen extends Screen {
         PersistentTitleHeader header = new PersistentTitleHeader("About:");
         super.addGui(header.getMesh());
 
-        PersistentGuiText text = new PersistentGuiText(ABOUT_TEXT, Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-300, -250)));
+        PersistentGuiText text = new PersistentGuiText(ABOUT_TEXT, Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-300, -250)));
         text.wrapAndSetMaxLength(600);
         text.apply();
         super.addGui(text.getMesh());

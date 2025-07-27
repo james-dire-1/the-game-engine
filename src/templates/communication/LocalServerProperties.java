@@ -1,6 +1,6 @@
 package templates.communication;
 
-import com.james.serverSide.PlayerInfo;
+import templates.serverSide.PlayerInfo;
 import com.james.serverSide.ServerThreadManager;
 import com.james.serverSide.simulation.Level;
 import templates.serverSide.communication.ServerPacketReceiveActions;

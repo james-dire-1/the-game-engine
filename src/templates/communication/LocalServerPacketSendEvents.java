@@ -1,7 +1,7 @@
 package templates.communication;
 
 import com.james.serverSide.LevelInitializer;
-import com.james.serverSide.PlayerInfo;
+import templates.serverSide.PlayerInfo;
 import com.james.tools.ThreadManager;
 import com.james.common.simulation.objects.PhysicalObjectType;
 import templates.serverSide.communication.ServerPacketSendEvents;

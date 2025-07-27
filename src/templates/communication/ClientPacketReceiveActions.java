@@ -8,7 +8,6 @@ import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import com.james.simulation.objects.Player;
 import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.main.Main;
@@ -18,6 +17,7 @@ import game.ui.screens.UsernamePromptScreen;
 import templates.gameplay.GameLoader;
 import templates.gameplay.LocalGameLoader;
 import templates.gameplay.OnlineGameLoader;
+import templates.gameplay.PlayerHandler;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
@@ -43,8 +43,8 @@ public class ClientPacketReceiveActions {
     public static void usernameSuccessReceived(String username, int color) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernameSuccessReceived");
 
-        Player.localUsername = username;
-        Player.localColor = ColorUtils.asNormalizedRGBArray(color);
+        PlayerHandler.localUsername = username;
+        PlayerHandler.localColor = ColorUtils.asNormalizedRGBArray(color);
 
         if (LevelInitializer.isOnlineGame) {
             Main.gameLoader = new OnlineGameLoader();

@@ -25,3 +25,9 @@ them)
 
 * PlayerInfo lacks consistency between client code and server code!
 * The same is true for GlobalConstants
+
+Add server validating for empty usernames
+
+Cannot properly close the game when the username prompt is up for some reason
+
+Make username validating server-side

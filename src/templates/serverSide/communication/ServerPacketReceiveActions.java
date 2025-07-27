@@ -1,6 +1,6 @@
 package templates.serverSide.communication;
 
-import com.james.serverSide.PlayerInfo;
+import templates.serverSide.PlayerInfo;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.objects.ConnectedPlayer;

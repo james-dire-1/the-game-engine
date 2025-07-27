@@ -12,11 +12,15 @@ import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
 import com.james.renderEngine.textRendering.TextAlignment;
 import com.james.renderEngine.ui.TypingInputNotifier;
+import com.james.renderEngine.uiElements.tools.CaratBlinker;
 import org.lwjgl.glfw.GLFW;
+
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
 
 public class MultiplayerScreen extends Screen {
 
     private GuiText field;
+    private final CaratBlinker caratBlinker = new CaratBlinker();
 
     public MultiplayerScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
@@ -44,7 +48,7 @@ public class MultiplayerScreen extends Screen {
         joinServer.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
-                queueScreenForAddition(new ConnectingScreen(field.text));
+                queueScreenForAddition(new ConnectingScreen(field.getCurrentText()));
             }
         });
         super.addGuis(joinServer.getAllGuis());
@@ -60,11 +64,23 @@ public class MultiplayerScreen extends Screen {
         super.addGuis(field.getAllGuis());
     }
 
+    @Override
+    public void update() {
+        caratBlinker.update();
+        if (caratBlinker.stateChangedThisFrame) field.displayCarat(caratBlinker.blinkState);
+
+        super.update();
+    }
+
     public void onTypingInput(char character, int key) {
         if (character != '\u0000') {
             field.append(character);
         } else if (key == GLFW.GLFW_KEY_BACKSPACE) {
             field.backspace();
+        }
+
+        if (character != '\u0000' || key == GLFW_KEY_BACKSPACE) {
+            caratBlinker.reset();
         }
     }
 

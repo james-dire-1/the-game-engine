@@ -12,12 +12,13 @@ import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
-import com.james.simulation.objects.Player;
 import com.james.tools.Time;
 import game.main.Main;
 import com.james.input.ScrollInput;
+import com.james.renderEngine.uiElements.tools.CaratBlinker;
 import templates.communication.LocalClientPacketSendEvents;
 import templates.communication.OnlineClientPacketSendEvents;
+import templates.gameplay.PlayerHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -28,8 +29,6 @@ public class ChatScreen extends Screen {
 
     private static ChatScreen instance;
     public static ChatScreen get() { return instance; }
-
-    private static final float BLINK_TIME = 0.5f;
 
     private FontInfo font = Main.dustismo;
     private float fontSize = 0.25f;
@@ -50,12 +49,11 @@ public class ChatScreen extends Screen {
 
     private final GuiText field;
     private final Gui fieldBackground;
+    private final CaratBlinker caratBlinker = new CaratBlinker();
 
     private int entryContentIndex;
     private boolean needsToBeUpdated = true;
     private boolean isOpen = false;
-    private float lastBlinkTime = Time.getCurrentTime();
-    private boolean blinkState;
     private boolean newChatMessages = false;
     private boolean justClosedChat = false; // to remove enter key bug
 
@@ -133,12 +131,9 @@ public class ChatScreen extends Screen {
             super.markForDeletion();
         }
 
-        if (isOpen && Time.getCurrentTime() - lastBlinkTime >= BLINK_TIME) {
-            lastBlinkTime = Time.getCurrentTime();
-            blinkState = !blinkState;
-
-            field.displayCarat(blinkState);
-        }
+        caratBlinker.focused = isOpen;
+        caratBlinker.update();
+        if (caratBlinker.stateChangedThisFrame) field.displayCarat(caratBlinker.blinkState);
 
         Iterator<Map.Entry<Integer, Float>> iterator = instantiationTimeMap.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -260,7 +255,7 @@ public class ChatScreen extends Screen {
                 String trimmedChatMessage = field.getCurrentText().trim();
                 if (!trimmedChatMessage.equals("")) {
                     field.setText("");
-                    appendChat(Player.localUsername, Player.localColor, trimmedChatMessage);
+                    appendChat(PlayerHandler.localUsername, PlayerHandler.localColor, trimmedChatMessage);
 
                     if (LevelInitializer.isOnlineGame) {
                         OnlineClientPacketSendEvents.get().sendChatMessage(1, trimmedChatMessage);
@@ -273,8 +268,7 @@ public class ChatScreen extends Screen {
             }
 
             if (character != '\u0000' || key == GLFW_KEY_BACKSPACE) {
-                lastBlinkTime = Time.getCurrentTime();
-                field.displayCarat(true);
+                caratBlinker.reset();
             }
         }
     }

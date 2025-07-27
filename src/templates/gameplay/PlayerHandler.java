@@ -3,7 +3,6 @@ package templates.gameplay;
 import com.james.common.simulation.LevelProperties;
 import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
-import templates.gameplay.CameraController;
 import com.james.common.tools.Mth;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
@@ -23,6 +22,9 @@ import static com.james.input.KeyInput.isKeyPressed;
  * user input, camera movement, and rendering (i.e. it creates the Player's GameObject).
  */
 public class PlayerHandler {
+
+    public static String localUsername;
+    public static float[] localColor;
 
     private final Player player;
     private final LevelProperties levelProperties;
