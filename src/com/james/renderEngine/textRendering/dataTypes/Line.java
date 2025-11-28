@@ -22,7 +22,7 @@ public class Line {
     private float maxLength;
 
     /**
-     * Constructor to be used for multi-line text.
+     * Constructor to be used for multi line text.
      */
     public Line(Character whitespace, float fontSize, float maxLength) {
         this.whitespaceLength = whitespace.xAdvance * fontSize;

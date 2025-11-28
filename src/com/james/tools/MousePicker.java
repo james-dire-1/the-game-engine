@@ -13,19 +13,25 @@ import org.lwjgl.util.vector.Vector4f;
 // Used ThinMatrix video
 public class MousePicker {
 
-    private static Vector3f currentRay;
-    public static Vector3f getCurrentRay() { return currentRay; }
+    private final Camera camera;
 
-    private static Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+    private Vector3f currentRay;
+    public Vector3f getCurrentRay() { return currentRay; }
 
-    public static void update() {
+    public MousePicker(Camera camera) {
+        this.camera = camera;
+    }
+
+    private Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
+
+    public void update() {
         if (MasterRenderer.isNewProjectionMatrix()) {
             projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         }
         currentRay = calculateMouseRay();
     }
 
-    private static Vector3f calculateMouseRay() {
+    private Vector3f calculateMouseRay() {
         float mouseX = (float) (GLFWUtilities.isCursorLocked() ? WindowResizeInput.width/2 : MouseMoveInput.getXPos());
         float mouseY = (float) (GLFWUtilities.isCursorLocked() ? WindowResizeInput.height/2 : MouseMoveInput.getYPos());
         Vector2f normalizedCoords = getNormalizedDeviceCoords(mouseX, mouseY);
@@ -34,20 +40,20 @@ public class MousePicker {
         return toWorldCoords(eyeCoords);
     }
 
-    private static Vector2f getNormalizedDeviceCoords(float mouseX, float mouseY) {
+    private Vector2f getNormalizedDeviceCoords(float mouseX, float mouseY) {
         float normalizedX = mouseX / WindowResizeInput.width * 2 - 1;
         float normalizedY = -(mouseY / WindowResizeInput.height * 2 - 1);
         return new Vector2f(normalizedX, normalizedY);
     }
 
-    private static Vector4f toEyeCoords(Vector4f clipCoords) {
+    private Vector4f toEyeCoords(Vector4f clipCoords) {
         Matrix4f invertedProjectionMatrix = Matrix4f.invert(projectionMatrix, null);
         Vector4f eyeCoords = Matrix4f.transform(invertedProjectionMatrix, clipCoords, null);
         return new Vector4f(eyeCoords.x, eyeCoords.y, -1, 0);
     }
 
-    private static Vector3f toWorldCoords(Vector4f eyeCoords) {
-        Matrix4f invertedView = Matrix4f.invert(Camera.defaultCamera.getViewMatrix(), null);
+    private Vector3f toWorldCoords(Vector4f eyeCoords) {
+        Matrix4f invertedView = Matrix4f.invert(camera.getViewMatrix(), null);
         Vector4f rayWorld = Matrix4f.transform(invertedView, eyeCoords, null);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
         mouseRay.normalise();

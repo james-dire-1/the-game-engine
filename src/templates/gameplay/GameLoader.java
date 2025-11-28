@@ -11,7 +11,6 @@ import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
-import com.james.tools.MousePicker;
 import com.james.tools.Time;
 import game.ui.screens.PauseScreen;
 import com.james.tools.GameObjectInterpolator;
@@ -30,7 +29,7 @@ public abstract class GameLoader {
     public static BatchedGameObjectsList batchedGameObjectsList;
 
     protected final ClientLevel clientLevel;
-    private final PlayerHandler playerHandler;
+    protected final PlayerHandler playerHandler;
 
     private long lastTimeBackground;
     private float lastTimePlayerPosition;
@@ -57,8 +56,6 @@ public abstract class GameLoader {
     protected abstract void onGameClientClosing();
 
     public void update() {
-        MousePicker.update();
-
         input();
         playerHandler.update();
         ParticleHandler.update();

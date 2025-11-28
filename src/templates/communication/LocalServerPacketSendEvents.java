@@ -157,4 +157,13 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
         // Do nothing; this is a local game!
     }
 
+    @Override
+    public void broadcastSystemMessage(String message) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.broadcastSystemMessage");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.systemMessageReceived(message);
+        });
+    }
+
 }

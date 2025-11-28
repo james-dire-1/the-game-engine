@@ -175,6 +175,14 @@ public class OnlineGameLoader extends GameLoader {
         });
     }
 
+    public static void systemMessageReceived(Object[] objects) {
+        String message = (String) objects[0];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.systemMessageReceived(message);
+        });
+    }
+
     public static void onConnectionException(Exception e, Client client) {
         ThreadManager.executeOnMainThread(() -> {
             String exceptionMessage = e.getMessage();

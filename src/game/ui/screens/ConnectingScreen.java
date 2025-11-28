@@ -53,6 +53,7 @@ public class ConnectingScreen extends Screen {
                 setReadListener(PacketType.LEVEL_GRAVITY_CHANGED, OnlineGameLoader::levelGravityChangedReceived);
                 setReadListener(PacketType.CONFIRM_CHAT_MESSAGE_RECEPTION, OnlineGameLoader::chatMessageReceptionConfirmationReceived);
                 setReadListener(PacketType.BROADCASTING_CHAT_MESSAGE, OnlineGameLoader::chatMessageReceived);
+                setReadListener(PacketType.BROADCASTING_SYSTEM_MESSAGE, OnlineGameLoader::systemMessageReceived);
                 setDisconnectListener(OnlineGameLoader::onConnectionException);
             }
 

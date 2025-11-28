@@ -31,3 +31,5 @@ Add server validating for empty usernames
 Cannot properly close the game when the username prompt is up for some reason
 
 Make username validating server-side
+
+Proper credits throughout the code

@@ -27,6 +27,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class ChatScreen extends Screen {
 
+    private static final float[] COLOR_WHITE = { 1f, 1f, 1f };
+    private static final float[] COLOR_YELLOW = { 1f, 1f, 0f };
+
     private static ChatScreen instance;
     public static ChatScreen get() { return instance; }
 
@@ -79,7 +82,15 @@ public class ChatScreen extends Screen {
         instance = this;
     }
 
-    public void appendChat(String sender, float[] senderColor, String fullText) {
+    public void appendChatWithPlayerMessage(String sender, float[] senderColor, String fullText) {
+        appendChat(sender, senderColor, COLOR_WHITE, fullText);
+    }
+
+    public void appendChatWithSystemMessage(String fullText) {
+        appendChat("SYSTEM", COLOR_YELLOW, COLOR_YELLOW, fullText);
+    }
+
+    private void appendChat(String sender, float[] senderColor, float[] messageColor, String fullText) {
         byte[] asciiCodes = fullText.getBytes(StandardCharsets.UTF_8);
         List<Line> lines = TextOrganizer.organizeMultiLineText(font, fontSize, contentWidth, asciiCodes);
 
@@ -99,7 +110,7 @@ public class ChatScreen extends Screen {
             ScreenPosition entryContentPosition = new ScreenPosition(screenX + senderWidth, 0);
 
             PersistentGuiText contentEntry = new PersistentGuiText(Collections.singletonList(lines.get(i)), font, fontSize, entryContentPosition);
-            contentEntry.setSingleColor(1, 1, 1);
+            contentEntry.setSingleColor(messageColor[0], messageColor[1], messageColor[2]);
             contentEntry.apply();
             contentEntry.getMesh().isVisible = false;
             super.addGui(contentEntry.getMesh());
@@ -255,7 +266,7 @@ public class ChatScreen extends Screen {
                 String trimmedChatMessage = field.getCurrentText().trim();
                 if (!trimmedChatMessage.equals("")) {
                     field.setText("");
-                    appendChat(PlayerHandler.localUsername, PlayerHandler.localColor, trimmedChatMessage);
+                    appendChatWithPlayerMessage(PlayerHandler.localUsername, PlayerHandler.localColor, trimmedChatMessage);
 
                     if (LevelInitializer.isOnlineGame) {
                         OnlineClientPacketSendEvents.get().sendChatMessage(1, trimmedChatMessage);

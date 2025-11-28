@@ -27,5 +27,6 @@ public interface ServerPacketSendEvents {
     void sendLevelGravityChanged(float x, float y, float z);
     void confirmChatMessageReception(PlayerInfo playerInfo, int localMessageId);
     void broadcastChatMessage(int playerId, String message, PlayerInfo exceptPlayerInfo);
+    void broadcastSystemMessage(String message);
 
 }

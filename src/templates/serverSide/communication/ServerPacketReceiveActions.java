@@ -67,6 +67,7 @@ public class ServerPacketReceiveActions {
             startLevel.events.sendConnectedPlayerAdded(connectedPlayer.id, playerInfo.username, playerInfo.color, joinedPosition.x, joinedPosition.y, joinedPosition.z, joinedRotY, otherPlayerInfo);
         }
         startLevel.events.notifyThatLevelIsReady(playerInfo);
+        startLevel.events.broadcastSystemMessage(playerInfo.username + " has joined the game");
     }
 
     public static void playerTransformChangedReceived(PlayerInfo playerInfo, float x, float y, float z, float rotY) {
@@ -85,6 +86,7 @@ public class ServerPacketReceiveActions {
         PlayerColors.freeColor(playerInfo.color);
 
         playerLevel.events.sendConnectedPlayerLeft(connectedPlayer.id, playerInfo);
+        playerLevel.events.broadcastSystemMessage(playerInfo.username + " has left the game");
     }
 
     public static void changePauseStateReceived(PlayerInfo playerInfo, boolean shouldPause) {

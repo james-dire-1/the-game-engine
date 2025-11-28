@@ -252,12 +252,29 @@ public class ClientPacketReceiveActions {
                 CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(playerId);
                 String username = cachedConnectedPlayer.username;
                 float[] color = cachedConnectedPlayer.color;
-                chatScreen.appendChat(username, color, message);
+                chatScreen.appendChatWithPlayerMessage(username, color, message);
             } else {
                 Warnings.warn("Attempting to receive a chat message, but the client's ChatScreen object hasn't even been instantiated yet");
             }
         } else {
             Warnings.warn("Attempting to receive a chat message, but the client's ClientLevel object hasn't even been instantiated yet");
+        }
+    }
+
+    public static void systemMessageReceived(String message) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.systemMessageReceived");
+
+        ClientLevel level = ClientLevel.get();
+        ChatScreen chatScreen = ChatScreen.get();
+
+        if (level != null) {
+            if (chatScreen != null) {
+                chatScreen.appendChatWithSystemMessage(message);
+            } else {
+                Warnings.warn("Attempting to receive a system message, but the client's ChatScreen object hasn't even been instantiated yet");
+            }
+        } else {
+            Warnings.warn("Attempting to receive a system message, but the client's ClientLevel object hasn't even been instantiated yet");
         }
     }
 
