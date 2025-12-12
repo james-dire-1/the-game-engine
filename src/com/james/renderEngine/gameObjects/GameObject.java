@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
  * handled here.
  * @implNote Position and rotation are made final because you shouldn't be reassigning their references!
  * Only the values at these references.
- * One side effect of this is that the progrmmer can just use references from CachedPhysicalObjects as
+ * One side effect of this is that the programmer can just use references from CachedPhysicalObjects as
  * references in this class, and thus when CachedPhysicalObjects are moved, GameObjects are moved
  * automatically. This behaviour can be seen in ClientPacketReceiveActions. However, this technique can't
  * be used for smooth interpolating.

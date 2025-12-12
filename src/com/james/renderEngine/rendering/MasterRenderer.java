@@ -23,8 +23,8 @@ public class MasterRenderer {
         renderers = new AbstractRenderer[renderersToAdd.length];
         System.arraycopy(renderersToAdd, 0, renderers, 0, renderersToAdd.length);
 
-        for (AbstractRenderer AbstractRenderer : renderers) {
-            AbstractRenderer.prepare();
+        for (AbstractRenderer abstractRenderer : renderers) {
+            abstractRenderer.prepare();
         }
 
         WindowResizeInput.addListener(MasterRenderer::onWindowResize);

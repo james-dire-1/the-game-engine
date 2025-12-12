@@ -9,6 +9,8 @@ import com.james.input.ScrollInput;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import java.util.Objects;
+
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -36,7 +38,7 @@ public class GLFWUtilities {
         if (window == NULL) throw new RuntimeException("Cannot create window");
 
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        assert vidmode != null;
+        Objects.requireNonNull(vidmode);
         glfwSetWindowPos(window, (vidmode.width() - WindowResizeInput.width) / 2, (vidmode.height() - WindowResizeInput.height) / 2);
         glfwSetKeyCallback(window, new KeyInput());
         glfwSetWindowSizeCallback(window, new WindowResizeInput());

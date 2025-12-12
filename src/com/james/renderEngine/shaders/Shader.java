@@ -2,6 +2,7 @@ package com.james.renderEngine.shaders;
 
 import java.io.*;
 import java.nio.FloatBuffer;
+import java.util.Objects;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -16,7 +17,7 @@ public abstract class Shader {
     private final int vertexShaderID;
     private final int fragmentShaderID;
 
-    private static FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
+    private static final FloatBuffer buffer = BufferUtils.createFloatBuffer(16);
 
     public Shader(String vertexFile, String fragmentFile) {
         vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
@@ -36,6 +37,7 @@ public abstract class Shader {
         StringBuilder shaderSource = new StringBuilder();
         try{
             InputStream stream = Shader.class.getResourceAsStream(file);
+            Objects.requireNonNull(stream);
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             String line;
             while((line = reader.readLine())!=null){
