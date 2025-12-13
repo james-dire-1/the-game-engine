@@ -1,4 +1,4 @@
-package newStuff.audioStuff;
+package com.james.audio.utilities;
 
 import org.lwjgl.openal.*;
 
@@ -7,12 +7,14 @@ import java.nio.IntBuffer;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
+/**
+ * Utility class that handles the initialization and cleaning up of OpenAL.
+ */
 public class ALCUtilities {
 
     private static long device;
     private static long context;
 
-    // Some code here from Google AI
     public static void init() {
         String defaultDeviceName = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
         device = alcOpenDevice(defaultDeviceName);

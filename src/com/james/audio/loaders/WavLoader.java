@@ -1,4 +1,4 @@
-package newStuff.audioStuff;
+package com.james.audio.loaders;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -13,9 +13,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 
-// Code provided by the great ThinMatrix, which is a replacement for the old WaveData class that used to
-// exist in lwjgl 2. If we didn't have this code, we'd probably have to convert all audio files to ogg, or
-// come up with some hacky sketchy way to mix lwjgl 2 functionality with lwjgl 3.
+/**
+ * Audio loader class specifically for .wav files. Pretty much all the code in here was written by ThinMatrix,
+ * and is meant to be a replacement for the old WaveData class that used to exist in lwjgl 2. If we didn't have
+ * this code, we'd probably have to convert all audio files to .ogg format, or come up with some hacky sketchy
+ * way to mix lwjgl 2 functionality with lwjgl 3. Yikes! To be honest, I don't know what a huge chunk of this
+ * code does. https://www.youtube.com/watch?v=ptjIf_9CKGE
+ */
 public class WavLoader extends AudioLoader {
 
 	final int totalBytes;
@@ -36,6 +40,9 @@ public class WavLoader extends AudioLoader {
 		loadData();
 	}
 
+	/**
+	 * Clean up method to be called after creating the OpenAL buffer.
+	 */
 	@Override
 	public void dispose() {
 		try {
@@ -58,7 +65,9 @@ public class WavLoader extends AudioLoader {
 		}
 	}
 
-
+	/**
+	 * Called from AudioLoader's load() method. Entry point for all the heavy lifting to do with .wav files.
+	 */
 	public static WavLoader create(String path) {
 		InputStream stream = Class.class.getResourceAsStream(path);
 		if(stream==null){
@@ -75,7 +84,6 @@ public class WavLoader extends AudioLoader {
 		Objects.requireNonNull(audioStream);
 		return new WavLoader(audioStream);
 	}
-
 
 	private static int getOpenAlFormat(int channels, int bitsPerSample) {
 		if (channels == 1) {

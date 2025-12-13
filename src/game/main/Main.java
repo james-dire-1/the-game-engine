@@ -1,5 +1,7 @@
 package game.main;
 
+import com.james.audio.utilities.ALCUtilities;
+import com.james.audio.utilities.ALUtilities;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.tools.Time;
@@ -45,6 +47,7 @@ public class Main {
         GLFWUtilities.init(GLFWWindowTitles.MAIN);
         ParticleHandler.init();
         TypingInputNotifier.init();
+        ALCUtilities.init();
 
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
         Renderers.colorModelRenderer = new ColorModelRenderer();
@@ -80,6 +83,8 @@ public class Main {
             }
         }
 
+        ALUtilities.cleanUp();
+        ALCUtilities.cleanUp();
         MasterRenderer.cleanUp();
         ParticleRenderer.cleanUp();
         GuiRenderer.cleanUp();
