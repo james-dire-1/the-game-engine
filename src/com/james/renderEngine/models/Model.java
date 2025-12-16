@@ -106,7 +106,7 @@ public class Model {
     private enum DataType { TEXTURE_COORDS, COLORS, NORMALS }
 
     /**
-     * Makes sure nothing out of the ordinary occurs
+     * Makes sure nothing out of the ordinary occurs.
      */
     private void errorChecking(DataType floatType) {
         if (floatType == DataType.TEXTURE_COORDS) {

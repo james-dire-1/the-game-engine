@@ -69,7 +69,7 @@ public class WavLoader extends AudioLoader {
 	 * Called from AudioLoader's load() method. Entry point for all the heavy lifting to do with .wav files.
 	 */
 	public static WavLoader create(String path) {
-		InputStream stream = Class.class.getResourceAsStream(path);
+		InputStream stream = WavLoader.class.getResourceAsStream(path);
 		if(stream==null){
 			System.err.println("Couldn't find file: "+path);
 			return null;

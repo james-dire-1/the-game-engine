@@ -1,5 +1,6 @@
 package com.james.renderEngine.uiElements;
 
+import com.james.audio.AudioSourcePool;
 import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.HoveredComponent;
@@ -62,11 +63,22 @@ public class GuiButton extends Gui implements HoveredComponent, ClickedComponent
         if (clickAction != null) {
             clickAction.accept(mouseButton);
         }
+
+        if (soundId != -1) {
+            AudioSourcePool.play(soundId, 0.075f);
+        }
     }
 
     @FunctionalInterface
     public interface Action {
         void invoke();
+    }
+
+    // Sounds!
+    private int soundId = -1;
+
+    public void setSoundId(int soundId) {
+        this.soundId = soundId;
     }
 
 }

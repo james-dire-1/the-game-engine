@@ -1,5 +1,6 @@
 package game.main;
 
+import com.james.audio.AudioSourcePool;
 import com.james.audio.utilities.ALCUtilities;
 import com.james.audio.utilities.ALUtilities;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
@@ -48,6 +49,7 @@ public class Main {
         ParticleHandler.init();
         TypingInputNotifier.init();
         ALCUtilities.init();
+        AudioSourcePool.init();
 
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
         Renderers.colorModelRenderer = new ColorModelRenderer();

@@ -1,12 +1,11 @@
 package com.james.audio.objects;
 
 import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.AL11.AL_SEC_OFFSET;
 
 /**
  * Wrapper around an OpenAL source. Contains the basic functionality you'd expect from OpenAL sources.
  */
-// TODO: 2025-12-12 The fact that we're creating whole objects just to store a single id is kind of inefficient
-// TODO: 2025-12-12 Perhaps this needs to be redone with a less object-oriented approach
 public class AudioSource {
 
     private final int sourceId;
@@ -17,6 +16,12 @@ public class AudioSource {
 
     public void play(int bufferId) {
         stop();
+
+        if (delay != null) {
+            alSourceRewind(sourceId);
+            alSourcef(sourceId, AL_SEC_OFFSET, delay);
+        }
+
         alSourcei(sourceId, AL_BUFFER, bufferId);
         continuePlaying();
     }
@@ -40,6 +45,11 @@ public class AudioSource {
     public void cleanUp() {
         stop();
         alDeleteSources(sourceId);
+    }
+
+    private Float delay;
+    public void setDelay(Float seconds) {
+        this.delay = seconds;
     }
 
     public void setRelative() { alSourcei(sourceId, AL_SOURCE_RELATIVE, AL_TRUE); }

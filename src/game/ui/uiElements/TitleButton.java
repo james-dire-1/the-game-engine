@@ -8,6 +8,7 @@ import com.james.renderEngine.uiElements.GuiButton;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import game.main.Main;
 import com.james.renderEngine.textRendering.TextAlignment;
+import com.james.audio.AudioBank;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,9 @@ public class TitleButton implements GuiGroup {
 
         button.apply();
         guis.add(button);
+
+        int soundId = AudioBank.getOrCreate(SOUND_PATH);
+        button.setSoundId(soundId);
 
         this.persistentGuiText = new PersistentGuiText(text, Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-7)));
         persistentGuiText.setAlignment(TextAlignment.CENTER_ALIGNED);
@@ -73,5 +77,8 @@ public class TitleButton implements GuiGroup {
     public static void resetCurrentVerticalPosition(int position) {
         currentVerticalPosition = position;
     }
+
+    // Sounds!
+    private static final String SOUND_PATH = "/click.wav";
 
 }
