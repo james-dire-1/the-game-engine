@@ -37,6 +37,8 @@ public class FlatRenderer extends AbstractRenderer {
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;
 
+            if (!model.usesCulling()) glDisable(GL_CULL_FACE);
+
             RawModel rawModel = model.rawModel;
 
             glBindVertexArray(rawModel.vaoId);
@@ -47,19 +49,24 @@ public class FlatRenderer extends AbstractRenderer {
             glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
+                if (!gameObject.isVisible) continue;
+
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
-                // code for checking for index buffer is not used, since the satisfiesModelCriteria
-                // method checks that the model uses an index buffer
-                // Therefore, glDrawElements will always be used over glDrawArrays
-
-                glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
+                if (rawModel.usesIndexBuffer) {
+                    glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
+                } else {
+                    glDrawArrays(GL_TRIANGLES, 0, rawModel.vertexCount);
+                }
             }
 
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
             glBindVertexArray(0);
+
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
         }
 
         shader.stop();
@@ -67,7 +74,7 @@ public class FlatRenderer extends AbstractRenderer {
 
     @Override
     public boolean satisfiesModelCriteria(Model model) {
-        return model.hasTexture() && model.rawModel.usesIndexBuffer;
+        return model.hasTexture();
     }
 
     @Override

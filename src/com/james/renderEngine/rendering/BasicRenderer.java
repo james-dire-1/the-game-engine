@@ -11,10 +11,11 @@ import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class BasicRenderer {
+public class BasicRenderer extends AbstractRenderer {
 
     private final BasicShader shader = new BasicShader();
 
+    @Override
     public void prepare() {
         shader.start();
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
@@ -22,6 +23,7 @@ public class BasicRenderer {
         shader.stop();
     }
 
+    @Override
     public void render(BatchedGameObjectsList batchedGameObjectsList) {
         shader.start();
 
@@ -31,10 +33,13 @@ public class BasicRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
-
         shader.loadTime();
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
+            if (!models.contains(model)) continue;
+
+            if (!model.usesCulling()) glDisable(GL_CULL_FACE);
+
             RawModel rawModel = model.rawModel;
 
             glBindVertexArray(rawModel.vaoId);
@@ -45,20 +50,35 @@ public class BasicRenderer {
             glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
+                if (!gameObject.isVisible) continue;
+
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
-                glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
+                if (rawModel.usesIndexBuffer) {
+                    glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
+                } else {
+                    glDrawArrays(GL_TRIANGLES, 0, rawModel.vertexCount);
+                }
             }
 
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
             glBindVertexArray(0);
+
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
         }
 
         shader.stop();
     }
 
+    @Override
+    public boolean satisfiesModelCriteria(Model model) {
+        return model.hasTexture();
+    }
+
+    @Override
     public void cleanUp() {
         shader.cleanUp();
     }

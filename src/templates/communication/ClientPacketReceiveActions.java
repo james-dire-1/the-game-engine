@@ -74,7 +74,7 @@ public class ClientPacketReceiveActions {
         } else if (type == PhysicalObjectType.TestEnvironment) {
             model = ModelBank.getTestEnvironment();
         } else if (type == PhysicalObjectType.Other) {
-            model = ModelBank.getAbstractArt();
+            model = ModelBank.getColorAbstractArt();
         }
 
         GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);

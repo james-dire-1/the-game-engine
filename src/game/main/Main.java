@@ -51,11 +51,12 @@ public class Main {
         ALCUtilities.init();
         AudioSourcePool.init();
 
+        Renderers.basicRenderer = new BasicRenderer();
+        Renderers.flatRenderer = new FlatRenderer();
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
         Renderers.colorModelRenderer = new ColorModelRenderer();
-        Renderers.flatRenderer = new FlatRenderer();
 
-        MasterRenderer.prepare(Renderers.colorModelRenderer, Renderers.texturedModelRenderer, Renderers.flatRenderer);
+        MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.colorModelRenderer, Renderers.texturedModelRenderer);
         ParticleRenderer.prepare();
 
         UiHandler.screens.add(new TitleScreen());

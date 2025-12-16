@@ -4,6 +4,7 @@ import com.james.renderEngine.rendering.AbstractRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.utilities.GLUtilities;
 import newStuff.ShineSettings;
+import templates.rendering.Renderers;
 
 /**
  * Represents a model with enough information for rendering. Includes the vertex positions (RawModel),

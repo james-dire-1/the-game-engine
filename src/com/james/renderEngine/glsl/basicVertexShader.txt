@@ -15,5 +15,5 @@ uniform float time;
 void main(void) {
     gl_Position = projectionMatrix * viewMatrix * transformationMatrix * vec4(vertexPosition, 1.0);
     pass_textureCoords = textureCoords;
-    color = vec3(vertexPosition.x + (time - floor(time)), vertexPosition.y + (time - floor(time)), vertexPosition.z + (time - floor(time)));
+    color = vec3(vertexPosition.x + time, vertexPosition.y + time, vertexPosition.z + time);
 }

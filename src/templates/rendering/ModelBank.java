@@ -35,13 +35,13 @@ public class ModelBank {
             abstractArtModel = new Model(loader.vertexPositions, loader.indices);
             abstractArtModel.setTextureAndTextureCoords("/textures/stall.png", loader.textureCoords);
             abstractArtModel.setNormals(loader.normals);
-            abstractArtModel.setRenderer(Renderers.texturedModelRenderer);
+            abstractArtModel.setRenderer(Renderers.basicRenderer);
         }
 
         return abstractArtModel;
     }
 
-    private static Random r = new Random();
+    private static final Random r = new Random();
     public static Model getColorAbstractArt() {
         if (colorAbstractArtModel == null) {
             ModelLoader loader = ModelLoader.get("/abstract-art.dae");

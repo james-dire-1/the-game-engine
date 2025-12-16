@@ -4,8 +4,8 @@ import org.lwjgl.util.vector.Matrix4f;
 
 public class BasicShader extends Shader {
 
-    private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/vertexShader.txt";
-    private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/fragmentShader.txt";
+    private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/basicVertexShader.txt";
+    private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/basicFragmentShader.txt";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;
@@ -44,7 +44,9 @@ public class BasicShader extends Shader {
     }
 
     public void loadTime() {
-        super.loadFloatToUniform(location_time, System.nanoTime()/1000000000f);
+        double seconds = (System.nanoTime()/1_000_000_000.0);
+        float fraction = (float) (seconds - Math.floor(seconds));
+        super.loadFloatToUniform(location_time, fraction);
     }
 
 }
