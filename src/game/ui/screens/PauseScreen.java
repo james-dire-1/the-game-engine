@@ -6,6 +6,7 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
+import game.ui.uiElements.PersistentTitleHeader;
 import templates.gameplay.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.TitleButton;
@@ -20,8 +21,8 @@ public class PauseScreen extends Screen {
     private static PauseScreen currentInstance;
 
     private PauseScreen() {
-        TitleHeader header = new TitleHeader("Game Paused");
-        super.addGuis(header.getAllGuis());
+        PersistentTitleHeader header = new PersistentTitleHeader("Game Paused");
+        super.addGui(header.getMesh());
 
         TitleButton.resetCurrentVerticalPosition();
 

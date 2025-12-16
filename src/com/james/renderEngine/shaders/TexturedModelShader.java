@@ -1,7 +1,7 @@
 package com.james.renderEngine.shaders;
 
 import com.james.renderEngine.gameObjects.Light;
-import newStuff.ShineSettings;
+import com.james.renderEngine.texturing.ShineSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class TexturedModelShader extends Shader {

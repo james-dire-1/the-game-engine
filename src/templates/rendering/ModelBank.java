@@ -2,11 +2,8 @@ package templates.rendering;
 
 import com.james.renderEngine.models.Model;
 import com.james.common.tools.ModelLoader;
-import newStuff.ShineSettings;
+import com.james.renderEngine.texturing.ShineSettings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class ModelBank {

@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.renderEngine.texturing;
 
 public class ShineSettings {
 

@@ -6,7 +6,9 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import game.main.Main;
+import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
@@ -28,8 +30,8 @@ public class MultiplayerScreen extends Screen {
         SolidBackground background = new SolidBackground(0x5d4073);
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("Join Online Game");
-        super.addGuis(header.getAllGuis());
+        PersistentTitleHeader header = new PersistentTitleHeader("Join Online Game");
+        super.addGui(header.getMesh());
 
         TitleButton.resetCurrentVerticalPosition(350);
 
@@ -53,9 +55,9 @@ public class MultiplayerScreen extends Screen {
         });
         super.addGuis(joinServer.getAllGuis());
 
-        GuiText prompt = new GuiText("Enter server address:", Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -410)));
+        PersistentGuiText prompt = new PersistentGuiText("Enter server address:", Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -410)));
         prompt.apply();
-        super.addGuis(prompt.getAllGuis());
+        super.addGui(prompt.getMesh());
 
         this.field = new GuiText("localhost", Main.dustismo, 0.35f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -445)));
         field.setAlignment(TextAlignment.LEFT_ALIGNED);

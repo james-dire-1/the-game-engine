@@ -6,6 +6,7 @@ import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.uiElements.GuiText;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
@@ -24,10 +25,10 @@ public class ConnectingScreen extends Screen {
         SolidBackground background = new SolidBackground(0xdddddd);
         super.addGui(background);
 
-        GuiText text = new GuiText("Connecting to remote server...", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.CENTER));
+        PersistentGuiText text = new PersistentGuiText("Connecting to remote server...", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.CENTER));
         text.setAlignment(TextAlignment.CENTER_ALIGNED);
         text.apply();
-        super.addGuis(text.getAllGuis());
+        super.addGui(text.getMesh());
 
         LevelInitializer.isOnlineGame = true;
         connectToServer(host);

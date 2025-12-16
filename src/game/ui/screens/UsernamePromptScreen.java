@@ -10,6 +10,7 @@ import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.renderEngine.uiElements.tools.CaratBlinker;
 import com.james.tools.ColorUtils;
 import game.main.Main;
+import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
 import org.lwjgl.glfw.GLFW;
@@ -31,12 +32,12 @@ public class UsernamePromptScreen extends Screen {
         background.apply();
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("Please enter a username");
-        super.addGuis(header.getAllGuis());
+        PersistentTitleHeader header = new PersistentTitleHeader("Please enter a username");
+        super.addGui(header.getMesh());
 
-        GuiText prompt = new GuiText("Username:", Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -200)));
+        PersistentGuiText prompt = new PersistentGuiText("Username:", Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -200)));
         prompt.apply();
-        super.addGuis(prompt.getAllGuis());
+        super.addGui(prompt.getMesh());
 
         this.field = new GuiText("player", Main.dustismo, 0.35f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(-200, -250)));
         field.setAlignment(TextAlignment.LEFT_ALIGNED);

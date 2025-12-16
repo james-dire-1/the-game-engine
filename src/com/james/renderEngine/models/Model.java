@@ -3,8 +3,7 @@ package com.james.renderEngine.models;
 import com.james.renderEngine.rendering.AbstractRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.utilities.GLUtilities;
-import newStuff.ShineSettings;
-import templates.rendering.Renderers;
+import com.james.renderEngine.texturing.ShineSettings;
 
 /**
  * Represents a model with enough information for rendering. Includes the vertex positions (RawModel),

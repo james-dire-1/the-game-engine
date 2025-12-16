@@ -4,6 +4,7 @@ import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.uiElements.GuiText;
+import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
 import game.main.Main;
@@ -19,10 +20,10 @@ public class LoadingScreen extends Screen {
         SolidBackground background = new SolidBackground(0xdddddd);
         super.addGui(background);
 
-        GuiText text = new GuiText("Loading...", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.CENTER));
+        PersistentGuiText text = new PersistentGuiText("Loading...", Main.rowdies, 0.3f, new AnchoredPosition(AnchorPoint.CENTER));
         text.setAlignment(TextAlignment.CENTER_ALIGNED);
         text.apply();
-        super.addGuis(text.getAllGuis());
+        super.addGui(text.getMesh());
 
         new LevelInitializer("main", new LocalServerPacketSendEvents());
         LevelInitializer.isOnlineGame = false;

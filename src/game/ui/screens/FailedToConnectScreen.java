@@ -8,6 +8,7 @@ import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import game.main.Main;
+import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
@@ -21,8 +22,8 @@ public class FailedToConnectScreen extends Screen {
         SolidBackground background = new SolidBackground(0x3f7556);
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("Failed to connect to \"" + host + "\"");
-        super.addGuis(header.getAllGuis());
+        PersistentTitleHeader header = new PersistentTitleHeader("Failed to connect to \"" + host + "\"");
+        super.addGui(header.getMesh());
 
         PersistentGuiText text = new PersistentGuiText(e.toString(), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -200)));
         text.setAlignment(TextAlignment.CENTER_ALIGNED);

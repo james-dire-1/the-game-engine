@@ -7,6 +7,7 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.simulation.ClientLevel;
 import game.main.Main;
+import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 import game.ui.uiElements.TitleHeader;
@@ -21,8 +22,8 @@ public class SettingsScreen extends Screen {
         SolidBackground background = new SolidBackground(0xf27a5c);
         super.addGui(background);
 
-        TitleHeader header = new TitleHeader("Options");
-        super.addGuis(header.getAllGuis());
+        PersistentTitleHeader header = new PersistentTitleHeader("Options");
+        super.addGui(header.getMesh());
 
         TitleButton.resetCurrentVerticalPosition();
 
