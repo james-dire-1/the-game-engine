@@ -45,7 +45,7 @@ public class PlayerHandler {
     public PlayerHandler(BatchedGameObjectsList batchedGameObjectsList, LevelProperties levelProperties, Camera camera) {
         this.player = ClientLevel.get().getPlayer();
 
-        Model model = ModelBank.getAbstractArt();
+        Model model = ModelBank.getColorAbstractArt();
         this.gameObject = new GameObject(model, new Vector3f(player.getPosition()), player.getRotation(), 1);
         gameObject.isVisible = false;
         batchedGameObjectsList.addGameObject(gameObject);

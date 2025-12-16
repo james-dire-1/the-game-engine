@@ -57,6 +57,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
+                shader.loadShineSettings(model.getShineSettings());
+
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
                 } else {

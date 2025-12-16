@@ -1,6 +1,7 @@
 package com.james.renderEngine.shaders;
 
 import com.james.renderEngine.gameObjects.Light;
+import newStuff.ShineSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class TexturedModelShader extends Shader {
@@ -13,6 +14,8 @@ public class TexturedModelShader extends Shader {
     private int location_viewMatrix;
     private int location_lightPosition;
     private int location_lightColor;
+    private int location_reflectivity;
+    private int location_shineDamper;
 
     public TexturedModelShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -32,6 +35,8 @@ public class TexturedModelShader extends Shader {
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_lightPosition = super.getUniformLocation("lightPosition");
         location_lightColor = super.getUniformLocation("lightColor");
+        location_reflectivity = super.getUniformLocation("reflectivity");
+        location_shineDamper = super.getUniformLocation("shineDamper");
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
@@ -49,6 +54,19 @@ public class TexturedModelShader extends Shader {
     public void loadLight(Light light) {
         super.loadVector3fToUniform(location_lightPosition, light.getPosition());
         super.loadVector3fToUniform(location_lightColor, light.getColor());
+    }
+
+    public void loadShineSettings(ShineSettings shineSettings) {
+        float reflectivity = 0;
+        float shineDamper = 0;
+
+        if (shineSettings != null) {
+            reflectivity = shineSettings.reflectivity;
+            shineDamper = shineSettings.shineDamper;
+        }
+
+        super.loadFloatToUniform(location_reflectivity, reflectivity);
+        super.loadFloatToUniform(location_shineDamper, shineDamper);
     }
 
 }

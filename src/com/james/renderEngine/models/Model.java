@@ -3,6 +3,7 @@ package com.james.renderEngine.models;
 import com.james.renderEngine.rendering.AbstractRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.utilities.GLUtilities;
+import newStuff.ShineSettings;
 
 /**
  * Represents a model with enough information for rendering. Includes the vertex positions (RawModel),
@@ -26,11 +27,15 @@ public class Model {
     private boolean culling = true;
     public boolean usesCulling() { return culling; }
 
+    private ShineSettings shineSettings;
+    public ShineSettings getShineSettings() { return shineSettings; }
+
     /**
-     * Unlike vertexCount in RawModel, uniqueVertexCount counts NON-REPEATING vertices. Used only for
+     * Unlike vertexCount in RawModel, uniqueVertexCount counts NON-REPEATING vertices. Used generally for
      * debugging.
      */
     private final int uniqueVertexCount;
+    public int getUniqueVertexCount() { return uniqueVertexCount; }
 
     private boolean hasRendererBeenSet = false;
 
@@ -85,6 +90,10 @@ public class Model {
 
     public void disableCulling() {
         culling = false;
+    }
+
+    public void setShineSettings(ShineSettings shineSettings) {
+        this.shineSettings = shineSettings;
     }
 
     /**

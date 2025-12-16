@@ -2,11 +2,18 @@ package templates.rendering;
 
 import com.james.renderEngine.models.Model;
 import com.james.common.tools.ModelLoader;
+import newStuff.ShineSettings;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class ModelBank {
 
     private static Model stallModel;
     private static Model abstractArtModel;
+    private static Model colorAbstractArtModel;
     private static Model wallModel;
     private static Model testEnvironmentModel;
 
@@ -32,6 +39,29 @@ public class ModelBank {
         }
 
         return abstractArtModel;
+    }
+
+    private static Random r = new Random();
+    public static Model getColorAbstractArt() {
+        if (colorAbstractArtModel == null) {
+            ModelLoader loader = ModelLoader.get("/abstract-art.dae");
+            colorAbstractArtModel = new Model(loader.vertexPositions, loader.indices);
+
+            int uniqueVertexCount = colorAbstractArtModel.getUniqueVertexCount();
+            float[] colors = new float[uniqueVertexCount * 3];
+            for (int i = 0; i < uniqueVertexCount; i++) {
+                colors[i * 3] = r.nextFloat();
+                colors[i * 3 + 1] = r.nextFloat();
+                colors[i * 3 + 2] = r.nextFloat();
+            }
+            colorAbstractArtModel.setColors(colors);
+
+            colorAbstractArtModel.setNormals(loader.normals);
+            colorAbstractArtModel.setShineSettings(new ShineSettings(1, 200));
+            colorAbstractArtModel.setRenderer(Renderers.colorModelRenderer);
+        }
+
+        return colorAbstractArtModel;
     }
 
     public static Model getWall() {
