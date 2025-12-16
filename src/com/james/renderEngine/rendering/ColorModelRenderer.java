@@ -21,6 +21,7 @@ public class ColorModelRenderer extends AbstractRenderer {
         shader.start();
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
+        shader.loadMinBrightness(MasterRenderer.MIN_BRIGHTNESS);
         shader.stop();
     }
 

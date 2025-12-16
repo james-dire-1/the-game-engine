@@ -8,6 +8,8 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class MasterRenderer {
 
+    public static final float MIN_BRIGHTNESS = 0.4f;
+
     private static boolean newProjectionMatrix = false;
     public static boolean isNewProjectionMatrix() { return newProjectionMatrix; }
 

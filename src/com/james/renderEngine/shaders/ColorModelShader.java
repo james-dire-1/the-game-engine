@@ -16,6 +16,7 @@ public class ColorModelShader extends Shader {
     private int location_lightColor;
     private int location_reflectivity;
     private int location_shineDamper;
+    private int location_minBrightness;
 
     public ColorModelShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -36,6 +37,7 @@ public class ColorModelShader extends Shader {
         location_lightColor = super.getUniformLocation("lightColor");
         location_reflectivity = super.getUniformLocation("reflectivity");
         location_shineDamper = super.getUniformLocation("shineDamper");
+        location_minBrightness = super.getUniformLocation("minBrightness");
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
@@ -66,6 +68,10 @@ public class ColorModelShader extends Shader {
 
         super.loadFloatToUniform(location_reflectivity, reflectivity);
         super.loadFloatToUniform(location_shineDamper, shineDamper);
+    }
+
+    public void loadMinBrightness(float minBrightness) {
+        super.loadFloatToUniform(location_minBrightness, minBrightness);
     }
 
 }
