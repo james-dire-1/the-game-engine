@@ -1,6 +1,5 @@
-package newStuff.skybox;
+package com.james.renderEngine.texturing;
 
-import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.utilities.GLUtilities;
 
 import java.awt.image.BufferedImage;

@@ -1,4 +1,4 @@
-package newStuff.skybox;
+package com.james.renderEngine.texturing;
 
 import com.james.renderEngine.utilities.GLUtilities;
 

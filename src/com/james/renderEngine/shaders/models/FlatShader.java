@@ -1,5 +1,6 @@
-package com.james.renderEngine.shaders;
+package com.james.renderEngine.shaders.models;
 
+import com.james.renderEngine.shaders.Shader;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class FlatShader extends Shader {

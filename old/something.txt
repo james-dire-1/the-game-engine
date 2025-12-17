@@ -8,7 +8,7 @@ import com.james.input.KeyInput;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.models.TexturedModel;
 import com.james.renderEngine.models.Model;
-import com.james.renderEngine.rendering.MasterRenderer;
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.texturing.TextureBank;
 import com.james.renderEngine.utilities.GLFWUtilities;
@@ -106,7 +106,7 @@ import com.james.input.WindowResizeInput;
 import com.james.common.tools.Mth;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.models.Model;
-import com.james.renderEngine.shaders.BasicShader;
+import com.james.renderEngine.shaders.models.BasicShader;
 import com.james.tools.BatchedGameObjectsList;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -189,7 +189,7 @@ public class Renderer {
 
 package com.james.renderEngine.models;
 
-import com.james.renderEngine.rendering.AbstractRenderer;
+import com.james.renderEngine.rendering.models.AbstractRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.utilities.GLUtilities;
 

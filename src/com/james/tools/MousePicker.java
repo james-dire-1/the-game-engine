@@ -3,7 +3,7 @@ package com.james.tools;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.MouseMoveInput;
 import com.james.input.WindowResizeInput;
-import com.james.renderEngine.rendering.MasterRenderer;
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;

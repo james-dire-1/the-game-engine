@@ -1,9 +1,11 @@
-package newStuff.skybox;
+package com.james.renderEngine.rendering;
 
 import com.james.input.WindowResizeInput;
 import com.james.renderEngine.models.RawModel;
-import com.james.renderEngine.rendering.MasterRenderer;
+import com.james.renderEngine.rendering.models.MasterRenderer;
+import com.james.renderEngine.skyboxes.Skybox;
 import com.james.tools.RenderingMath;
+import com.james.renderEngine.shaders.SkyboxShader;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;

@@ -1,11 +1,11 @@
-package com.james.renderEngine.rendering;
+package com.james.renderEngine.rendering.models;
 
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
-import com.james.renderEngine.shaders.FlatShader;
+import com.james.renderEngine.shaders.models.FlatShader;
 import com.james.tools.BatchedGameObjectsList;
 import org.lwjgl.util.vector.Matrix4f;
 

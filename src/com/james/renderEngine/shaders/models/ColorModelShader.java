@@ -1,13 +1,14 @@
-package com.james.renderEngine.shaders;
+package com.james.renderEngine.shaders.models;
 
 import com.james.renderEngine.gameObjects.Light;
+import com.james.renderEngine.shaders.Shader;
 import com.james.renderEngine.texturing.ShineSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
-public class TexturedModelShader extends Shader {
+public class ColorModelShader extends Shader {
 
-    private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/texturedModelVertexShader.txt";
-    private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/texturedModelFragmentShader.txt";
+    private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/colorModelVertexShader.txt";
+    private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/colorModelFragmentShader.txt";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;
@@ -18,15 +19,14 @@ public class TexturedModelShader extends Shader {
     private int location_shineDamper;
     private int location_minBrightness;
 
-    public TexturedModelShader() {
+    public ColorModelShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
     }
 
     @Override
     protected void bindAttributes() {
         super.bindAttribute(0, "vertexPosition");
-        super.bindAttribute(1, "textureCoords");
-        super.bindAttribute(2, "normal");
+        super.bindAttribute(1, "color");
     }
 
     @Override

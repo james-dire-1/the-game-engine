@@ -1,12 +1,12 @@
-package newStuff.skybox;
+package com.james.renderEngine.shaders;
 
 import com.james.renderEngine.shaders.Shader;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class SkyboxShader extends Shader {
 
-    private static final String VERTEX_FILE = "/newStuff/skybox/skyboxVertexShader.txt";
-    private static final String FRAGMENT_FILE = "/newStuff/skybox/skyboxFragmentShader.txt";
+    private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/skyboxVertexShader.txt";
+    private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/skyboxFragmentShader.txt";
 
     private int location_projectionMatrix;
     private int location_viewMatrix;

@@ -1,20 +1,20 @@
-package com.james.renderEngine.rendering;
+package com.james.renderEngine.rendering.models;
 
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
+import game.main.Main;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
-import com.james.renderEngine.shaders.ColorModelShader;
+import com.james.renderEngine.shaders.models.TexturedModelShader;
 import com.james.tools.BatchedGameObjectsList;
-import game.main.Main;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class ColorModelRenderer extends AbstractRenderer {
+public class TexturedModelRenderer extends AbstractRenderer {
 
-    private final ColorModelShader shader = new ColorModelShader();
+    private final TexturedModelShader shader = new TexturedModelShader();
 
     @Override
     public void prepare() {
@@ -49,6 +49,9 @@ public class ColorModelRenderer extends AbstractRenderer {
             glEnableVertexAttribArray(1);
             glEnableVertexAttribArray(2);
 
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
+
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
                 if (!gameObject.isVisible) continue;
 
@@ -78,7 +81,7 @@ public class ColorModelRenderer extends AbstractRenderer {
 
     @Override
     public boolean satisfiesModelCriteria(Model model) {
-        return model.hasColors() && model.hasNormals();
+        return model.hasTexture() && model.hasNormals();
     }
 
     @Override

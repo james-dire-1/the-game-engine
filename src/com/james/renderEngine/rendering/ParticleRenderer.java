@@ -1,5 +1,6 @@
 package com.james.renderEngine.rendering;
 
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.tools.RenderingMath;
 import com.james.input.WindowResizeInput;
 import com.james.renderEngine.particles.Particle;

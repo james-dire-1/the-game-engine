@@ -1,7 +1,8 @@
-package newStuff.skybox;
+package com.james.renderEngine.skyboxes;
 
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.utilities.VertexUtilityArrays;
+import com.james.renderEngine.texturing.CubeMapTexture;
 
 /**
  * Represents a visual skybox.

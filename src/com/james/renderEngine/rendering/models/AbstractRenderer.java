@@ -1,4 +1,4 @@
-package com.james.renderEngine.rendering;
+package com.james.renderEngine.rendering.models;
 
 import com.james.renderEngine.models.Model;
 import com.james.tools.BatchedGameObjectsList;

@@ -8,7 +8,7 @@ import com.james.renderEngine.particles.ComplexParticleSettings;
 import com.james.renderEngine.particles.Particle;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.particles.dataTypes.FloatType;
-import com.james.renderEngine.rendering.MasterRenderer;
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.simulation.ClientLevel;

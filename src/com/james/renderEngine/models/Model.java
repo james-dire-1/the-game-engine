@@ -1,6 +1,6 @@
 package com.james.renderEngine.models;
 
-import com.james.renderEngine.rendering.AbstractRenderer;
+import com.james.renderEngine.rendering.models.AbstractRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.renderEngine.texturing.ShineSettings;

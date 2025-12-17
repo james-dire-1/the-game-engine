@@ -1,7 +1,6 @@
 package com.james.renderEngine.texturing;
 
 import com.james.renderEngine.utilities.GLUtilities;
-import newStuff.skybox.ImageDecoder;
 
 import java.util.HashMap;
 import java.util.Map;

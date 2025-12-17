@@ -1,9 +1,9 @@
 package templates.rendering;
 
-import com.james.renderEngine.rendering.BasicRenderer;
-import com.james.renderEngine.rendering.ColorModelRenderer;
-import com.james.renderEngine.rendering.FlatRenderer;
-import com.james.renderEngine.rendering.TexturedModelRenderer;
+import com.james.renderEngine.rendering.models.BasicRenderer;
+import com.james.renderEngine.rendering.models.ColorModelRenderer;
+import com.james.renderEngine.rendering.models.FlatRenderer;
+import com.james.renderEngine.rendering.models.TexturedModelRenderer;
 
 public class Renderers {
 

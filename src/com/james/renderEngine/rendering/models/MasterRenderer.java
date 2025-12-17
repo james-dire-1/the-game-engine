@@ -1,4 +1,4 @@
-package com.james.renderEngine.rendering;
+package com.james.renderEngine.rendering.models;
 
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.WindowResizeInput;
