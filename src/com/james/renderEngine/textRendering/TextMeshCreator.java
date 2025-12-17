@@ -3,7 +3,7 @@ package com.james.renderEngine.textRendering;
 import com.james.renderEngine.textRendering.coloring.TextColorRules;
 import com.james.renderEngine.textRendering.dataTypes.Character;
 import com.james.renderEngine.textRendering.dataTypes.Line;
-import com.james.renderEngine.texturing.TextureBank;
+import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.ui.Gui;
 import com.james.renderEngine.ui.dataTypes.Position;
 import com.james.renderEngine.ui.dataTypes.ScreenPosition;
@@ -147,7 +147,7 @@ public class TextMeshCreator {
         List<Integer> indices = new ArrayList<>();
         List<Float> textureCoords = new ArrayList<>();
 
-        BufferedImage image = TextureBank.getTexture(font.textureAtlasPath);
+        BufferedImage image = ImageBank.get(font.textureAtlasPath);
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
 

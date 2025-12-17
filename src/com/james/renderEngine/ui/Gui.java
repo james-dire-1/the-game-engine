@@ -1,7 +1,7 @@
 package com.james.renderEngine.ui;
 
 import com.james.renderEngine.texturing.ImageTexture;
-import com.james.renderEngine.texturing.TextureBank;
+import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.MixedPosition;
 import com.james.renderEngine.ui.dataTypes.Position;
@@ -88,7 +88,7 @@ public class Gui {
         float normalizedHeightToSample;
 
         if (!normalized) {
-            BufferedImage image = TextureBank.getTexture(path);
+            BufferedImage image = ImageBank.get(path);
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
 
@@ -109,7 +109,7 @@ public class Gui {
                 normalizedX + normalizedWidthToSample, normalizedY,
                 normalizedX + normalizedWidthToSample, normalizedY + normalizedHeightToSample
         };
-        this.texture = ImageTexture.getOrCreateImageTexture(path);
+        this.texture = ImageTexture.getOrCreate(path);
     }
 
     /**
@@ -125,7 +125,7 @@ public class Gui {
      */
     public void setTextureAndSamplingData(String path, float[] textureCoords) {
         this.textureCoords = textureCoords;
-        this.texture = ImageTexture.getOrCreateImageTexture(path);
+        this.texture = ImageTexture.getOrCreate(path);
     }
 
     /**

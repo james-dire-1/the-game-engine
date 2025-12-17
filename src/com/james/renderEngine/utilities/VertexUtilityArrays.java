@@ -37,4 +37,27 @@ public class VertexUtilityArrays {
             1, -1, 0
     };
 
+    /**
+     * WRITE DOCUMENTATION HERE!
+     */
+    private static final float SIZE = 500f;
+    public static final float[] defaultSkyboxVertexPositions = {
+            -SIZE, -SIZE, -SIZE, // 0 bottom left back
+            -SIZE, -SIZE, SIZE, // 1 bottom left front
+            SIZE, -SIZE, SIZE, // 2 bottom right front
+            SIZE, -SIZE, -SIZE, // 3 bottom right back
+            -SIZE, SIZE, -SIZE, // 4 top left back
+            -SIZE, SIZE, SIZE, // 5 top left front
+            SIZE, SIZE, SIZE, // 6 top right front
+            SIZE, SIZE, -SIZE, // 7 top right back
+    };
+    public static final int[] defaultSkyboxIndices = {
+            0, 1, 3, 3, 1, 2, // bottom
+            5, 1, 4, 4, 1, 0, // left
+            7, 3, 6, 6, 3, 2, // right
+            4, 0, 7, 7, 0, 3, // back
+            6, 2, 5, 5, 2, 1, // front
+            5, 4, 6, 6, 4, 7 // top
+    };
+
 }

@@ -10,13 +10,16 @@ import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.*;
 import com.james.renderEngine.textRendering.FontInfo;
-import com.james.renderEngine.texturing.TextureBank;
+import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
 import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import game.ui.screens.TitleScreen;
+import newStuff.skybox.CubeMapTexture;
+import newStuff.skybox.Skybox;
+import newStuff.skybox.SkyboxRenderer;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
@@ -38,8 +41,9 @@ public class Main {
     private static long fps;
 
     public static void main(String[] args) {
-        TextureBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png", "/textures/inventory-slot.png",
-                "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png", "/fonts/dustismo2.png");
+        ImageBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png", "/textures/inventory-slot.png",
+                "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png", "/fonts/dustismo2.png", "/textures/skybox/right.png",
+                "/textures/skybox/left.png", "/textures/skybox/top.png", "/textures/skybox/bottom.png", "/textures/skybox/back.png", "/textures/skybox/front.png");
         ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae");
 
         ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae");
@@ -51,6 +55,9 @@ public class Main {
         ALCUtilities.init();
         AudioSourcePool.init();
 
+        CubeMapTexture.create("beautiful sky", "/textures/skybox", new String[] {"right", "left", "top", "bottom", "back", "front"});
+        Skybox.currentSkybox = new Skybox("beautiful sky");
+
         Renderers.basicRenderer = new BasicRenderer();
         Renderers.flatRenderer = new FlatRenderer();
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
@@ -58,6 +65,8 @@ public class Main {
 
         MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.colorModelRenderer, Renderers.texturedModelRenderer);
         ParticleRenderer.prepare();
+        SkyboxRenderer.prepare();
+        GuiRenderer.prepare();
 
         UiHandler.screens.add(new TitleScreen());
 
@@ -90,6 +99,7 @@ public class Main {
         ALCUtilities.cleanUp();
         MasterRenderer.cleanUp();
         ParticleRenderer.cleanUp();
+        SkyboxRenderer.cleanUp();
         GuiRenderer.cleanUp();
         GLUtilities.cleanUp();
         GLFWUtilities.cleanUp();

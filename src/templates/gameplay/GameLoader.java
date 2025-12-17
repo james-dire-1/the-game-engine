@@ -14,6 +14,8 @@ import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.Time;
 import game.ui.screens.PauseScreen;
 import com.james.tools.GameObjectInterpolator;
+import newStuff.skybox.Skybox;
+import newStuff.skybox.SkyboxRenderer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
@@ -90,6 +92,7 @@ public abstract class GameLoader {
     }
 
     public void render() {
+        if (Skybox.currentSkybox != null) SkyboxRenderer.render(Skybox.currentSkybox);
         MasterRenderer.render(batchedGameObjectsList);
         ParticleRenderer.render(ParticleHandler.particles);
 

@@ -14,9 +14,10 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class ParticleRenderer {
 
-    private static final ParticleShader shader = new ParticleShader();
+    private static ParticleShader shader;
 
     public static void prepare() {
+        shader = new ParticleShader();
         shader.start();
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);

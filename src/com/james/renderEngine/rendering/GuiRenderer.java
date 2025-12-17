@@ -12,13 +12,16 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class GuiRenderer {
 
-    private static final GuiShader shader = new GuiShader();
+    private static GuiShader shader;
+
+    public static void prepare() {
+        shader = new GuiShader();
+    }
 
     public static void render(List<Gui> guis) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         shader.start();
 

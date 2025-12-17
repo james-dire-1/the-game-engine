@@ -58,7 +58,7 @@ public class Model {
     }
 
     public void setTextureAndTextureCoords(String path, float[] textureCoords) {
-        this.texture = ImageTexture.getOrCreateImageTexture(path);
+        this.texture = ImageTexture.getOrCreate(path);
         this.textureCoords = textureCoords;
 
         GLUtilities.bindVAO(rawModel.vaoId);
