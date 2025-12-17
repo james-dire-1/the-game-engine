@@ -8,12 +8,18 @@ import java.util.Map;
 
 import static org.lwjgl.opengl.GL13.*;
 
+/**
+ * Represents a cube map texture. Wrapper around an OpenGL texture id.
+ */
 public class CubeMapTexture {
 
     private static final int NUM_FACES = 6;
 
     public final int id;
 
+    /**
+     * From the six image file paths, creates a cube map texture and stores the texture id.
+     */
     private CubeMapTexture(String[] paths) {
         if (paths.length != 6)
             throw new RuntimeException();
@@ -21,6 +27,10 @@ public class CubeMapTexture {
         this.id = load(paths);
     }
 
+    /**
+     * Does all the heavy lifting of creating an OpenGL cube map texture from six image file paths. Uses the
+     * ImageDecoder.
+     */
     private static int load(String[] paths) {
         int texId = glGenTextures();
         glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
@@ -46,6 +56,11 @@ public class CubeMapTexture {
 
     private static final Map<String, CubeMapTexture> nameToTextureMap = new HashMap<>();
 
+    /**
+     * Creates a CubeMapTexture object and stores it in the map with an associated name for ease of retrieval
+     * later. This method is specifically for creating a cube map texture from six distinct image files. Note
+     * that no extension should be used for the fileNames.
+     */
     public static void create(String name, String root, String[] fileNames) {
         String[] filePaths = new String[fileNames.length];
 
@@ -58,6 +73,11 @@ public class CubeMapTexture {
         nameToTextureMap.put(name, texture);
     }
 
+    /**
+     * Creates a CubeMapTexture object and stores it in the map with an associated name for ease of retrieval
+     * later. This method is specifically for creating a cube map texture from one image file only (all six
+     * faces will use that image). Note that an extension should be used for the singleFilePath.
+     */
     public static void create(String name, String singleFilePath) {
         String[] filePaths = new String[NUM_FACES];
         Arrays.fill(filePaths, singleFilePath);
@@ -66,6 +86,9 @@ public class CubeMapTexture {
         nameToTextureMap.put(name, texture);
     }
 
+    /**
+     * Retrieves a CubeMapTexture from its associated name.
+     */
     public static CubeMapTexture get(String name) {
         return nameToTextureMap.get(name);
     }

@@ -1,19 +1,17 @@
 package com.james.renderEngine.utilities;
 
-import com.james.renderEngine.ui.Gui;
-
 /**
- * This class contains utility arrays for common things, like the vertex positions for guis, particles,
- * text quads, and surface planes. Since it is not sensible to redefine these common arrays for all of
+ * This class contains utility arrays for common things, like the vertex positions for guis, particles, text
+ * quads, surface planes, and skyboxes. Since it is not sensible to redefine these common arrays for all of
  * these things, they are all placed here, so that all systems can make use of them.
  */
 public class VertexUtilityArrays {
 
+    private static final float SIZE = 500f;
+
     /**
-     * Some utility arrays used for constructing the model of a default gui. In addition, these are also
-     * used by particles.
-     * @see Gui
-     * @see com.james.renderEngine.particles.ParticleHandler
+     * Vertex positions used for constructing the model of a default gui. In addition, these are also used by
+     * particles.
      */
     public static final float[] defaultVertexPositions = {
             -0.5f, 0.5f, 0,
@@ -21,14 +19,17 @@ public class VertexUtilityArrays {
             0.5f, 0.5f, 0,
             0.5f, -0.5f, 0
     };
+
+    /**
+     * Indices used for constructing the model of a default gui. In addition, these are also used by particles.
+     */
     public static final int[] defaultIndices = {
             0, 1, 2, 2, 1, 3
     };
 
     /**
      * Custom vertex positions for use when rendering characters of text. Makes it so that the top left of the
-     * quad is the origin, rather than the center, as opposed to the vertex positions of defaultVertexPositions
-     * @see com.james.renderEngine.uiElements.GuiText
+     * quad is the origin, rather than the center, as opposed to the vertex positions of defaultVertexPositions.
      */
     public static final float[] textQuadVertexPositions = {
             0, 0, 0,
@@ -38,9 +39,8 @@ public class VertexUtilityArrays {
     };
 
     /**
-     * WRITE DOCUMENTATION HERE!
+     * Vertex positions used for skyboxes.
      */
-    private static final float SIZE = 500f;
     public static final float[] defaultSkyboxVertexPositions = {
             -SIZE, -SIZE, -SIZE, // 0 bottom left back
             -SIZE, -SIZE, SIZE, // 1 bottom left front
@@ -51,6 +51,10 @@ public class VertexUtilityArrays {
             SIZE, SIZE, SIZE, // 6 top right front
             SIZE, SIZE, -SIZE, // 7 top right back
     };
+
+    /**
+     * Indices used for skyboxes.
+     */
     public static final int[] defaultSkyboxIndices = {
             0, 1, 3, 3, 1, 2, // bottom
             5, 1, 4, 4, 1, 0, // left

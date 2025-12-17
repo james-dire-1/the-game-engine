@@ -3,6 +3,9 @@ package newStuff.skybox;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.utilities.VertexUtilityArrays;
 
+/**
+ * Represents a visual skybox.
+ */
 public class Skybox {
 
     private static RawModel rawModel;
@@ -12,6 +15,9 @@ public class Skybox {
 
     public boolean unmoving = false;
 
+    /**
+     * Creates a skybox from the associated name of a cube map texture.
+     */
     public Skybox(String textureName) {
         if (rawModel == null) {
             rawModel = new RawModel(

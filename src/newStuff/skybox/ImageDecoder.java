@@ -6,18 +6,31 @@ import com.james.renderEngine.utilities.GLUtilities;
 import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 
+/**
+ * Class that handles extracting the necessary info from an image file that is needed for creating OpenGL
+ * textures. This info is stored in this class's fields for ease of retrieval after. Used by both ImageTexture
+ * and CubeMapTexture.
+ */
 public class ImageDecoder {
 
     public final int width;
     public final int height;
     public final IntBuffer rawImageBuffer;
 
+    /**
+     * Constructor used internally for populating the fields that will be referred to when creating OpenGL
+     * textures. Determining what these fields should be is done in decode() below.
+     */
     private ImageDecoder(int width, int height, IntBuffer rawImageBuffer) {
         this.width = width;
         this.height = height;
         this.rawImageBuffer = rawImageBuffer;
     }
 
+    /**
+     * Does the heavy lifting for turning an image file into the fields we need for OpenGL textures. Pretty
+     * much all the code in here is from The Cherno.
+     */
     public static ImageDecoder decode(String path) {
         BufferedImage image = ImageBank.get(path);
 
