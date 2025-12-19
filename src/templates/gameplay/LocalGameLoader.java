@@ -2,6 +2,7 @@ package templates.gameplay;
 
 import com.james.common.tools.Mth;
 import com.james.renderEngine.gameObjects.GameObject;
+import com.james.renderEngine.models.Model;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
 import com.james.tools.MousePicker;
@@ -11,12 +12,14 @@ import templates.rendering.ModelBank;
 import templates.settings.GLFWWindowTitles;
 import templates.communication.LocalClientPacketSendEvents;
 
+import java.util.List;
+
 public class LocalGameLoader extends GameLoader {
 
     public LevelInitializer levelInitializer;
 
     private final MousePicker mousePicker = new MousePicker(focusCamera);
-    private final GameObject gameObject;
+//    private final GameObject gameObject;
 
     public LocalGameLoader() {
         super(LocalClientPacketSendEvents.get());
@@ -26,8 +29,17 @@ public class LocalGameLoader extends GameLoader {
 
         GLFWUtilities.setWindowTitle(GLFWWindowTitles.DEBUG_MODE);
 
-        gameObject = new GameObject(ModelBank.getStall(), new Vector3f(), new Vector3f(), 1);
+//        gameObject = new GameObject(ModelBank.getStall(), new Vector3f(), new Vector3f(), 1);
+//        batchedGameObjectsList.addGameObject(gameObject);
+
+        GameObject gameObject = new GameObject(ModelBank.getBlenderTest(), new Vector3f(), new Vector3f(), 1);
         batchedGameObjectsList.addGameObject(gameObject);
+
+        List<Model> models = ModelBank.getBlenderTest_New();
+        for (Model model : models) {
+            GameObject gameObject2 = new GameObject(model, new Vector3f(0, 0, -3), new Vector3f(), 1);
+            batchedGameObjectsList.addGameObject(gameObject2);
+        }
     }
 
     @Override

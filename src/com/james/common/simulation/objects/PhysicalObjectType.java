@@ -8,5 +8,6 @@ package com.james.common.simulation.objects;
 public enum PhysicalObjectType {
     Wall,
     TestEnvironment,
-    Other
+    Other,
+    DesertEnvironment
 }

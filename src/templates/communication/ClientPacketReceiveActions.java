@@ -73,6 +73,8 @@ public class ClientPacketReceiveActions {
             model = ModelBank.getWall();
         } else if (type == PhysicalObjectType.TestEnvironment) {
             model = ModelBank.getTestEnvironment();
+        } else if (type == PhysicalObjectType.DesertEnvironment) {
+            model = ModelBank.getDesertEnvironment();
         } else if (type == PhysicalObjectType.Other) {
             model = ModelBank.getColorAbstractArt();
         }

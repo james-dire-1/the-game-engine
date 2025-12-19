@@ -21,6 +21,7 @@ import game.ui.screens.TitleScreen;
 import com.james.renderEngine.texturing.CubeMapTexture;
 import com.james.renderEngine.skyboxes.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
+import newStuff.evenNewer.NewModelLoader;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
@@ -45,9 +46,10 @@ public class Main {
         ImageBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png", "/textures/inventory-slot.png",
                 "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png", "/fonts/dustismo2.png", "/textures/skybox/right.png",
                 "/textures/skybox/left.png", "/textures/skybox/top.png", "/textures/skybox/bottom.png", "/textures/skybox/back.png", "/textures/skybox/front.png");
-        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae");
+        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae", "/desert.dae", "/blender-test-7.dae");
+        NewModelLoader.init("/blender-test-7.dae");
 
-        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae");
+        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae", "/desert.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
         GLFWUtilities.init(GLFWWindowTitles.MAIN);

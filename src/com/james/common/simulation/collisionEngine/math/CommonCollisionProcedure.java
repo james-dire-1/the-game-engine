@@ -17,7 +17,7 @@ import java.util.List;
 public class CommonCollisionProcedure {
 
     private static final float VERY_CLOSE_DISTANCE = 0.005f;
-    private static final float VERY_CLOSE_DISTANCE_SQUARED = VERY_CLOSE_DISTANCE*VERY_CLOSE_DISTANCE;
+    private static final float VERY_CLOSE_DISTANCE_SQUARED = VERY_CLOSE_DISTANCE * VERY_CLOSE_DISTANCE;
     private static final int MAX_RECURSION_COUNT = 5;
 
     /**

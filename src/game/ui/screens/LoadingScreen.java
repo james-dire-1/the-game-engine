@@ -3,7 +3,6 @@ package game.ui.screens;
 import com.james.renderEngine.ui.AnchorPoint;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
-import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
@@ -11,6 +10,7 @@ import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
 import com.james.renderEngine.textRendering.TextAlignment;
+import newStuff.evenNewer.Scenes;
 import templates.communication.LocalServerPacketSendEvents;
 import templates.communication.LocalServerProperties;
 
@@ -25,7 +25,7 @@ public class LoadingScreen extends Screen {
         text.apply();
         super.addGui(text.getMesh());
 
-        new LevelInitializer("main", new LocalServerPacketSendEvents());
+        new LevelInitializer("main", new LocalServerPacketSendEvents(), Scenes::testScene);
         LevelInitializer.isOnlineGame = false;
         LocalServerProperties.clientJoined();
     }
