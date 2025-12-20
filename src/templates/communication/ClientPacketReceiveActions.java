@@ -74,15 +74,26 @@ public class ClientPacketReceiveActions {
         } else if (type == PhysicalObjectType.TestEnvironment) {
             model = ModelBank.getTestEnvironment();
         } else if (type == PhysicalObjectType.DesertEnvironment) {
-            model = ModelBank.getDesertEnvironment();
+            // TODO: 2025-12-19 This is terrible
         } else if (type == PhysicalObjectType.Other) {
             model = ModelBank.getColorAbstractArt();
         }
 
-        GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
-        GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+        if (model == null) {
+            Model[] models = ModelBank.getDesertEnvironment();
 
-        object.setGameObject(gameObject);
+            for (Model desertModel : models) {
+                GameObject gameObject = new GameObject(desertModel, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
+                GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+
+                object.setGameObject(gameObject);
+            }
+        } else {
+            GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
+            GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+
+            object.setGameObject(gameObject);
+        }
     }
 
     // TODO: 2024-07-21 There seems to be a lot of code duplication here..

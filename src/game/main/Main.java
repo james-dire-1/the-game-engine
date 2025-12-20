@@ -15,13 +15,12 @@ import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.utilities.GLUtilities;
-import com.james.common.tools.ModelLoader;
 import com.james.tools.*;
 import game.ui.screens.TitleScreen;
 import com.james.renderEngine.texturing.CubeMapTexture;
 import com.james.renderEngine.skyboxes.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
-import newStuff.evenNewer.NewModelLoader;
+import newStuff.evenNewer.ModelLoader;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
@@ -39,17 +38,17 @@ public class Main {
     public static final FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
     public static final FontInfo dustismo = new FontInfo("/dustismo2.fnt", "/dustismo2.png");
 
-    private static long lastTime2 = System.nanoTime()/1000000;
+    private static long lastTime = System.nanoTime()/1000000;
     private static long fps;
 
     public static void main(String[] args) {
         ImageBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png", "/textures/inventory-slot.png",
                 "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png", "/fonts/dustismo2.png", "/textures/skybox/right.png",
-                "/textures/skybox/left.png", "/textures/skybox/top.png", "/textures/skybox/bottom.png", "/textures/skybox/back.png", "/textures/skybox/front.png");
-        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae", "/desert.dae", "/blender-test-7.dae");
-        NewModelLoader.init("/blender-test-7.dae");
+                "/textures/skybox/left.png", "/textures/skybox/top.png", "/textures/skybox/bottom.png", "/textures/skybox/back.png", "/textures/skybox/front.png",
+                "/textures/stone-ground.png");
+        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae", "/desert-2.dae", "/blender-test-7.dae");
 
-        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae", "/desert.dae");
+        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae", "/desert-2.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
         GLFWUtilities.init(GLFWWindowTitles.MAIN);
@@ -91,8 +90,8 @@ public class Main {
 
             // fps timer
             fps++;
-            if (System.nanoTime()/1000000 - lastTime2 > 1000) {
-                lastTime2 = System.nanoTime()/1000000;
+            if (System.nanoTime() / 1000000 - lastTime > 1000) {
+                lastTime = System.nanoTime() / 1000000;
                 System.out.println("FPS: " + fps);
                 fps = 0;
             }

@@ -53,10 +53,10 @@ public class Scenes {
     }
 
     public static void desertScene(Level level) {
-        PhysicalObject desertEnvironment = new PhysicalObject(PhysicalObjectType.DesertEnvironment, new Vector3f(0, -20, 0), new Vector3f(), 1);
+        PhysicalObject desertEnvironment = new PhysicalObject(PhysicalObjectType.DesertEnvironment, new Vector3f(0, -100, 0), new Vector3f(), 1);
         level.add(desertEnvironment);
 
-        AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/desert.dae");
+        AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/desert-2.dae");
         level.addAABBHitbox(aabbHitbox);
     }
 

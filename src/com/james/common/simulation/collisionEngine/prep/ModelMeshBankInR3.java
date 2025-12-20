@@ -1,6 +1,6 @@
 package com.james.common.simulation.collisionEngine.prep;
 
-import com.james.common.tools.ModelLoader;
+import newStuff.evenNewer.ModelLoader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public class ModelMeshBankInR3 {
     public static void init(String... modelMeshFilePaths) {
         for (String path : modelMeshFilePaths) {
             ModelLoader modelLoader = ModelLoader.get(path);
-            ModelMesh modelMesh = new ModelMesh(modelLoader.vertexPositions, modelLoader.indices);
+            ModelMesh modelMesh = new ModelMesh(modelLoader.vertexPositions(), modelLoader.indices());
             modelMeshMap.put(path, modelMesh);
         }
     }
