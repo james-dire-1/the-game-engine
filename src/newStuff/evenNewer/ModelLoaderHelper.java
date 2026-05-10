@@ -76,13 +76,19 @@ public class ModelLoaderHelper {
         }
 
         int[] indicesAllMeshes = new int[arrayLength];
+        int glIndexOffset = 0;
         int currentIndex = 0;
 
         for (SingleMesh singleMesh : singleMeshes) {
-            for (int index : singleMesh.indices) {
-                indicesAllMeshes[currentIndex] = index;
+            for (int glIndex : singleMesh.indices) {
+                indicesAllMeshes[currentIndex] = glIndexOffset + glIndex;
                 currentIndex++;
             }
+
+            if (singleMesh.vertexPositions.length % 3 != 0)
+                throw new RuntimeException();
+
+            glIndexOffset += singleMesh.vertexPositions.length / 3;
         }
 
         return indicesAllMeshes;

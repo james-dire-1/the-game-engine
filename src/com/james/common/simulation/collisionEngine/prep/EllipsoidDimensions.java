@@ -21,7 +21,7 @@ public class EllipsoidDimensions {
 
     public final Vector3f radius;
 
-    public final Map<String, Map<Integer, ModelMesh>> modelMeshMap = new HashMap<>();
+    public final Map<String, List<ModelMesh>> modelMeshMap = new HashMap<>();
 
     /**
      * Private constructor that creates a new EllipsoidDimensions of a given radius, and which gets all
@@ -30,20 +30,17 @@ public class EllipsoidDimensions {
     private EllipsoidDimensions(float radiusX, float radiusY, float radiusZ) {
         this.radius = new Vector3f(radiusX, radiusY, radiusZ);
 
-        for (Map.Entry<String, Map<Integer, ModelMesh>> outerEntry : ModelMeshBankInR3.getModelMeshMap().entrySet()) {
+        for (Map.Entry<String, List<ModelMesh>> outerEntry : ModelMeshBankInR3.getModelMeshMap().entrySet()) {
             String meshPath = outerEntry.getKey();
-            Map<Integer, ModelMesh> innerMap = outerEntry.getValue();
+            List<ModelMesh> innerList = outerEntry.getValue();
 
             if (!modelMeshMap.containsKey(meshPath)) {
-                modelMeshMap.put(meshPath, new HashMap<>());
+                modelMeshMap.put(meshPath, new ArrayList<>());
             }
 
-            for (Map.Entry<Integer, ModelMesh> innerEntry : innerMap.entrySet()) {
-                Integer subMeshIdentifier = innerEntry.getKey();
-                ModelMesh modelMeshInR3 = innerEntry.getValue();
+            for (ModelMesh modelMeshInR3 : innerList) {
                 ModelMesh modelMeshInEllipsoidSpace = convertFromR3ToEllipsoidSpace(modelMeshInR3);
-
-                modelMeshMap.get(meshPath).put(subMeshIdentifier, modelMeshInEllipsoidSpace);
+                modelMeshMap.get(meshPath).add(modelMeshInEllipsoidSpace);
             }
         }
     }

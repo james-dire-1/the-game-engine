@@ -15,6 +15,7 @@ public class ModelBank {
     private static Model wallModel;
     private static Model testEnvironmentModel;
     private static Model[] desertEnvironmentModels;
+    private static Model desertEnvironmentModel;
 
     public static Model getStall() {
         if (stallModel == null) {
@@ -87,7 +88,7 @@ public class ModelBank {
         return testEnvironmentModel;
     }
 
-    public static Model[] getDesertEnvironment() {
+    public static Model[] getDesertEnvironmentManyModels() {
         if (desertEnvironmentModels == null) {
             ModelLoader loader = ModelLoader.get("/desert-2.dae");
             SingleMesh[] singleMeshes = loader.getOtherSingleMeshes();
@@ -104,6 +105,18 @@ public class ModelBank {
         }
 
         return desertEnvironmentModels;
+    }
+
+    public static Model getDesertEnvironmentOneModel() {
+        if (desertEnvironmentModel == null) {
+            ModelLoader loader = ModelLoader.get("/desert-2.dae");
+            desertEnvironmentModel = new Model(loader.vertexPositionsForAllSingleMeshes(), loader.indicesForAllSingleMeshes());
+            desertEnvironmentModel.setTextureAndTextureCoords("/textures/stone-ground.png", loader.textureCoordsForAllSingleMeshes());
+            desertEnvironmentModel.setNormals(loader.normalsForAllSingleMeshes());
+            desertEnvironmentModel.setRenderer(Renderers.texturedModelRenderer);
+        }
+
+        return desertEnvironmentModel;
     }
 
 }
