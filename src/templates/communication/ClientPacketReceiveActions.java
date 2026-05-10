@@ -181,10 +181,10 @@ public class ClientPacketReceiveActions {
         }
     }
 
-    public static void aabbHitboxAddedReceived(int id, String meshPath) {
+    public static void aabbHitboxAddedReceived(int id, String meshPath, int subMeshIdentifier) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.aabbHitboxAddedReceived " + "{id=" + id + "}");
 
-        ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath));
+        ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath, subMeshIdentifier));
     }
 
     public static void connectedPlayerAddedReceived(int id, String username, int color, float x, float y, float z, float rotY) {

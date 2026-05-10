@@ -100,9 +100,10 @@ public class OnlineGameLoader extends GameLoader {
     public static void aabbHitboxAddedReceived(Object[] objects) {
         int id = (int) objects[0];
         String meshPath = (String) objects[1];
+        int subMeshIdentifier = (int) objects[2];
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath);
+            ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath, subMeshIdentifier);
         });
     }
 

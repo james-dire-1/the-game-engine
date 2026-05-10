@@ -17,6 +17,7 @@ public abstract class AbstractAABBHitbox {
 
     public final AbstractPhysicalObject object;
     public final String meshPath;
+    public final int subMeshIdentifier;
     private final ModelMesh mesh;
 
     public float lowerX, upperX, lowerY, upperY, lowerZ, upperZ;
@@ -25,10 +26,11 @@ public abstract class AbstractAABBHitbox {
      * Creates a new AABB hitbox for a specific object (AbstractPhysicalObject), which uses a specific
      * ModelMesh, denoted by its file path. Also, calls updatePosition() to set the bounds of this AABB.
      */
-    protected AbstractAABBHitbox(AbstractPhysicalObject object, String meshPath) {
+    protected AbstractAABBHitbox(AbstractPhysicalObject object, String meshPath, int subMeshIdentifier) {
         this.object = object;
         this.meshPath = meshPath;
-        this.mesh = ModelMeshBankInR3.getModelMeshMap().get(meshPath);
+        this.subMeshIdentifier = subMeshIdentifier;
+        this.mesh = ModelMeshBankInR3.getModelMeshMap().get(meshPath).get(subMeshIdentifier);
 
         updatePosition();
     }

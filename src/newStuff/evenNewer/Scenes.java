@@ -1,5 +1,6 @@
 package newStuff.evenNewer;
 
+import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
@@ -55,9 +56,11 @@ public class Scenes {
     public static void desertScene(Level level) {
         PhysicalObject desertEnvironment = new PhysicalObject(PhysicalObjectType.DesertEnvironment, new Vector3f(0, -100, 0), new Vector3f(), 1);
         level.add(desertEnvironment);
-
-        AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/desert-2.dae");
-        level.addAABBHitbox(aabbHitbox);
+        
+        for (int i = 0; i < ModelMeshBankInR3.getNumberOfSubMeshes("/desert-2.dae"); i++) {
+            AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/desert-2.dae", i);
+            level.addAABBHitbox(aabbHitbox);
+        }
     }
 
 }

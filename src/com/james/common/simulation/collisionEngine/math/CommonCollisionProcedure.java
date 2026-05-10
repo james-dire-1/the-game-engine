@@ -45,7 +45,7 @@ public class CommonCollisionProcedure {
                     (aabbHitbox.upperY >= ellipsoidLowerY && ellipsoidUpperY >= aabbHitbox.lowerY) &&
                     (aabbHitbox.upperZ >= ellipsoidLowerZ && ellipsoidUpperZ >= aabbHitbox.lowerZ)  ) {
                 Vector3f objectPosition = aabbHitbox.object.getPosition();
-                ModelMesh meshInEllipsoidLocalSpace = ellipsoidHitbox.dimensions.modelMeshMap.get(aabbHitbox.meshPath);
+                ModelMesh meshInEllipsoidLocalSpace = ellipsoidHitbox.dimensions.modelMeshMap.get(aabbHitbox.meshPath).get(aabbHitbox.subMeshIdentifier);
                 Triangle[] trianglesInEllipsoidLocalSpace = meshInEllipsoidLocalSpace.triangles;
                 Triangle[] trianglesInEllipsoidWorldSpace = ModelMesh.performOperationOnAllTriangles(trianglesInEllipsoidLocalSpace, PointOperations::addObjectPositionToPoint, objectPosition);
                 allTrianglesInEllipsoidWorldSpaceList.addAll(Arrays.asList(trianglesInEllipsoidWorldSpace));

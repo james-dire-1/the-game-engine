@@ -171,7 +171,9 @@ public class ModelLoader {
     public List<SingleMesh> getAllSingleMeshes() {
         if (allSingleMeshes == null) {
             allSingleMeshes = new ArrayList<>();
-            allSingleMeshes.addAll(namedSingleMeshes.values());
+
+            if (namedSingleMeshes != null)
+                allSingleMeshes.addAll(namedSingleMeshes.values());
             allSingleMeshes.addAll(Arrays.asList(otherSingleMeshes));
         }
 

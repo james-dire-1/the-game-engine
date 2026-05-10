@@ -8,8 +8,8 @@ import com.james.simulation.ClientLevel;
  */
 public class CachedAABBHitbox extends AbstractAABBHitbox {
 
-    public CachedAABBHitbox(int idOfCorrespondingObject, String meshPath) {
-        super(ClientLevel.get().getCachedPhysicalObject(idOfCorrespondingObject), meshPath);
+    public CachedAABBHitbox(int idOfCorrespondingObject, String meshPath, int subMeshIdentifier) {
+        super(ClientLevel.get().getCachedPhysicalObject(idOfCorrespondingObject), meshPath, subMeshIdentifier);
     }
 
 }

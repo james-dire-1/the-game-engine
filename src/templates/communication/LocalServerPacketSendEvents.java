@@ -94,11 +94,11 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void sendAABBHitboxAdded(int id, String meshPath, PlayerInfo... playerInfoArray) {
+    public void sendAABBHitboxAdded(int id, String meshPath, int subMeshIdentifier, PlayerInfo... playerInfoArray) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendAABBHitboxAdded " + "{id=" + id + "}");
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath);
+            ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath, subMeshIdentifier);
         });
     }
 
