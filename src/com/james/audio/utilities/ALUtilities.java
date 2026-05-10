@@ -8,7 +8,7 @@ import java.util.List;
 import static org.lwjgl.openal.AL10.*;
 
 /**
- * Utility class for handling audio buffers in OpenAL
+ * Utility class for handling audio buffers in OpenAL.
  */
 public class ALUtilities {
 

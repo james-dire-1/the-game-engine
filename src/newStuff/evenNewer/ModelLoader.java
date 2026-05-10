@@ -9,6 +9,8 @@ import java.util.*;
 
 import static org.lwjgl.assimp.Assimp.*;
 
+// TODO: 2026-05-10 Consider adding a way to not load textureCoords and normals from the file
+// TODO: 2026-05-10 This is helpful when doing server-side things
 // https://www.youtube.com/watch?v=eqlwamit0vU&t=883s
 public class ModelLoader {
 
@@ -128,12 +130,52 @@ public class ModelLoader {
     public float[] normals() { return otherSingleMeshes[0].normals; }
     public int[] indices() { return otherSingleMeshes[0].indices; }
 
+    private float[] vertexPositionsAllMeshes;
+    private float[] textureCoordsAllMeshes;
+    private float[] normalsAllMeshes;
+    private int[] indicesAllMeshes;
+
+    public float[] vertexPositionsForAllSingleMeshes() {
+        if (vertexPositionsAllMeshes == null)
+            vertexPositionsAllMeshes = ModelLoaderHelper.vertexPositionsAllMeshes(this);
+        return vertexPositionsAllMeshes;
+    }
+
+    public float[] textureCoordsForAllSingleMeshes() {
+        if (textureCoordsAllMeshes == null)
+            textureCoordsAllMeshes = ModelLoaderHelper.textureCoordsAllMeshes(this);
+        return textureCoordsAllMeshes;
+    }
+
+    public float[] normalsForAllSingleMeshes() {
+        if (normalsAllMeshes == null)
+            normalsAllMeshes = ModelLoaderHelper.normalsAllMeshes(this);
+        return normalsAllMeshes;
+    }
+
+    public int[] indicesForAllSingleMeshes() {
+        if (indicesAllMeshes == null)
+            indicesAllMeshes = ModelLoaderHelper.indicesAllMeshes(this);
+        return indicesAllMeshes;
+    }
+
     public SingleMesh getSingleMesh(String name) {
         return namedSingleMeshes.get(name);
     }
 
     public SingleMesh[] getOtherSingleMeshes() {
         return otherSingleMeshes;
+    }
+
+    private List<SingleMesh> allSingleMeshes;
+    public List<SingleMesh> getAllSingleMeshes() {
+        if (allSingleMeshes == null) {
+            allSingleMeshes = new ArrayList<>();
+            allSingleMeshes.addAll(namedSingleMeshes.values());
+            allSingleMeshes.addAll(Arrays.asList(otherSingleMeshes));
+        }
+
+        return allSingleMeshes;
     }
 
     private static final Map<String, ModelLoader> modelLoaderMap = new HashMap<>();

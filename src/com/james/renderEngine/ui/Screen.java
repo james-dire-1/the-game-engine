@@ -36,7 +36,7 @@ public class Screen {
      * screen, that should always be done in a child of the screen.
      *
      * Also, if the gui is an instance of GuiButton, adds it to the GuiButton list. This list is used for
-     * handling hover states of these special Guis. (Check the update() method.)
+     * handling hover states of these special guis. (Check the update() method.)
      */
     public void addGui(Gui gui) {
         guisOfScreen.add(gui);

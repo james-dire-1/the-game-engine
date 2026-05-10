@@ -86,7 +86,7 @@ public class Level extends LevelProperties {
             }
             collisionHandler.update();
 
-            // Other logic other than move (including rotations!)
+            // Logic other than move (including rotations!)
             Iterator<PhysicalObject> iterator = physicalObjects.iterator();
             while (iterator.hasNext()) {
                 PhysicalObject obj = iterator.next();

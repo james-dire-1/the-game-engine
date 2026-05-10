@@ -137,7 +137,7 @@ public class CommonCollisionProcedure {
     /**
      * Checks for collision against a single Triangle. First, we see if a collision with the triangle
      * plane is possible. Then, tests if a collision with the triangle face has occurred. If this has not
-     * happened, then tests if a collision with the triangle's vertices or edges have occurred. If this
+     * happened, then tests if a collision with the triangle's vertices or edges has occurred. If this
      * is the closest triangle thus far, then its collision data overwrite old data in CollisionInfo.
      */
     private static void performCollisionDetectionWithTriangle(Vector3f basePoint, Vector3f velocity, Vector3f p1, Vector3f p2, Vector3f p3, CollisionInfo collisionInfo) {

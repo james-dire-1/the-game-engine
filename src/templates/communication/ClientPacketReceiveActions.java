@@ -69,30 +69,29 @@ public class ClientPacketReceiveActions {
         }
 
         Model model = null;
+        Model[] modelList = null;
         if (type == PhysicalObjectType.Wall) {
             model = ModelBank.getWall();
         } else if (type == PhysicalObjectType.TestEnvironment) {
             model = ModelBank.getTestEnvironment();
         } else if (type == PhysicalObjectType.DesertEnvironment) {
-            // TODO: 2025-12-19 This is terrible
+            modelList = ModelBank.getDesertEnvironment();
         } else if (type == PhysicalObjectType.Other) {
             model = ModelBank.getColorAbstractArt();
         }
 
-        if (model == null) {
-            Model[] models = ModelBank.getDesertEnvironment();
-
-            for (Model desertModel : models) {
-                GameObject gameObject = new GameObject(desertModel, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
-                GameLoader.batchedGameObjectsList.addGameObject(gameObject);
-
-                object.setGameObject(gameObject);
-            }
-        } else {
+        if (model != null) {
             GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
             GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
             object.setGameObject(gameObject);
+        } else if (modelList != null) {
+            for (Model model1 : modelList) {
+                GameObject gameObject = new GameObject(model1, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
+                GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+
+                object.setGameObject(gameObject);
+            }
         }
     }
 

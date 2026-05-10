@@ -6,14 +6,16 @@ import com.james.tools.Time;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- * Client side version of CachedPhysicalObject. Removes some things from the server PhysicalObject that
- * are not needed for the client, and adds prevPosition, which is necessary for interpolation.
+ * Client side version of PhysicalObject. Removes some things from the server PhysicalObject that are not
+ * needed for the client, and adds prevPosition, which is necessary for interpolation.
  */
 public class CachedPhysicalObject extends AbstractPhysicalObject {
 
     public float lastTime = Time.getCurrentTime();
 
     private GameObject gameObject;
+    // TODO: 2026-05-10 we are only storing one GameObject here
+    // TODO: 2026-05-10 has some implications on the desert scene. consider them.....
     public GameObject getGameObject() { return gameObject; }
 
     protected final Vector3f rotation;

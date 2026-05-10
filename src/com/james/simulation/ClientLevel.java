@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Client version of the Level class. Holds information about cached objects, as well as the Player.
- * Also, since this is a client-side level, there should only be one of these classes actively being
- * used at any one time, which is why this class is implemented as a singleton.
+ * Client version of the Level class. Holds information about cached objects, as well as the Player. Also,
+ * since this is a client-side level, there should only be one instance actively being used at any one time,
+ * which is why this class is implemented as a singleton.
  */
 public class ClientLevel extends LevelProperties {
 
