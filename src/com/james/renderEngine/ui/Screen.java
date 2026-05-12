@@ -19,8 +19,8 @@ public class Screen {
 
     /**
      * A list of all guis that belong to this screen. The list is saved so that later when deleting the screen,
-     * we know which guis belonged to this screen, and thus we are able to only remove these guis from rendering.
-     * Not only that, but this list is also used in the update() method.
+     * we know which guis belonged to this screen, and thus we are able to only remove these guis from
+     * rendering. Not only that, but this list is also used in the update() method.
      */
     protected final List<Gui> guisOfScreen = new ArrayList<>();
     private boolean shouldDelete = false;
@@ -218,6 +218,7 @@ public class Screen {
 
     /**
      * Adds a screen to the screensToBeAdded addition queue.
+     *
      * @implNote If it's the first screen being created (i.e. we are not currently iterating through the
      * screens list in UiHandler), then we can call UiHandler.screens.add() directly.
      */
@@ -228,6 +229,7 @@ public class Screen {
     /**
      * Returns the list of screensToBeAdded and clears that list to prepare for the next frame. This method
      * gets called in the UiHandler class, once iteration of all screens has finished.
+     *
      * @implNote We are copying the list so that it is possible to clear it and return it in the same method.
      * @see UiHandler
      */

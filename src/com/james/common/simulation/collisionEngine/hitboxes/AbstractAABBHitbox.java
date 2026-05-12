@@ -7,8 +7,8 @@ import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
- * An AABB hitbox used to approximate objects that are formed by a triangle mesh. An instance of this class
- * exists for each AbstractPhysicalObject that we would like to be able to collide with. In the
+ * An AABB hitbox used to approximate objects that are formed by a triangle mesh. One or more instances of
+ * this class exist for each AbstractPhysicalObject that we would like to be able to collide with. In the
  * CommonCollisionProcedure, these AABBs are tested against each EllipsoidHitbox. If an EllipsoidHitbox is
  * deemed to be colliding with an AABB, then the broadphase check has passed and the narrow phase test can
  * begin.
@@ -24,7 +24,8 @@ public abstract class AbstractAABBHitbox {
 
     /**
      * Creates a new AABB hitbox for a specific object (AbstractPhysicalObject), which uses a specific
-     * ModelMesh, denoted by its file path. Also, calls updatePosition() to set the bounds of this AABB.
+     * ModelMesh, denoted by its file path and sub mesh identifier. Also, calls updatePosition() to set the
+     * bounds of this AABB.
      */
     protected AbstractAABBHitbox(AbstractPhysicalObject object, String meshPath, int subMeshIdentifier) {
         this.object = object;

@@ -74,10 +74,11 @@ public class Gui {
     }
 
     /**
-     * Sets the gui to use a texture. Also takes in info for sampling the texture in the case that only
-     * a section of the texture is desired to be rendered.
-     * @implNote x, y, widthToSample, and heightToSample are measured in pixels, but OpenGL expects the data
-     * to be normalized, so first we must normalize the data if it isn't normalized already.
+     * Sets the gui to use a texture. Also takes in info for sampling the texture in the case that only a
+     * section of the texture is desired to be rendered.
+     *
+     * @implNote x, y, widthToSample, and heightToSample are measured in pixels, but OpenGL expects the data to
+     * be normalized, so first we must normalize the data if it isn't normalized already.
      */
     // TODO: 2024-12-24 Also, there should be some check to see if this method is being called for a gui that is
     // TODO: 2024-12-24 using conventional vertexPositions and indices arrays
@@ -136,11 +137,12 @@ public class Gui {
     }
 
     /**
-     * Sets the gui to use a single color. Thus, instead of assigning a color to each vertex, which has
-     * to be loaded into a VAO, the single color is passed to the shader as a uniform variable.
-     * @implNote There is a separate array to be used for a single color, because the real colors array
-     * gets passed to GuiMeshData, which will load it into a VAO. This is of course not what we want for
-     * a single color.
+     * Sets the gui to use a single color. Thus, instead of assigning a color to each vertex, which has to be
+     * loaded into a VAO, the single color is passed to the shader as a uniform variable.
+     *
+     * @implNote There is a separate array to be used for a single color, because the real colors array gets
+     * passed to GuiMeshData, which will load it into a VAO. This is of course not what we want for a single
+     * color.
      */
     // TODO: 2025-06-23 This is inefficient! We are creating new arrays every time this is called
     public void setSingleColor(float r, float g, float b) {
@@ -148,8 +150,8 @@ public class Gui {
     }
 
     /**
-     * Marks the gui (whether it corresponds to a single character, or a whole string of text) as text. This
-     * is important for the GuiRenderer to know, as rendering for text guis is different compared to other types
+     * Marks the gui (whether it corresponds to a single character, or a whole string of text) as text. This is
+     * important for the GuiRenderer to know, as rendering for text guis is different compared to other types
      * of guis.
      */
     public void markAsText() {
@@ -158,12 +160,13 @@ public class Gui {
 
     /**
      * Once all the data for this gui has been gathered, it can be applied to receive its GuiMeshData instance.
-     * The reason this happens at the end is so that all the information can be tested against all the GuiMeshData
-     * instances' information that already exists, and if one GuiMeshData instance's information is identical
-     * to the information we have here, then it can simply be returned without any redundant new GuiMeshData
-     * instance getting created. Hence, "getOrCreateGuiMeshData()."
-     * Not only that, but we need to know everything about the gui before we can assign its RenderingMode, which
-     * also happens in this method.
+     * The reason this happens at the end is so that all the information can be tested against all the
+     * GuiMeshData instances' information that already exists, and if one GuiMeshData instance's information is
+     * identical to the information we have here, then it can simply be returned without any redundant new
+     * GuiMeshData instance getting created. Hence, "getOrCreateGuiMeshData()."
+     *
+     * Not only that, but we need to know everything about the gui before we can assign its RenderingMode,
+     * which also happens in this method.
      */
     public void apply() {
         if (textureCoords != null && colors == null && singleColor == null && !isText)

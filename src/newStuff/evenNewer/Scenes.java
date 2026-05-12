@@ -10,6 +10,9 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Scenes {
 
+    public static void nothingScene(Level level) {
+    }
+
     public static void testScene(Level level) {
         for (int i = 0; i < 10; i++) {
             PhysicalObject wall = new PhysicalObject(PhysicalObjectType.Wall, new Vector3f(-i*2, 0, -10), new Vector3f(0, 0, 0), 1);

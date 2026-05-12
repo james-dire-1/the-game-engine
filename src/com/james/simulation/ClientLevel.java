@@ -44,8 +44,8 @@ public class ClientLevel extends LevelProperties {
     }
 
     /**
-     * Method that only gets called once the server is ready, i.e. the isReady property is set to true.
-     * Gets called every game tick. Collisions are updated here. Called from the PlayerHandler.
+     * Method that only gets called once the server is ready, i.e. the isReady property is set to true. Gets
+     * called every game tick. Collisions are updated here. Called from the PlayerHandler.
      */
     public void update() {
         if (!player.isAffectedByAABBCollisions) {

@@ -11,6 +11,13 @@ import static org.lwjgl.assimp.Assimp.*;
 
 // TODO: 2026-05-10 Consider adding a way to not load textureCoords and normals from the file
 // TODO: 2026-05-10 This is helpful when doing server-side things
+/**
+ * General class that handles extracting the relevant information from model files. What would like to be done
+ * with the extracted info is up to the programmer; the functionality of this class is not closely intertwined
+ * with any other class in the engine (aside from SingleMesh and ModelLoaderHelper). One instance of this class
+ * is instantiated for each model file that we would like to read from. Wraps around the functionality provided
+ * by the Assimp model loader.
+ */
 // https://www.youtube.com/watch?v=eqlwamit0vU&t=883s
 public class ModelLoader {
 
@@ -19,16 +26,22 @@ public class ModelLoader {
 
     private Map<String, List<SingleMesh>> namedSingleMeshes = null;
     private final SingleMesh[] otherSingleMeshes;
+    private List<SingleMesh> allSingleMeshes;
 
+    /**
+     * Private constructor that extracts the info from the given model file path, creates all the necessary
+     * SingleMeshes (sub meshes), and populates the namedSingleMeshes map and the otherSingleMeshes array.
+     * namedSingleMeshes will include all the SingleMeshes that were given a name beginning with
+     * CUSTOM_NAME_START_CHAR in Blender, and otherSingleMeshes will include all the other SingleMeshes.
+     */
     private ModelLoader(String path) {
         String fullPath = GlobalConstants.MODELS_BASE_DIRECTORY + path;
         AIScene scene = aiImportFile(fullPath,aiProcess_Triangulate | aiProcess_FlipUVs |
                 aiProcess_JoinIdenticalVertices);
 
         if (scene == null)
-            System.err.println("Assimp import failed! " + aiGetErrorString());
+            throw new RuntimeException("Assimp import failed! " + aiGetErrorString());
 
-        Objects.requireNonNull(scene);
         PointerBuffer meshes = scene.mMeshes();
         Objects.requireNonNull(meshes);
         PointerBuffer materials = scene.mMaterials();
@@ -59,6 +72,10 @@ public class ModelLoader {
         otherSingleMeshes = otherSingleMeshesList.toArray(new SingleMesh[0]);
     }
 
+    /**
+     * Extracts the info pertaining to the given mesh. Returns a SingleMesh object, which contains all the
+     * info.
+     */
     private SingleMesh processMesh(PointerBuffer materials, AIMesh mesh) {
         AIVector3D.Buffer vectors = mesh.mVertices();
         AIVector3D.Buffer coords = mesh.mTextureCoords(0);
@@ -136,6 +153,13 @@ public class ModelLoader {
         return new SingleMesh(vertexPositions, textureCoords, normals, indices, name, textureFilePath);
     }
 
+    /**
+     * Gets the texture file path that is attached to the given mesh. If no file path is attached, then returns
+     * null. If more than one file path is attached, only one of them is returned. (The engine at the moment
+     * does not support meshes with more than one attached texture.) Since the path returned came from the
+     * model file, it could be incorrect (for instance, the path could be an absolute path). As such, if you
+     * want to use this path, additional processing may be necessary.
+     */
     private String processTextureFilePath(PointerBuffer materials, AIMesh mesh) {
         String texturePath = null;
 
@@ -154,6 +178,12 @@ public class ModelLoader {
         return texturePath;
     }
 
+    /**
+     * vertexPositions(), textureCoords(), normals(), and indices() are methods that return information for the
+     * zeroth unnamed mesh. If the current ModelLoader instance was used to extract info from a model file that
+     * only included a single mesh (which is usually the case when the model file does not contain a whole
+     * map), then these methods should be used.
+     */
     public float[] vertexPositions() { return otherSingleMeshes[0].vertexPositions; }
     public float[] textureCoords() { return otherSingleMeshes[0].textureCoords; }
     public float[] normals() { return otherSingleMeshes[0].normals; }
@@ -188,15 +218,25 @@ public class ModelLoader {
         return indicesAllMeshes;
     }
 
+    /**
+     * Retrieves the SingleMeshes of the given custom name (but don't include CUSTOM_NAME_START_CHAR at the
+     * beginning).
+     */
     public List<SingleMesh> getSingleMeshes(String name) {
         return namedSingleMeshes.get(name);
     }
 
+    /**
+     * Retrieves all the unnamed SingleMeshes.
+     */
     public SingleMesh[] getOtherSingleMeshes() {
         return otherSingleMeshes;
     }
 
-    private List<SingleMesh> allSingleMeshes;
+    /**
+     * Retrieves all the SingleMeshes, whether they be named or unnamed. Useful for loops that do something for
+     * each mesh of the model file.
+     */
     public List<SingleMesh> getAllSingleMeshes() {
         if (allSingleMeshes == null) {
             allSingleMeshes = new ArrayList<>();
@@ -214,6 +254,10 @@ public class ModelLoader {
 
     private static final Map<String, ModelLoader> modelLoaderMap = new HashMap<>();
 
+    /**
+     * Creates a ModelLoader for each model file path provided, and puts them in the map for retrieval later.
+     * This should be called at the beginning of the game.
+     */
     public static void init(String... modelFilePaths) {
         for (String path : modelFilePaths) {
             ModelLoader loader = new ModelLoader(path);
@@ -221,6 +265,9 @@ public class ModelLoader {
         }
     }
 
+    /**
+     * Retrieves the ModelLoader for the given model file path.
+     */
     public static ModelLoader get(String path) {
         return modelLoaderMap.get(path);
     }

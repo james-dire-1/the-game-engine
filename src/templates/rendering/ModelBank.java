@@ -148,10 +148,10 @@ public class ModelBank {
                     texturePath = "/textures/beach-scene/palm-tree.png";
                 else if (name.startsWith("_Campfire"))
                     texturePath = "/textures/beach-scene/wood.png";
-                else if (name.startsWith("_Pebble"))
-                    texturePath = "/textures/beach-scene/stone.png";
                 else if (name.startsWith("_PebblePatch"))
                     texturePath = "/textures/beach-scene/pebbles.png";
+                else if (name.startsWith("_Pebble"))
+                    texturePath = "/textures/beach-scene/stone.png";
                 else if (name.startsWith("_Sand"))
                     texturePath = "/textures/beach-scene/sand.png";
                 else if (name.startsWith("_Water"))

@@ -4,8 +4,15 @@ import com.james.common.simulation.objects.PhysicalObjectType;
 import com.james.renderEngine.models.Model;
 import templates.rendering.ModelBank;
 
+/**
+ * Provides a way to obtain the model (or models) that corresponds to the given PhysicalObjectType. Serves as a
+ * bridge between the server-side physical world and the client-side visual world.
+ */
 public class PhysicalToVisualConverter {
 
+    /**
+     * Called in physicalObjectAddedReceived() of ClientPacketReceiveActions.
+     */
     public static Model[] convert(PhysicalObjectType type) {
         Model[] models = null;
 

@@ -17,6 +17,13 @@ public class ModelMeshBankInR3 {
 
     /**
      * Creates all the ModelMeshes from the given file paths. Should be called at the beginning of the game.
+     *
+     * @implNote Each key in modelMeshMap refers to a model file path, such as a Collada file path. Each value
+     * refers to all the ModelMeshes that were extracted from the file in question. (Hence, each value is a
+     * list of ModelMeshes.) That is to say that a single model file can include more than one mesh. This is
+     * most commonly seen in map files, where there is a lot of geometry that makes up the scene. Occasionally
+     * throughout the code, a single mesh is referred to as a sub mesh. (This can be seen in subMeshIdentifier
+     * in AbstractAABBHitbox.)
      */
     public static void init(String... modelMeshFilePaths) {
         for (String path : modelMeshFilePaths) {
@@ -39,6 +46,11 @@ public class ModelMeshBankInR3 {
         return modelMeshMap;
     }
 
+    /**
+     * Returns the number of sub meshes (SingleMeshes) that exists for a given model file path. This is useful
+     * for knowing how many AABB hitboxes need to be instantiated for the given model file's contents. Used
+     * mostly for maps.
+     */
     public static int getNumberOfSubMeshes(String meshPath) {
         return modelMeshMap.get(meshPath).size();
     }

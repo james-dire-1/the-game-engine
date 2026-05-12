@@ -6,8 +6,8 @@ import com.james.renderEngine.utilities.GLUtilities;
 import com.james.renderEngine.texturing.ShineSettings;
 
 /**
- * Represents a model with enough information for rendering. Includes the vertex positions (RawModel),
- * and any optional data including indices, textures, texture coordinates, colors, normals, etc.
+ * Represents a model with enough information for rendering. Includes the vertex positions (RawModel), and any
+ * optional data including indices, textures, texture coordinates, colors, normals, etc.
  */
 public class Model {
 
@@ -40,8 +40,8 @@ public class Model {
     private boolean hasRendererBeenSet = false;
 
     /**
-     * Create a new Model with specified vertex positions and indices. Assumes that any other per-vertex
-     * data supplied to this model later (ex. texture coords) will use the indices buffer.
+     * Create a new Model with specified vertex positions and indices. Assumes that any other per-vertex data
+     * supplied to this model later (ex. texture coords) will use the indices buffer.
      */
     public Model(float[] vertexPositions, int[] indices) {
         this.rawModel = new RawModel(vertexPositions, indices);
@@ -50,7 +50,8 @@ public class Model {
 
     /**
      * Create a new Model with specified vertex positions without indices buffer. Assumes that any other
-     * per-vertex data supplied to this model later (ex. texture coords) will not need an indices buffer either.
+     * per-vertex data supplied to this model later (ex. texture coords) will not need an indices buffer
+     * either.
      */
     public Model(float[] vertexPositions) {
         this.rawModel = new RawModel(vertexPositions);
@@ -97,10 +98,9 @@ public class Model {
     }
 
     /**
-     * Sets the renderer that this model should be rendered with. This should be called after all
-     * modifications to the model have already been made, since this method checks that all necessary
-     * criteria are met to use the requested renderer. Calling this method is necessary for your model to
-     * appear on the screen.
+     * Sets the renderer that this model should be rendered with. This should be called after all modifications
+     * to the model have already been made, since this method checks that all necessary criteria are met to use
+     * the requested renderer. Calling this method is necessary for your model to appear on the screen.
      */
     public void setRenderer(AbstractRenderer renderer) {
         if (hasRendererBeenSet)
