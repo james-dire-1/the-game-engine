@@ -5,6 +5,7 @@ import com.james.renderEngine.texturing.ShineSettings;
 import newStuff.evenNewer.ModelLoader;
 import newStuff.evenNewer.SingleMesh;
 
+import java.util.List;
 import java.util.Random;
 
 public class ModelBank {
@@ -16,6 +17,7 @@ public class ModelBank {
     private static Model testEnvironmentModel;
     private static Model[] desertEnvironmentModels;
     private static Model desertEnvironmentModel;
+    private static Model[] beachEnvironmentModels;
 
     public static Model getStall() {
         if (stallModel == null) {
@@ -91,11 +93,11 @@ public class ModelBank {
     public static Model[] getDesertEnvironmentManyModels() {
         if (desertEnvironmentModels == null) {
             ModelLoader loader = ModelLoader.get("/desert-2.dae");
-            SingleMesh[] singleMeshes = loader.getOtherSingleMeshes();
-            desertEnvironmentModels = new Model[singleMeshes.length];
+            List<SingleMesh> singleMeshes = loader.getAllSingleMeshes();
+            desertEnvironmentModels = new Model[singleMeshes.size()];
 
             for (int i = 0; i < desertEnvironmentModels.length; i++) {
-                SingleMesh singleMesh = singleMeshes[i];
+                SingleMesh singleMesh = singleMeshes.get(i);
                 Model model = new Model(singleMesh.vertexPositions, singleMesh.indices);
                 model.setTextureAndTextureCoords("/textures/stone-ground.png", singleMesh.textureCoords);
                 model.setNormals(singleMesh.normals);
@@ -117,6 +119,63 @@ public class ModelBank {
         }
 
         return desertEnvironmentModel;
+    }
+
+    public static Model[] getBeachEnvironmentManyModels() {
+        if (beachEnvironmentModels == null) {
+            ModelLoader loader = ModelLoader.get("/beach-scene.dae");
+            List<SingleMesh> singleMeshes = loader.getAllSingleMeshes();
+            beachEnvironmentModels = new Model[singleMeshes.size()];
+
+            for (int i = 0; i < beachEnvironmentModels.length; i++) {
+                SingleMesh singleMesh = singleMeshes.get(i);
+                Model model = new Model(singleMesh.vertexPositions, singleMesh.indices);
+
+                String name = singleMesh.name;
+                String texturePath;
+
+                if (name.startsWith("_Port") || name.startsWith("_Platform"))
+                    texturePath = "/textures/beach-scene/palm-bark-and-wood.png";
+                else if (name.startsWith("_Purple") || name.startsWith("_PurpleChair"))
+                    texturePath = "/textures/beach-scene/purple.png";
+                else if (name.startsWith("_Yellow") || name.startsWith("_YellowChair"))
+                    texturePath = "/textures/beach-scene/yellow.png";
+                else if (name.startsWith("_Red")  || name.startsWith("_RedChair"))
+                    texturePath = "/textures/beach-scene/red.png";
+                else if (name.startsWith("_Bark"))
+                    texturePath = "/textures/beach-scene/palm-bark.png";
+                else if (name.startsWith("_PalmTree"))
+                    texturePath = "/textures/beach-scene/palm-tree.png";
+                else if (name.startsWith("_Campfire"))
+                    texturePath = "/textures/beach-scene/wood.png";
+                else if (name.startsWith("_Pebble"))
+                    texturePath = "/textures/beach-scene/stone.png";
+                else if (name.startsWith("_PebblePatch"))
+                    texturePath = "/textures/beach-scene/pebbles.png";
+                else if (name.startsWith("_Sand"))
+                    texturePath = "/textures/beach-scene/sand.png";
+                else if (name.startsWith("_Water"))
+                    texturePath = "/textures/beach-scene/water.png";
+                else if (name.startsWith("_Monkeys"))
+                    texturePath = "/textures/beach-scene/palm-bark-and-wood.png";
+                else if (name.startsWith("_TallRock"))
+                    texturePath = "/textures/beach-scene/black-and-pink-stone.png";
+                else
+                    texturePath = "/textures/white-image.png";
+
+                if (name.startsWith("_Purple") || name.startsWith("_Yellow") || name.startsWith("_Red") ||
+                        name.startsWith("_PalmTree")) {
+                    model.disableCulling();
+                }
+
+                model.setTextureAndTextureCoords(texturePath, singleMesh.textureCoords);
+                model.setNormals(singleMesh.normals);
+                model.setRenderer(Renderers.texturedModelRenderer);
+                beachEnvironmentModels[i] = model;
+            }
+        }
+
+        return beachEnvironmentModels;
     }
 
 }

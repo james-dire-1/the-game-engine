@@ -17,7 +17,7 @@ public class ModelLoader {
     private static final String CUSTOM_NAME_START_CHAR = "@";
     private static final String END_STRING = "-mesh";
 
-    private Map<String, SingleMesh> namedSingleMeshes = null;
+    private Map<String, List<SingleMesh>> namedSingleMeshes = null;
     private final SingleMesh[] otherSingleMeshes;
 
     private ModelLoader(String path) {
@@ -31,21 +31,26 @@ public class ModelLoader {
         Objects.requireNonNull(scene);
         PointerBuffer meshes = scene.mMeshes();
         Objects.requireNonNull(meshes);
+        PointerBuffer materials = scene.mMaterials();
 
         List<SingleMesh> otherSingleMeshesList = new ArrayList<>();
 
         for (int i = 0; i < meshes.limit(); i++) {
             AIMesh mesh = AIMesh.create(meshes.get(i));
-            SingleMesh singleMesh = processMesh(mesh);
-            String name = mesh.mName().dataString();
+            SingleMesh singleMesh = processMesh(materials, mesh);
+            String rawName = mesh.mName().dataString();
+            String name = singleMesh.name;
 
-            if (name.startsWith(CUSTOM_NAME_START_CHAR)) {
+            if (rawName.startsWith(CUSTOM_NAME_START_CHAR)) {
                 if (namedSingleMeshes == null) {
                     namedSingleMeshes = new HashMap<>();
                 }
 
-                name = name.replace(CUSTOM_NAME_START_CHAR, "").replace(END_STRING, "");
-                namedSingleMeshes.put(name, singleMesh);
+                if (!namedSingleMeshes.containsKey(name)) {
+                    namedSingleMeshes.put(name, new ArrayList<>());
+                }
+
+                namedSingleMeshes.get(name).add(singleMesh);
             } else {
                 otherSingleMeshesList.add(singleMesh);
             }
@@ -54,7 +59,7 @@ public class ModelLoader {
         otherSingleMeshes = otherSingleMeshesList.toArray(new SingleMesh[0]);
     }
 
-    private SingleMesh processMesh(AIMesh mesh) {
+    private SingleMesh processMesh(PointerBuffer materials, AIMesh mesh) {
         AIVector3D.Buffer vectors = mesh.mVertices();
         AIVector3D.Buffer coords = mesh.mTextureCoords(0);
         AIVector3D.Buffer norms = mesh.mNormals();
@@ -122,7 +127,31 @@ public class ModelLoader {
             indices[i] = indicesList.get(i);
         }
 
-        return new SingleMesh(vertexPositions, textureCoords, normals, indices);
+        String rawName = mesh.mName().dataString();
+        String name = rawName
+                .replace(CUSTOM_NAME_START_CHAR, "")
+                .replace(END_STRING, "");
+        String textureFilePath = processTextureFilePath(materials, mesh);
+
+        return new SingleMesh(vertexPositions, textureCoords, normals, indices, name, textureFilePath);
+    }
+
+    private String processTextureFilePath(PointerBuffer materials, AIMesh mesh) {
+        String texturePath = null;
+
+        int materialIndex = mesh.mMaterialIndex();
+        AIMaterial material = AIMaterial.create(materials.get(materialIndex));
+        AIString texturePathBuffer = AIString.calloc();
+
+        int status = aiGetMaterialTexture(material, aiTextureType_DIFFUSE, 0, texturePathBuffer,
+                (IntBuffer) null, null, null, null, null, null);
+
+        if (status == aiReturn_SUCCESS) {
+            texturePath = texturePathBuffer.dataString();
+        }
+
+        texturePathBuffer.free();
+        return texturePath;
     }
 
     public float[] vertexPositions() { return otherSingleMeshes[0].vertexPositions; }
@@ -159,7 +188,7 @@ public class ModelLoader {
         return indicesAllMeshes;
     }
 
-    public SingleMesh getSingleMesh(String name) {
+    public List<SingleMesh> getSingleMeshes(String name) {
         return namedSingleMeshes.get(name);
     }
 
@@ -172,8 +201,11 @@ public class ModelLoader {
         if (allSingleMeshes == null) {
             allSingleMeshes = new ArrayList<>();
 
-            if (namedSingleMeshes != null)
-                allSingleMeshes.addAll(namedSingleMeshes.values());
+            if (namedSingleMeshes != null) {
+                for (List<SingleMesh> singleMeshes : namedSingleMeshes.values()) {
+                    allSingleMeshes.addAll(singleMeshes);
+                }
+            }
             allSingleMeshes.addAll(Arrays.asList(otherSingleMeshes));
         }
 

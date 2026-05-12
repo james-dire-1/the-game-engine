@@ -77,7 +77,7 @@ public class Gui {
      * Sets the gui to use a texture. Also takes in info for sampling the texture in the case that only
      * a section of the texture is desired to be rendered.
      * @implNote x, y, widthToSample, and heightToSample are measured in pixels, but OpenGL expects the data
-     * to be normalized, so first we must normalize the data if it isn't normalized already
+     * to be normalized, so first we must normalize the data if it isn't normalized already.
      */
     // TODO: 2024-12-24 Also, there should be some check to see if this method is being called for a gui that is
     // TODO: 2024-12-24 using conventional vertexPositions and indices arrays
@@ -150,7 +150,7 @@ public class Gui {
     /**
      * Marks the gui (whether it corresponds to a single character, or a whole string of text) as text. This
      * is important for the GuiRenderer to know, as rendering for text guis is different compared to other types
-     * of guis
+     * of guis.
      */
     public void markAsText() {
         isText = true;
@@ -161,7 +161,7 @@ public class Gui {
      * The reason this happens at the end is so that all the information can be tested against all the GuiMeshData
      * instances' information that already exists, and if one GuiMeshData instance's information is identical
      * to the information we have here, then it can simply be returned without any redundant new GuiMeshData
-     * instance getting created. Hence, "getOrCreateGuiMeshData"
+     * instance getting created. Hence, "getOrCreateGuiMeshData()."
      * Not only that, but we need to know everything about the gui before we can assign its RenderingMode, which
      * also happens in this method.
      */

@@ -9,5 +9,6 @@ public enum PhysicalObjectType {
     Wall,
     TestEnvironment,
     Other,
-    DesertEnvironment
+    DesertEnvironment,
+    BeachEnvironment
 }

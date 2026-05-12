@@ -14,6 +14,7 @@ import game.main.Main;
 import game.ui.screens.ChatScreen;
 import newStuff.GeneralSphereHitbox;
 import game.ui.screens.UsernamePromptScreen;
+import newStuff.evenNewer.PhysicalToVisualConverter;
 import templates.gameplay.GameLoader;
 import templates.gameplay.LocalGameLoader;
 import templates.gameplay.OnlineGameLoader;
@@ -68,31 +69,13 @@ public class ClientPacketReceiveActions {
             Warnings.warn("PhysicalObject of id " + id + " and of type " + type + " already exists client-side");
         }
 
-        Model model = null;
-        Model[] modelList = null;
-        if (type == PhysicalObjectType.Wall) {
-            model = ModelBank.getWall();
-        } else if (type == PhysicalObjectType.TestEnvironment) {
-            model = ModelBank.getTestEnvironment();
-        } else if (type == PhysicalObjectType.DesertEnvironment) {
-//            modelList = ModelBank.getDesertEnvironmentManyModels();
-            model = ModelBank.getDesertEnvironmentOneModel();
-        } else if (type == PhysicalObjectType.Other) {
-            model = ModelBank.getColorAbstractArt();
-        }
+        Model[] modelList = PhysicalToVisualConverter.convert(type);
 
-        if (model != null) {
+        for (Model model : modelList) {
             GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
             GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
             object.setGameObject(gameObject);
-        } else if (modelList != null) {
-            for (Model model1 : modelList) {
-                GameObject gameObject = new GameObject(model1, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
-                GameLoader.batchedGameObjectsList.addGameObject(gameObject);
-
-                object.setGameObject(gameObject);
-            }
         }
     }
 

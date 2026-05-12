@@ -25,7 +25,7 @@ public class LoadingScreen extends Screen {
         text.apply();
         super.addGui(text.getMesh());
 
-        new LevelInitializer("main", new LocalServerPacketSendEvents(), Scenes::desertScene);
+        new LevelInitializer("main", new LocalServerPacketSendEvents(), Scenes::beachScene);
         LevelInitializer.isOnlineGame = false;
         LocalServerProperties.clientJoined();
     }

@@ -103,11 +103,13 @@ public class Model {
      * appear on the screen.
      */
     public void setRenderer(AbstractRenderer renderer) {
-        if (hasRendererBeenSet) throw new RuntimeException();
+        if (hasRendererBeenSet)
+            throw new RuntimeException();
 
         hasRendererBeenSet = true;
 
-        if (!renderer.satisfiesModelCriteria(this)) throw new RuntimeException("Model doesn't satisfy the renderer's criteria!");
+        if (!renderer.satisfiesModelCriteria(this))
+            throw new RuntimeException("Model doesn't satisfy the renderer's criteria!");
 
         renderer.models.add(this);
     }

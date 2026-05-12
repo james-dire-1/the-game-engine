@@ -63,4 +63,14 @@ public class Scenes {
         }
     }
 
+    public static void beachScene(Level level) {
+        PhysicalObject beachEnvironment = new PhysicalObject(PhysicalObjectType.BeachEnvironment, new Vector3f(0, -35, 0), new Vector3f(), 1);
+        level.add(beachEnvironment);
+
+        for (int i = 0; i < ModelMeshBankInR3.getNumberOfSubMeshes("/beach-scene.dae"); i++) {
+            AABBHitbox aabbHitbox = new AABBHitbox(beachEnvironment, "/beach-scene.dae", i);
+            level.addAABBHitbox(aabbHitbox);
+        }
+    }
+
 }

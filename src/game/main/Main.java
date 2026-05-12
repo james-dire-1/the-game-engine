@@ -38,17 +38,25 @@ public class Main {
     public static final FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
     public static final FontInfo dustismo = new FontInfo("/dustismo2.fnt", "/dustismo2.png");
 
-    private static long lastTime = System.nanoTime()/1000000;
+    private static long lastTime = System.nanoTime() / 1000000;
     private static long fps;
 
     public static void main(String[] args) {
-        ImageBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png", "/textures/inventory-slot.png",
-                "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png", "/fonts/dustismo2.png", "/textures/skybox/right.png",
-                "/textures/skybox/left.png", "/textures/skybox/top.png", "/textures/skybox/bottom.png", "/textures/skybox/back.png", "/textures/skybox/front.png",
-                "/textures/stone-ground.png");
-        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae", "/desert-2.dae", "/blender-test-7.dae");
+        ImageBank.init("/textures/red-explosive.png", "/textures/stall.png", "/fonts/rowdies.png", "/fonts/arial.png",
+                "/textures/inventory-slot.png", "/textures/cobblestone-wall.png", "/textures/white-image.png", "/textures/title-button.png",
+                "/fonts/dustismo2.png", "/textures/skyboxes/beautiful-sky/right.png", "/textures/skyboxes/beautiful-sky/left.png",
+                "/textures/skyboxes/beautiful-sky/top.png", "/textures/skyboxes/beautiful-sky/bottom.png", "/textures/skyboxes/beautiful-sky/back.png",
+                "/textures/skyboxes/beautiful-sky/front.png", "/textures/stone-ground.png", "/textures/skyboxes/beautiful-sky-2/beautiful-sky-2.png",
+                "/textures/skyboxes/beautiful-sky-3/top.png", "/textures/skyboxes/beautiful-sky-3/bottom.png", "/textures/skyboxes/beautiful-sky-3/side.png",
+                "/textures/skyboxes/beautiful-sky-4/top.png", "/textures/skyboxes/beautiful-sky-4/bottom.png", "/textures/skyboxes/beautiful-sky-4/side.png",
+                "/textures/beach-scene/black-and-pink-stone.png", "/textures/beach-scene/palm-bark-and-wood.png", "/textures/beach-scene/palm-bark.png",
+                "/textures/beach-scene/palm-leaves.png", "/textures/beach-scene/palm-leaves-2.png", "/textures/beach-scene/palm-tree.png",
+                "/textures/beach-scene/pebbles.png", "/textures/beach-scene/purple.png", "/textures/beach-scene/red.png", "/textures/beach-scene/sand.png",
+                "/textures/beach-scene/stone.png", "/textures/beach-scene/water.png", "/textures/beach-scene/wood.png", "/textures/beach-scene/yellow.png");
+        ModelLoader.init("/stall.obj", "/abstract-art.dae", "/one-sided-wall.dae", "/test-environment.dae", "/desert-2.dae",
+                "/blender-test-7.dae", "/beach-scene.dae");
 
-        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae", "/desert-2.dae");
+        ModelMeshBankInR3.init("/one-sided-wall.dae", "/test-environment.dae", "/desert-2.dae", "/beach-scene.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
         GLFWUtilities.init(GLFWWindowTitles.MAIN);
@@ -57,8 +65,12 @@ public class Main {
         ALCUtilities.init();
         AudioSourcePool.init();
 
-        CubeMapTexture.create("beautiful sky", "/textures/skybox", new String[] {"right", "left", "top", "bottom", "back", "front"});
-        Skybox.currentSkybox = new Skybox("beautiful sky");
+        CubeMapTexture.create("beautiful sky"  , "/textures/skyboxes/beautiful-sky", new String[] {"right", "left", "top", "bottom", "back", "front"});
+        CubeMapTexture.create("beautiful sky 2", "/textures/skyboxes/beautiful-sky-2/beautiful-sky-2.png");
+        CubeMapTexture.create("beautiful sky 3", "/textures/skyboxes/beautiful-sky-3", new String[] {"side", "side", "top", "bottom", "side", "side"});
+        CubeMapTexture.create("beautiful sky 4", "/textures/skyboxes/beautiful-sky-4", new String[] {"side", "side", "top", "bottom", "side", "side"});
+        Skybox.currentSkybox = new Skybox("beautiful sky 4");
+        Skybox.currentSkybox.unmoving = false;
 
         Renderers.basicRenderer = new BasicRenderer();
         Renderers.flatRenderer = new FlatRenderer();
