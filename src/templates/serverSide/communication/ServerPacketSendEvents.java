@@ -1,6 +1,6 @@
 package templates.serverSide.communication;
 
-import com.james.common.simulation.objects.PhysicalObjectType;
+import templates.common.simulation.objects.PhysicalObjectType;
 import templates.serverSide.PlayerInfo;
 import org.lwjgl.util.vector.Vector3f;
 

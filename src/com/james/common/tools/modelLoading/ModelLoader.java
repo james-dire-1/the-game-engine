@@ -1,4 +1,4 @@
-package newStuff.evenNewer;
+package com.james.common.tools.modelLoading;
 
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;

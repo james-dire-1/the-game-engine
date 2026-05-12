@@ -6,8 +6,8 @@ import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import newStuff.GeneralSphereCollisionHandler;
-import newStuff.GeneralSphereHitbox;
+import newStuff.rayStuffOnHold.GeneralSphereCollisionHandler;
+import newStuff.rayStuffOnHold.GeneralSphereHitbox;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 

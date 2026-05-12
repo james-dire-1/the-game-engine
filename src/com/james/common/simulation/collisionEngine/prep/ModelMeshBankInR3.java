@@ -1,7 +1,7 @@
 package com.james.common.simulation.collisionEngine.prep;
 
-import newStuff.evenNewer.ModelLoader;
-import newStuff.evenNewer.SingleMesh;
+import com.james.common.tools.modelLoading.ModelLoader;
+import com.james.common.tools.modelLoading.SingleMesh;
 
 import java.util.ArrayList;
 import java.util.HashMap;

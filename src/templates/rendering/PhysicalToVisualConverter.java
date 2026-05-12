@@ -1,6 +1,6 @@
-package newStuff.evenNewer;
+package templates.rendering;
 
-import com.james.common.simulation.objects.PhysicalObjectType;
+import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.renderEngine.models.Model;
 import templates.rendering.ModelBank;
 

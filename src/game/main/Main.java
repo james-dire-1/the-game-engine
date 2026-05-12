@@ -20,7 +20,7 @@ import game.ui.screens.TitleScreen;
 import com.james.renderEngine.texturing.CubeMapTexture;
 import com.james.renderEngine.skyboxes.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
-import newStuff.evenNewer.ModelLoader;
+import com.james.common.tools.modelLoading.ModelLoader;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;

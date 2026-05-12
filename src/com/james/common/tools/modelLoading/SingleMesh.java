@@ -1,4 +1,4 @@
-package newStuff.evenNewer;
+package com.james.common.tools.modelLoading;
 
 /**
  * Container class that represents a single mesh in a model file. Instances of this class are created in the

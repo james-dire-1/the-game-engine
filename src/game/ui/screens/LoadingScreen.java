@@ -10,7 +10,7 @@ import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import com.james.simulation.ClientLevel;
 import com.james.renderEngine.textRendering.TextAlignment;
-import newStuff.evenNewer.Scenes;
+import templates.serverSide.Scenes;
 import templates.communication.LocalServerPacketSendEvents;
 import templates.communication.LocalServerProperties;
 

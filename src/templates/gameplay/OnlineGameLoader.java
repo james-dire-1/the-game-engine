@@ -1,6 +1,6 @@
 package templates.gameplay;
 
-import com.james.common.simulation.objects.PhysicalObjectType;
+import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.networking.Client;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.utilities.GLFWUtilities;

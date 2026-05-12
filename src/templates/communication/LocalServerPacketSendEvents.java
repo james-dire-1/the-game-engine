@@ -3,7 +3,7 @@ package templates.communication;
 import com.james.serverSide.LevelInitializer;
 import templates.serverSide.PlayerInfo;
 import com.james.tools.ThreadManager;
-import com.james.common.simulation.objects.PhysicalObjectType;
+import templates.common.simulation.objects.PhysicalObjectType;
 import templates.serverSide.communication.ServerPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 

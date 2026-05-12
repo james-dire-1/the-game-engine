@@ -1,7 +1,7 @@
-package newStuff.evenNewer;
+package templates.serverSide;
 
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
-import com.james.common.simulation.objects.PhysicalObjectType;
+import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;

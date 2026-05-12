@@ -1,6 +1,6 @@
 package templates.communication;
 
-import com.james.common.simulation.objects.PhysicalObjectType;
+import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.renderEngine.ui.Screen;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
@@ -12,9 +12,9 @@ import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.main.Main;
 import game.ui.screens.ChatScreen;
-import newStuff.GeneralSphereHitbox;
+import newStuff.rayStuffOnHold.GeneralSphereHitbox;
 import game.ui.screens.UsernamePromptScreen;
-import newStuff.evenNewer.PhysicalToVisualConverter;
+import templates.rendering.PhysicalToVisualConverter;
 import templates.gameplay.GameLoader;
 import templates.gameplay.LocalGameLoader;
 import templates.gameplay.OnlineGameLoader;

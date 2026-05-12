@@ -1,6 +1,5 @@
-package newStuff;
+package newStuff.rayStuffOnHold;
 
-import com.james.common.simulation.collisionEngine.math.CollisionMath;
 import com.james.common.simulation.collisionEngine.math.Plane;
 import com.james.common.tools.Mth;
 import org.lwjgl.util.vector.Vector3f;

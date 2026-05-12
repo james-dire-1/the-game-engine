@@ -2,8 +2,8 @@ package templates.rendering;
 
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.texturing.ShineSettings;
-import newStuff.evenNewer.ModelLoader;
-import newStuff.evenNewer.SingleMesh;
+import com.james.common.tools.modelLoading.ModelLoader;
+import com.james.common.tools.modelLoading.SingleMesh;
 
 import java.util.List;
 import java.util.Random;
