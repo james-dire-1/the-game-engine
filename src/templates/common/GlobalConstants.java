@@ -2,7 +2,7 @@ package templates.common;
 
 public class GlobalConstants {
 
-    public static final boolean IS_NETWORK_DEBUG = true;
+    public static final boolean IS_NETWORK_DEBUG = false;
     public static final boolean IS_DETAILED_NETWORK_DEBUG = false;
 
     // TODO: 2026-05-11 Where is the TEXTURES_BASE_DIRECTORY ???
