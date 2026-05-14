@@ -1,6 +1,10 @@
 package com.james.tools;
 
+import org.lwjgl.util.vector.Vector3f;
+
 public class ColorUtils {
+
+    private static final float[] reusableArray = new float[3];
 
     /**
      * @implNote In this implementation, each int in the parameter refers to either red, green, or blue component.
@@ -22,18 +26,35 @@ public class ColorUtils {
         float[] normalizedRGBArray = new float[hexRGBValues.length * 3];
 
         for (int i = 0; i < hexRGBValues.length; i++) {
-            int hexRGB = hexRGBValues[i];
+            normalizedRGBFromHexRGB(hexRGBValues[i]);
 
-            int r = (hexRGB & 0x00ff0000) >> 16;
-            int g = (hexRGB & 0x0000ff00) >> 8;
-            int b = (hexRGB & 0x000000ff);
-
-            normalizedRGBArray[i * 3] = (float)r / 255;
-            normalizedRGBArray[i * 3 + 1] = (float)g / 255;
-            normalizedRGBArray[i * 3 + 2] = (float)b / 255;
+            normalizedRGBArray[i * 3] = reusableArray[0];
+            normalizedRGBArray[i * 3 + 1] = reusableArray[1];
+            normalizedRGBArray[i * 3 + 2] = reusableArray[2];
         }
 
         return normalizedRGBArray;
+    }
+
+    public static Vector3f[] asNormalizedRGBVector(int... hexRGBValues) {
+        Vector3f[] normalizedRGBVectors = new Vector3f[hexRGBValues.length];
+
+        for (int i = 0; i < hexRGBValues.length; i++) {
+            normalizedRGBFromHexRGB(hexRGBValues[i]);
+            normalizedRGBVectors[i] = new Vector3f(reusableArray[0], reusableArray[1], reusableArray[2]);
+        }
+
+        return normalizedRGBVectors;
+    }
+
+    private static void normalizedRGBFromHexRGB(int hexRGB) {
+        int r = (hexRGB & 0x00ff0000) >> 16;
+        int g = (hexRGB & 0x0000ff00) >> 8;
+        int b = (hexRGB & 0x000000ff);
+
+        reusableArray[0] = (float)r / 255;
+        reusableArray[1] = (float)g / 255;
+        reusableArray[2] = (float)b / 255;
     }
 
     // https://stackoverflow.com/questions/7896280/converting-from-hsv-hsb-in-java-to-rgb-without-using-java-awt-color-disallowe

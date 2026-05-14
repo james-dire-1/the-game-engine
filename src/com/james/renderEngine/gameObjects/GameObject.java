@@ -29,6 +29,7 @@ public class GameObject {
     public float getScale() { return scale; }
 
     public boolean isVisible = true;
+    public boolean isAffectedByFog = true;
 
     public GameObject(Model model, Vector3f position, Vector3f rotation, float scale) {
         this.model = model;

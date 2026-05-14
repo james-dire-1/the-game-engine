@@ -5,6 +5,7 @@ import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
+import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.simulation.ClientLevel;
 import com.james.simulation.objects.CachedConnectedPlayer;
@@ -16,6 +17,7 @@ import game.ui.screens.PauseScreen;
 import com.james.tools.GameObjectInterpolator;
 import com.james.renderEngine.skyboxes.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
+import newStuff.DebugScreen;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
@@ -110,6 +112,10 @@ public abstract class GameLoader {
 
         if (KeyInput.isKeyDown(GLFW_KEY_TAB)) {
             PauseScreen.toggle();
+        }
+
+        if (KeyInput.isKeyDown(GLFW_KEY_F3)) {
+            DebugScreen.toggle();
         }
 
         if (KeyInput.isKeyPressed(GLFW_KEY_F)) {

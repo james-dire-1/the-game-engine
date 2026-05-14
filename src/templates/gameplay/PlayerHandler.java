@@ -14,6 +14,7 @@ import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector2f;
 
+import static com.james.input.KeyInput.isKeyDown;
 import static org.lwjgl.glfw.GLFW.*;
 import static com.james.input.KeyInput.isKeyPressed;
 
@@ -91,6 +92,11 @@ public class PlayerHandler {
 
             Vector2f velocity = Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), null);
             player.setVelocity(velocity.x, 0, -velocity.y);
+
+            if (isKeyPressed(GLFW_KEY_SPACE)) {
+                Vector3f currentPosition = player.getPosition();
+                player.setPosition(currentPosition.x, currentPosition.y + 5, currentPosition.z);
+            }
 
             ClientLevel.get().update();
         }
