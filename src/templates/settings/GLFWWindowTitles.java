@@ -2,8 +2,8 @@ package templates.settings;
 
 public class GLFWWindowTitles {
 
-    public static final String MAIN = "Laser Tag";
-    public static final String DEBUG_MODE = "Laser Tag - Single Player Debug Mode";
-    public static final String MULTIPLAYER = "Laser Tag - Multiplayer Server";
+    public static final String MAIN = "Survival Game";
+    public static final String DEBUG_MODE = "Survival Game - Single Player Debug Mode";
+    public static final String MULTIPLAYER = "Survival Game - Multiplayer Server";
 
 }

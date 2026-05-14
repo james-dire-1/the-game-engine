@@ -33,6 +33,11 @@ public class ImageDecoder {
     public static ImageDecoder decode(String path) {
         BufferedImage image = ImageBank.get(path);
 
+        if (image == null) {
+            System.out.println("Could not decode image " + path + "; was not buffered");
+            throw new RuntimeException();
+        }
+
         int width = image.getWidth();
         int height  = image.getHeight();
         int[] pixels = new int[width * height];

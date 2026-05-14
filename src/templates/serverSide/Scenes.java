@@ -60,8 +60,8 @@ public class Scenes {
         PhysicalObject desertEnvironment = new PhysicalObject(PhysicalObjectType.DesertEnvironment, new Vector3f(0, -100, 0), new Vector3f(), 1);
         level.add(desertEnvironment);
         
-        for (int i = 0; i < ModelMeshBankInR3.getNumberOfSubMeshes("/desert-2.dae"); i++) {
-            AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/desert-2.dae", i);
+        for (int i = 0; i < ModelMeshBankInR3.getNumberOfSubMeshes("/scenes/desert-scene.dae"); i++) {
+            AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/scenes/desert-scene.dae", i);
             level.addAABBHitbox(aabbHitbox);
         }
     }
@@ -70,8 +70,8 @@ public class Scenes {
         PhysicalObject beachEnvironment = new PhysicalObject(PhysicalObjectType.BeachEnvironment, new Vector3f(0, -35, 0), new Vector3f(), 1);
         level.add(beachEnvironment);
 
-        for (int i = 0; i < ModelMeshBankInR3.getNumberOfSubMeshes("/beach-scene.dae"); i++) {
-            AABBHitbox aabbHitbox = new AABBHitbox(beachEnvironment, "/beach-scene.dae", i);
+        for (int i = 0; i < ModelMeshBankInR3.getNumberOfSubMeshes("/scenes/beach-scene.dae"); i++) {
+            AABBHitbox aabbHitbox = new AABBHitbox(beachEnvironment, "/scenes/beach-scene.dae", i);
             level.addAABBHitbox(aabbHitbox);
         }
     }

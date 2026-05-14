@@ -21,9 +21,9 @@ public class ModelBank {
 
     public static Model getStall() {
         if (stallModel == null) {
-            ModelLoader loader = ModelLoader.get("/stall.obj");
+            ModelLoader loader = ModelLoader.get("/objects/stall.obj");
             stallModel = new Model(loader.vertexPositions(), loader.indices());
-            stallModel.setTextureAndTextureCoords("/textures/stall.png", loader.textureCoords());
+            stallModel.setTextureAndTextureCoords("/textures/objects/stall.png", loader.textureCoords());
             stallModel.setNormals(loader.normals());
             stallModel.setRenderer(Renderers.texturedModelRenderer);
         }
@@ -33,9 +33,9 @@ public class ModelBank {
 
     public static Model getAbstractArt() {
         if (abstractArtModel == null) {
-            ModelLoader loader = ModelLoader.get("/abstract-art.dae");
+            ModelLoader loader = ModelLoader.get("/objects/abstract-art.dae");
             abstractArtModel = new Model(loader.vertexPositions(), loader.indices());
-            abstractArtModel.setTextureAndTextureCoords("/textures/stall.png", loader.textureCoords());
+            abstractArtModel.setTextureAndTextureCoords("/textures/objects/stall.png", loader.textureCoords());
             abstractArtModel.setNormals(loader.normals());
             abstractArtModel.setRenderer(Renderers.basicRenderer);
         }
@@ -46,7 +46,7 @@ public class ModelBank {
     private static final Random r = new Random();
     public static Model getColorAbstractArt() {
         if (colorAbstractArtModel == null) {
-            ModelLoader loader = ModelLoader.get("/abstract-art.dae");
+            ModelLoader loader = ModelLoader.get("/objects/abstract-art.dae");
             colorAbstractArtModel = new Model(loader.vertexPositions(), loader.indices());
 
             int uniqueVertexCount = colorAbstractArtModel.getUniqueVertexCount();
@@ -68,9 +68,9 @@ public class ModelBank {
 
     public static Model getWall() {
         if (wallModel == null) {
-            ModelLoader loader = ModelLoader.get("/one-sided-wall.dae");
+            ModelLoader loader = ModelLoader.get("/objects/one-sided-wall.dae");
             wallModel = new Model(loader.vertexPositions(), loader.indices());
-            wallModel.setTextureAndTextureCoords("/textures/cobblestone-wall.png", loader.textureCoords());
+            wallModel.setTextureAndTextureCoords("/textures/objects/cobblestone-wall.png", loader.textureCoords());
             wallModel.setNormals(loader.normals());
             wallModel.setRenderer(Renderers.texturedModelRenderer);
         }
@@ -80,9 +80,9 @@ public class ModelBank {
 
     public static Model getTestEnvironment() {
         if (testEnvironmentModel == null) {
-            ModelLoader loader = ModelLoader.get("/test-environment.dae");
+            ModelLoader loader = ModelLoader.get("/scenes/test-scene.dae");
             testEnvironmentModel = new Model(loader.vertexPositions(), loader.indices());
-            testEnvironmentModel.setTextureAndTextureCoords("/textures/white-image.png", loader.textureCoords());
+            testEnvironmentModel.setTextureAndTextureCoords("/textures/misc/white-image.png", loader.textureCoords());
             testEnvironmentModel.setNormals(loader.normals());
             testEnvironmentModel.setRenderer(Renderers.texturedModelRenderer);
         }
@@ -92,14 +92,14 @@ public class ModelBank {
 
     public static Model[] getDesertEnvironmentManyModels() {
         if (desertEnvironmentModels == null) {
-            ModelLoader loader = ModelLoader.get("/desert-2.dae");
+            ModelLoader loader = ModelLoader.get("/scenes/desert-scene.dae");
             List<SingleMesh> singleMeshes = loader.getAllSingleMeshes();
             desertEnvironmentModels = new Model[singleMeshes.size()];
 
             for (int i = 0; i < desertEnvironmentModels.length; i++) {
                 SingleMesh singleMesh = singleMeshes.get(i);
                 Model model = new Model(singleMesh.vertexPositions, singleMesh.indices);
-                model.setTextureAndTextureCoords("/textures/stone-ground.png", singleMesh.textureCoords);
+                model.setTextureAndTextureCoords("/textures/scenes/desertScene/stone-ground.png", singleMesh.textureCoords);
                 model.setNormals(singleMesh.normals);
                 model.setRenderer(Renderers.texturedModelRenderer);
                 desertEnvironmentModels[i] = model;
@@ -111,9 +111,9 @@ public class ModelBank {
 
     public static Model getDesertEnvironmentOneModel() {
         if (desertEnvironmentModel == null) {
-            ModelLoader loader = ModelLoader.get("/desert-2.dae");
+            ModelLoader loader = ModelLoader.get("/scenes/desert-scene.dae");
             desertEnvironmentModel = new Model(loader.vertexPositionsForAllSingleMeshes(), loader.indicesForAllSingleMeshes());
-            desertEnvironmentModel.setTextureAndTextureCoords("/textures/stone-ground.png", loader.textureCoordsForAllSingleMeshes());
+            desertEnvironmentModel.setTextureAndTextureCoords("/textures/scenes/desertScene/stone-ground.png", loader.textureCoordsForAllSingleMeshes());
             desertEnvironmentModel.setNormals(loader.normalsForAllSingleMeshes());
             desertEnvironmentModel.setRenderer(Renderers.texturedModelRenderer);
         }
@@ -123,7 +123,7 @@ public class ModelBank {
 
     public static Model[] getBeachEnvironmentManyModels() {
         if (beachEnvironmentModels == null) {
-            ModelLoader loader = ModelLoader.get("/beach-scene.dae");
+            ModelLoader loader = ModelLoader.get("/scenes/beach-scene.dae");
             List<SingleMesh> singleMeshes = loader.getAllSingleMeshes();
             beachEnvironmentModels = new Model[singleMeshes.size()];
 
@@ -135,33 +135,33 @@ public class ModelBank {
                 String texturePath;
 
                 if (name.startsWith("_Port") || name.startsWith("_Platform"))
-                    texturePath = "/textures/beach-scene/palm-bark-and-wood.png";
+                    texturePath = "/textures/scenes/beachScene/palm-bark-and-wood.png";
                 else if (name.startsWith("_Purple") || name.startsWith("_PurpleChair"))
-                    texturePath = "/textures/beach-scene/purple.png";
+                    texturePath = "/textures/scenes/beachScene/purple.png";
                 else if (name.startsWith("_Yellow") || name.startsWith("_YellowChair"))
-                    texturePath = "/textures/beach-scene/yellow.png";
+                    texturePath = "/textures/scenes/beachScene/yellow.png";
                 else if (name.startsWith("_Red")  || name.startsWith("_RedChair"))
-                    texturePath = "/textures/beach-scene/red.png";
+                    texturePath = "/textures/scenes/beachScene/red.png";
                 else if (name.startsWith("_Bark"))
-                    texturePath = "/textures/beach-scene/palm-bark.png";
+                    texturePath = "/textures/scenes/beachScene/palm-bark.png";
                 else if (name.startsWith("_PalmTree"))
-                    texturePath = "/textures/beach-scene/palm-tree.png";
+                    texturePath = "/textures/scenes/beachScene/palm-tree.png";
                 else if (name.startsWith("_Campfire"))
-                    texturePath = "/textures/beach-scene/wood.png";
+                    texturePath = "/textures/scenes/beachScene/wood.png";
                 else if (name.startsWith("_PebblePatch"))
-                    texturePath = "/textures/beach-scene/pebbles.png";
+                    texturePath = "/textures/scenes/beachScene/pebbles.png";
                 else if (name.startsWith("_Pebble"))
-                    texturePath = "/textures/beach-scene/stone.png";
+                    texturePath = "/textures/scenes/beachScene/stone.png";
                 else if (name.startsWith("_Sand"))
-                    texturePath = "/textures/beach-scene/sand.png";
+                    texturePath = "/textures/scenes/beachScene/sand.png";
                 else if (name.startsWith("_Water"))
-                    texturePath = "/textures/beach-scene/water.png";
+                    texturePath = "/textures/scenes/beachScene/water.png";
                 else if (name.startsWith("_Monkeys"))
-                    texturePath = "/textures/beach-scene/palm-bark-and-wood.png";
+                    texturePath = "/textures/scenes/beachScene/palm-bark-and-wood.png";
                 else if (name.startsWith("_TallRock"))
-                    texturePath = "/textures/beach-scene/black-and-pink-stone.png";
+                    texturePath = "/textures/scenes/beachScene/black-and-pink-stone.png";
                 else
-                    texturePath = "/textures/white-image.png";
+                    texturePath = "/textures/scenes/misc/white-image.png";
 
                 if (name.startsWith("_Purple") || name.startsWith("_Yellow") || name.startsWith("_Red") ||
                         name.startsWith("_PalmTree")) {

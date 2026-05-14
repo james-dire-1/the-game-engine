@@ -33,7 +33,7 @@ public class TitleButton implements GuiGroup {
 
     public TitleButton(String text, float[] normalColor) {
         this.button = new GuiButton(new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition)), new ScreenSize(449 * 0.9f, 46 * 0.9f), null);
-        button.setTextureAndSamplingData("/textures/title-button.png");
+        button.setTextureAndSamplingData("/textures/ui/title-button.png");
         button.setSingleColor(normalColor[0], normalColor[1], normalColor[2]);
         button.setHoverStateChangeAction(this::setHighlighted);
 

@@ -19,13 +19,9 @@ import game.main.Main;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-
 public class TitleScreen extends Screen {
 
-    private static final String WELCOME_TEXT = "Welcome to Laser Tag!";
+    private static final String WELCOME_TEXT = "Welcome to Survival Game!";
 
     private final PersistentTitleHeader header;
     private final float instantiationTime = Time.getCurrentTime();
