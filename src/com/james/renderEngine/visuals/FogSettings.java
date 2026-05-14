@@ -1,6 +1,7 @@
-package newStuff;
+package com.james.renderEngine.visuals;
 
 import com.james.tools.ColorUtils;
+import com.james.renderEngine.rendering.interfaces.IFogShader;
 import org.lwjgl.util.vector.Vector3f;
 
 public class FogSettings {
@@ -63,22 +64,17 @@ public class FogSettings {
     }
 
     public static void loadSettings(IFogShader shader) {
-        if (newSkyColor) {
-            newSkyColor = false;
-            shader.loadSkyColor(skyColor);
-        }
-        if (newUseSphericalFog) {
-            newUseSphericalFog = false;
-            shader.loadFogType(useSphericalFog);
-        }
-        if (newFogDensity) {
-            newFogDensity = false;
-            shader.loadFogDensity(fogDensity);
-        }
-        if (newFogGradient) {
-            newFogGradient = false;
-            shader.loadFogGradient(fogGradient);
-        }
+        if (newSkyColor) shader.loadSkyColor(skyColor);
+        if (newUseSphericalFog) shader.loadFogType(useSphericalFog);
+        if (newFogDensity) shader.loadFogDensity(fogDensity);
+        if (newFogGradient) shader.loadFogGradient(fogGradient);
+    }
+
+    public static void resetState() {
+        newSkyColor = false;
+        newUseSphericalFog = false;
+        newFogDensity = false;
+        newFogGradient = false;
     }
 
 }

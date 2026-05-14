@@ -1,4 +1,4 @@
-package com.james.renderEngine.skyboxes;
+package com.james.renderEngine.visuals;
 
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.utilities.VertexUtilityArrays;

@@ -8,6 +8,7 @@ import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.ColorModelShader;
 import com.james.tools.BatchedGameObjectsList;
 import game.main.Main;
+import com.james.renderEngine.visuals.FogSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -22,6 +23,7 @@ public class ColorModelRenderer extends AbstractRenderer {
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
         shader.loadMinBrightness(MasterRenderer.MIN_BRIGHTNESS);
+        FogSettings.loadSettingsFirstTime(shader);
         shader.stop();
     }
 
@@ -36,6 +38,8 @@ public class ColorModelRenderer extends AbstractRenderer {
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
         shader.loadLight(Main.light);
+        FogSettings.loadSettings(shader);
+        shader.loadCameraPosition(MasterRenderer.currentCamera.getPosition());
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;
@@ -49,13 +53,15 @@ public class ColorModelRenderer extends AbstractRenderer {
             glEnableVertexAttribArray(1);
             glEnableVertexAttribArray(2);
 
+            shader.loadShineSettings(model.getShineSettings());
+
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
                 if (!gameObject.isVisible) continue;
 
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
-                shader.loadShineSettings(model.getShineSettings());
+                shader.loadFogApplied(gameObject.isAffectedByFog);
 
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);

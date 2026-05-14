@@ -94,8 +94,8 @@ public class PlayerHandler {
             player.setVelocity(velocity.x, 0, -velocity.y);
 
             if (isKeyPressed(GLFW_KEY_SPACE)) {
-                Vector3f currentPosition = player.getPosition();
-                player.setPosition(currentPosition.x, currentPosition.y + 5, currentPosition.z);
+                Vector3f playerPosition = player.getPosition();
+                player.setPosition(playerPosition.x, playerPosition.y + 5, playerPosition.z);
             }
 
             ClientLevel.get().update();

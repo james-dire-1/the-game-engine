@@ -3,6 +3,7 @@ package com.james.renderEngine.rendering.models;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.WindowResizeInput;
 import com.james.tools.BatchedGameObjectsList;
+import com.james.renderEngine.visuals.FogSettings;
 
 import static org.lwjgl.opengl.GL30.*;
 
@@ -46,6 +47,7 @@ public class MasterRenderer {
         }
 
         newProjectionMatrix = false;
+        FogSettings.resetState();
     }
 
     public static void cleanUp() {

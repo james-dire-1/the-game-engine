@@ -18,7 +18,7 @@ import com.james.renderEngine.utilities.GLUtilities;
 import com.james.tools.*;
 import game.ui.screens.TitleScreen;
 import com.james.renderEngine.texturing.CubeMapTexture;
-import com.james.renderEngine.skyboxes.Skybox;
+import com.james.renderEngine.visuals.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
 import com.james.common.tools.modelLoading.ModelLoader;
 import templates.settings.GLFWWindowTitles;

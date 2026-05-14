@@ -8,7 +8,7 @@ import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.TexturedModelShader;
 import com.james.tools.BatchedGameObjectsList;
-import newStuff.FogSettings;
+import com.james.renderEngine.visuals.FogSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;

@@ -3,7 +3,7 @@ package com.james.renderEngine.shaders.models;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.shaders.Shader;
 import com.james.renderEngine.texturing.ShineSettings;
-import newStuff.IFogShader;
+import com.james.renderEngine.rendering.interfaces.IFogShader;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -48,11 +48,11 @@ public class TexturedModelShader extends Shader implements IFogShader {
         location_reflectivity = super.getUniformLocation("reflectivity");
         location_shineDamper = super.getUniformLocation("shineDamper");
         location_minBrightness = super.getUniformLocation("minBrightness");
-        location_fogApplied = super.getUniformLocation("fogApplied");
+        location_skyColor = super.getUniformLocation("skyColor");
         location_fogType = super.getUniformLocation("fogType");
         location_fogDensity = super.getUniformLocation("fogDensity");
         location_fogGradient = super.getUniformLocation("fogGradient");
-        location_skyColor = super.getUniformLocation("skyColor");
+        location_fogApplied = super.getUniformLocation("fogApplied");
         location_cameraPosition = super.getUniformLocation("cameraPosition");
     }
 

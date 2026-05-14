@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.renderEngine.rendering.interfaces;
 
 import org.lwjgl.util.vector.Vector3f;
 

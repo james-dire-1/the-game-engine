@@ -12,6 +12,7 @@ public class Time {
 
     /**
      * Updates the delta time. This should be called once in each cycle of the game loop.
+     *
      * @implNote This is done by assigning deltaTime to the difference between the new current time and the
      * last time this method was called. In addition, this method sets lastTime to the new current time to
      * prepare for the next time this method will be called.

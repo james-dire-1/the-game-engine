@@ -7,6 +7,7 @@ import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.FlatShader;
 import com.james.tools.BatchedGameObjectsList;
+import com.james.renderEngine.visuals.FogSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -20,6 +21,7 @@ public class FlatRenderer extends AbstractRenderer {
         shader.start();
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
+        FogSettings.loadSettingsFirstTime(shader);
         shader.stop();
     }
 
@@ -33,6 +35,8 @@ public class FlatRenderer extends AbstractRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
+        FogSettings.loadSettings(shader);
+        shader.loadCameraPosition(MasterRenderer.currentCamera.getPosition());
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;
@@ -53,6 +57,8 @@ public class FlatRenderer extends AbstractRenderer {
 
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
+
+                shader.loadFogApplied(gameObject.isAffectedByFog);
 
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);

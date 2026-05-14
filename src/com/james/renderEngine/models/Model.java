@@ -108,8 +108,10 @@ public class Model {
 
         hasRendererBeenSet = true;
 
-        if (!renderer.satisfiesModelCriteria(this))
-            throw new RuntimeException("Model doesn't satisfy the renderer's criteria!");
+        if (!renderer.satisfiesModelCriteria(this)) {
+            System.out.println("Model doesn't satisfy the renderer's criteria!");
+            throw new RuntimeException();
+        }
 
         renderer.models.add(this);
     }

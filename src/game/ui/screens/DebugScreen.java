@@ -1,4 +1,4 @@
-package newStuff;
+package game.ui.screens;
 
 import com.james.input.KeyInput;
 import com.james.renderEngine.textRendering.TextAlignment;
@@ -10,6 +10,7 @@ import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.simulation.ClientLevel;
 import game.main.Main;
+import com.james.renderEngine.visuals.FogSettings;
 import org.lwjgl.opengl.GL30;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -31,11 +32,6 @@ public class DebugScreen extends Screen {
         howToCloseDisplay.apply();
         super.addGui(howToCloseDisplay.getMesh());
 
-        PersistentGuiText openglVersion = new PersistentGuiText("OpenGL " + GL30.glGetString(GL30.GL_VERSION), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP_RIGHT, new ScreenSize(-5, 0)));
-        openglVersion.setAlignment(TextAlignment.RIGHT_ALIGNED);
-        openglVersion.apply();
-        super.addGui(openglVersion.getMesh());
-
         this.fogTypeDisplay = new GuiText("Fog type: ", Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP_LEFT, new ScreenSize(5, -25)));
         fogTypeDisplay.setAlignment(TextAlignment.LEFT_ALIGNED);
         fogTypeDisplay.makeEditable(this, 0);
@@ -53,6 +49,11 @@ public class DebugScreen extends Screen {
         fogGradientDisplay.makeEditable(this, 0);
         fogGradientDisplay.apply();
         super.addGuis(fogGradientDisplay.getAllGuis());
+
+        PersistentGuiText openglVersion = new PersistentGuiText("OpenGL " + GL30.glGetString(GL30.GL_VERSION), Main.dustismo, 0.25f, new AnchoredPosition(AnchorPoint.TOP_RIGHT, new ScreenSize(-5, 0)));
+        openglVersion.setAlignment(TextAlignment.RIGHT_ALIGNED);
+        openglVersion.apply();
+        super.addGui(openglVersion.getMesh());
     }
 
     @Override

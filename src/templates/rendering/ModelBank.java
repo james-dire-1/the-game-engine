@@ -5,6 +5,7 @@ import com.james.renderEngine.texturing.ShineSettings;
 import com.james.common.tools.modelLoading.ModelLoader;
 import com.james.common.tools.modelLoading.SingleMesh;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -170,7 +171,8 @@ public class ModelBank {
 
                 model.setTextureAndTextureCoords(texturePath, singleMesh.textureCoords);
                 model.setNormals(singleMesh.normals);
-                model.setRenderer(Renderers.texturedModelRenderer);
+                if (name.startsWith("_Water")) model.setRenderer(Renderers.flatRenderer);
+                else model.setRenderer(Renderers.texturedModelRenderer);
                 beachEnvironmentModels[i] = model;
             }
         }

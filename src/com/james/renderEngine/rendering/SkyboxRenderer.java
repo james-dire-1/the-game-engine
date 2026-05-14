@@ -3,7 +3,7 @@ package com.james.renderEngine.rendering;
 import com.james.input.WindowResizeInput;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.rendering.models.MasterRenderer;
-import com.james.renderEngine.skyboxes.Skybox;
+import com.james.renderEngine.visuals.Skybox;
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.shaders.SkyboxShader;
 import org.lwjgl.util.vector.Matrix4f;
