@@ -6,17 +6,14 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class FogSettings {
 
-    // public static final float DEFAULT_DENSITY = 0.007f;
-    // public static final float DEFAULT_GRADIENT = 1.5f;
-    // private static final Vector3f skyColor = ColorUtils.asNormalizedRGBVector(0x34eba8)[0];
-
+    public static final boolean DEFAULT_USE_SPHERICAL_FOG = true;
     public static final float DEFAULT_DENSITY = 0.0025f;
     public static final float DEFAULT_GRADIENT = 5f;
 
     private static final Vector3f skyColor = ColorUtils.asNormalizedRGBVector(0x6CC2F0)[0];
-    private static boolean useSphericalFog = true;
-    private static float fogDensity = DEFAULT_DENSITY;
-    private static float fogGradient = DEFAULT_GRADIENT;
+    private static boolean useSphericalFog;
+    private static float fogDensity;
+    private static float fogGradient;
 
     private static boolean newSkyColor = false;
     private static boolean newUseSphericalFog = false;

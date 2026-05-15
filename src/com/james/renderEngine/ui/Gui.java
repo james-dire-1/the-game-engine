@@ -43,6 +43,9 @@ public class Gui {
     public boolean isVisible = true;
     public boolean isEnabled = true;
 
+    private int priority = 1;
+    public int getPriority() { return priority; }
+
     /**
      * Overload constructor that uses the default vertex positions for guis.
      */
@@ -159,6 +162,21 @@ public class Gui {
     }
 
     /**
+     * Sets the priority of the gui. A lower priority results in the gui being rendered earlier (i.e. will
+     * appear more towards the back), whereas a higher priority results in the gui being rendered later (i.e.
+     * will appear more towards the front). Setting a priority can be useful if the ordering of guis in
+     * guisToRender in UiHandler is not enough in determining what should go in the back/front. The default
+     * priority is 1. Any gui with priority below 1 will not be rendered at all.
+     */
+    public void setPriority(int priority) {
+        this.priority = priority;
+
+        if (priority > maxPriority) {
+            maxPriority = priority;
+        }
+    }
+
+    /**
      * Once all the data for this gui has been gathered, it can be applied to receive its GuiMeshData instance.
      * The reason this happens at the end is so that all the information can be tested against all the
      * GuiMeshData instances' information that already exists, and if one GuiMeshData instance's information is
@@ -189,5 +207,8 @@ public class Gui {
     public enum RenderingMode {
         Texture, ColorGradient, SingleColor, Text, TextWithColorBuffer, TextureAndSingleColor
     }
+
+    private static int maxPriority = 1;
+    public static int getMaxPriority() { return maxPriority; }
 
 }

@@ -121,19 +121,27 @@ public abstract class AbstractGuiText {
     public abstract void modifyGlobalScale(float globalScaleX, float globalScaleY);
 
     /**
-     * Makes the text gui visible or invisible (will skip draw call if invisible).
+     * Makes the text gui visible or invisible (will skip draw call if invisible). Can only be called after
+     * apply() has already been called.
      */
     public abstract void setVisibility(boolean visible);
 
     /**
-     * Sets the alpha (opacity) value of the text gui.
+     * Sets the alpha (opacity) value of the text gui. Can only be called after apply() has already been
+     * called.
      */
     public abstract void setAlpha(float alpha);
 
     /**
-     * Changes the alpha (opacity) value of the text gui .
+     * Changes the alpha (opacity) value of the text gui. Can only be called after apply() has already been
+     * called.
      */
     public abstract void changeAlpha(float deltaAlpha);
+
+    /**
+     * Sets the priority of the text gui. Can only be called after apply() has already been called.
+     */
+    public abstract void setPriority(int priority);
 
     /**
      * Sets the text gui to use a maximum line length, so that any text that exceeds this line length will

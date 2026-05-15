@@ -52,6 +52,11 @@ public class PersistentGuiText extends AbstractGuiText {
         mesh.alpha += deltaAlpha;
     }
 
+    @Override
+    public void setPriority(int priority) {
+        mesh.setPriority(priority);
+    }
+
     private Gui mesh;
 
     @Override

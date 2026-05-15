@@ -106,6 +106,13 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
         }
     }
 
+    @Override
+    public void setPriority(int priority) {
+        for (Gui gui : master.children) {
+            gui.setPriority(priority);
+        }
+    }
+
     /**
      * This is a method that is exclusive to GuiText. Updates the color information for every character of
      * the text, in case a ColorContents object has changed its progress value. This method should be called

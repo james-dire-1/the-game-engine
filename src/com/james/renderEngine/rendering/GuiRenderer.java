@@ -25,49 +25,51 @@ public class GuiRenderer {
 
         shader.start();
 
-        for (Gui gui : guis) {
-            if (!gui.isVisible) continue;
+        for (int priority = 1; priority <= Gui.getMaxPriority(); priority++) {
+            for (Gui gui : guis) {
+                if (!gui.isVisible || gui.getPriority() != priority) continue;
 
-            GuiMeshData mesh = gui.getMesh();
+                GuiMeshData mesh = gui.getMesh();
 
-            glBindVertexArray(mesh.vaoId);
-            glEnableVertexAttribArray(0);
+                glBindVertexArray(mesh.vaoId);
+                glEnableVertexAttribArray(0);
 
-            if (    gui.renderingMode == Gui.RenderingMode.Texture ||
-                    gui.renderingMode == Gui.RenderingMode.Text ||
-                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer ||
-                    gui.renderingMode == Gui.RenderingMode.TextureAndSingleColor) {
-                glEnableVertexAttribArray(1);
+                if (gui.renderingMode == Gui.RenderingMode.Texture ||
+                        gui.renderingMode == Gui.RenderingMode.Text ||
+                        gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer ||
+                        gui.renderingMode == Gui.RenderingMode.TextureAndSingleColor) {
+                    glEnableVertexAttribArray(1);
 
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, gui.getTexture().id);
+                }
+
+                if (gui.renderingMode == Gui.RenderingMode.ColorGradient ||
+                        gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer)
+                    glEnableVertexAttribArray(2);
+
+                Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
+                shader.loadTransformationMatrix(transformationMatrix);
+
+                shader.loadRenderingMode(gui.renderingMode);
+
+                if (gui.renderingMode == Gui.RenderingMode.SingleColor ||
+                        gui.renderingMode == Gui.RenderingMode.Text ||
+                        gui.renderingMode == Gui.RenderingMode.TextureAndSingleColor)
+                    shader.loadSingleColor(gui.singleColor);
+
+                if (gui.renderingMode == Gui.RenderingMode.ColorGradient ||
+                        gui.renderingMode == Gui.RenderingMode.SingleColor ||
+                        gui.renderingMode == Gui.RenderingMode.Text)
+                    shader.loadAlpha(gui.alpha);
+
+                glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);
+
+                glDisableVertexAttribArray(0);
+                glDisableVertexAttribArray(1);
+                glDisableVertexAttribArray(2);
+                glBindVertexArray(0);
             }
-
-            if (    gui.renderingMode == Gui.RenderingMode.ColorGradient ||
-                    gui.renderingMode == Gui.RenderingMode.TextWithColorBuffer)
-                glEnableVertexAttribArray(2);
-
-            Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gui.position.normalized(), gui.size.normalized());
-            shader.loadTransformationMatrix(transformationMatrix);
-
-            shader.loadRenderingMode(gui.renderingMode);
-
-            if (    gui.renderingMode == Gui.RenderingMode.SingleColor ||
-                    gui.renderingMode == Gui.RenderingMode.Text ||
-                    gui.renderingMode == Gui.RenderingMode.TextureAndSingleColor)
-                shader.loadSingleColor(gui.singleColor);
-
-            if (    gui.renderingMode == Gui.RenderingMode.ColorGradient ||
-                    gui.renderingMode == Gui.RenderingMode.SingleColor ||
-                    gui.renderingMode == Gui.RenderingMode.Text)
-                shader.loadAlpha(gui.alpha);
-
-            glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);
-
-            glDisableVertexAttribArray(0);
-            glDisableVertexAttribArray(1);
-            glDisableVertexAttribArray(2);
-            glBindVertexArray(0);
         }
 
         shader.stop();

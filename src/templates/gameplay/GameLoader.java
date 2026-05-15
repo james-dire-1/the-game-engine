@@ -6,6 +6,7 @@ import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.renderEngine.visuals.FogSettings;
 import com.james.simulation.ClientLevel;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.simulation.objects.CachedPhysicalObject;
@@ -54,6 +55,10 @@ public abstract class GameLoader {
         clientLevel.events.sendPlayerJoined(playerPosition.x, playerPosition.y, playerPosition.z, rotY);
 
         MasterRenderer.currentCamera = focusCamera;
+
+        FogSettings.setUseSphericalFog(FogSettings.DEFAULT_USE_SPHERICAL_FOG);
+        FogSettings.setFogDensity(FogSettings.DEFAULT_DENSITY);
+        FogSettings.setFogGradient(FogSettings.DEFAULT_GRADIENT);
     }
 
     protected abstract void onGameClientClosing();
