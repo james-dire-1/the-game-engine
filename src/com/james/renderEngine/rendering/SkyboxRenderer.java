@@ -41,6 +41,8 @@ public class SkyboxRenderer {
         glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.texture.id);
 
         glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
+        MasterRenderer.incrementDrawCalls();
+        MasterRenderer.increaseTriangles(rawModel.vertexCount / 3);
 
         glDisableVertexAttribArray(0);
         glBindVertexArray(0);

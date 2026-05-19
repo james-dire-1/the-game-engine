@@ -71,6 +71,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
                 } else {
                     glDrawArrays(GL_TRIANGLES, 0, rawModel.vertexCount);
                 }
+                MasterRenderer.incrementDrawCalls();
+                MasterRenderer.increaseTriangles(rawModel.vertexCount / 3);
             }
 
             glDisableVertexAttribArray(0);

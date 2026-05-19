@@ -1,5 +1,6 @@
 package com.james.renderEngine.rendering;
 
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.shaders.GuiShader;
 import com.james.renderEngine.ui.Gui;
@@ -64,6 +65,8 @@ public class GuiRenderer {
                     shader.loadAlpha(gui.alpha);
 
                 glDrawElements(GL_TRIANGLES, mesh.vertexCount, GL_UNSIGNED_INT, 0);
+                MasterRenderer.incrementDrawCalls();
+                MasterRenderer.increaseTriangles(mesh.vertexCount / 3);
 
                 glDisableVertexAttribArray(0);
                 glDisableVertexAttribArray(1);

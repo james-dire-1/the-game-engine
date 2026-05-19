@@ -39,6 +39,8 @@ public class ParticleRenderer {
             shader.loadViewModelMatrix(viewModelMatrix);
 
             glDrawElements(GL_TRIANGLES, ParticleHandler.getVertexCount(), GL_UNSIGNED_INT, 0);
+            MasterRenderer.incrementDrawCalls();
+            MasterRenderer.increaseTriangles(ParticleHandler.getVertexCount() / 3);
         }
 
         glDisableVertexAttribArray(0);

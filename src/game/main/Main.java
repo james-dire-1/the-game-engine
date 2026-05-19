@@ -38,8 +38,9 @@ public class Main {
     public static final FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
     public static final FontInfo dustismo = new FontInfo("/dustismo.fnt", "/dustismo.png");
 
+    public static int fps;
     private static long lastTime = System.nanoTime() / 1000000;
-    private static long fps;
+    private static int fpsAccumulator;
 
     public static void main(String[] args) {
         ImageBank.init("/textures/misc/red-explosive.png", "/textures/objects/stall.png", "/fonts/rowdies.png", "/fonts/arial.png",
@@ -98,11 +99,12 @@ public class Main {
             GLFWUtilities.render();
 
             // fps timer
-            fps++;
+            fpsAccumulator++;
             if (System.nanoTime() / 1000000 - lastTime > 1000) {
                 lastTime = System.nanoTime() / 1000000;
-                System.out.println("FPS: " + fps);
-                fps = 0;
+                System.out.println("FPS: " + fpsAccumulator);
+                fps = fpsAccumulator;
+                fpsAccumulator = 0;
             }
         }
 

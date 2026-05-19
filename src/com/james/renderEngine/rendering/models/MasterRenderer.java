@@ -39,6 +39,12 @@ public class MasterRenderer {
 
     public static void preRender() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        drawCalls = drawCallsAccumulator;
+        drawCallsAccumulator = 0;
+
+        triangles = trianglesAccumulator;
+        trianglesAccumulator = 0;
     }
 
     public static void render(BatchedGameObjectsList batchedGameObjectsList) {
@@ -55,4 +61,17 @@ public class MasterRenderer {
             AbstractRenderer.cleanUp();
         }
     }
+
+    public static int drawCalls;
+    private static int drawCallsAccumulator;
+    public static void incrementDrawCalls() {
+        drawCallsAccumulator++;
+    }
+
+    public static int triangles;
+    private static int trianglesAccumulator;
+    public static void increaseTriangles(int triangles) {
+        trianglesAccumulator += triangles;
+    }
+
 }
