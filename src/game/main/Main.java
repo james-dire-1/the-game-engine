@@ -71,7 +71,7 @@ public class Main {
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
         Renderers.colorModelRenderer = new ColorModelRenderer();
 
-        MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.colorModelRenderer, Renderers.texturedModelRenderer);
+        MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer);
         ParticleRenderer.prepare();
         SkyboxRenderer.prepare();
         GuiRenderer.prepare();

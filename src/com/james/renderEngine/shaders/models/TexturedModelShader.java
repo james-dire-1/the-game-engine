@@ -121,11 +121,11 @@ public class TexturedModelShader extends Shader implements ILightShader, IFogSha
     }
 
     @Override
-    public void loadNumLightsInUse(int lightsInUse) {
-        if (lightsInUse > LightSettings.MAX_LIGHTS)
+    public void loadNumLightsInUse(int numLightsInUse) {
+        if (numLightsInUse > LightSettings.MAX_LIGHTS)
             throw new RuntimeException();
 
-        super.loadIntegerToUniform(location_numLightsInUse, lightsInUse);
+        super.loadIntegerToUniform(location_numLightsInUse, numLightsInUse);
     }
 
     @Override

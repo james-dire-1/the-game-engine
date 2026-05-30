@@ -12,19 +12,19 @@ in vec4 positionRelativeToCamera;
 out vec4 out_Color;
 
 uniform sampler2D textureSampler;
+
 uniform vec3 lightColors[MAX_LIGHTS];
 uniform float reflectivity;
 uniform float shineDamper;
-
 uniform float minBrightness;
+uniform int numLightsInUse;
+
 uniform vec3 skyColor;
 uniform float fogType;
 uniform float fogDensity;
 uniform float fogGradient;
 uniform float fogApplied;
 uniform vec3 cameraPosition;
-
-uniform int numLightsInUse;
 
 void main(void) {
     vec3 unitSurfaceNormal = normalize(surfaceNormal);

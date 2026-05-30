@@ -20,6 +20,7 @@ import com.james.tools.GameObjectInterpolator;
 import com.james.renderEngine.visuals.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
 import game.ui.screens.DebugScreen;
+import com.james.tools.LightHandler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
@@ -33,6 +34,7 @@ public abstract class GameLoader {
 
     public static Camera focusCamera = new Camera(new Vector3f(0, 0, 0), 0, 0, 0);
     public static BatchedGameObjectsList batchedGameObjectsList;
+    public static LightHandler lightHandler;
 
     protected final ClientLevel clientLevel;
     protected final PlayerHandler playerHandler;
@@ -61,6 +63,14 @@ public abstract class GameLoader {
         FogSettings.setUseSphericalFog(FogSettings.DEFAULT_USE_SPHERICAL_FOG);
         FogSettings.setFogDensity(FogSettings.DEFAULT_DENSITY);
         FogSettings.setFogGradient(FogSettings.DEFAULT_GRADIENT);
+
+        lightHandler = new LightHandler();
+        LightSettings.setLightHandler(lightHandler);
+
+        lightHandler.addLight(0, new Light(new Vector3f(0, 10, 0), new Vector3f(1, 1, 1)));
+        lightHandler.addLight(1, new Light(new Vector3f(40, 10, 40), new Vector3f(1, 0, 1)));
+        lightHandler.addLight(2, new Light(new Vector3f(-40, 10, -40), new Vector3f(0, 1, 0)));
+        lightHandler.addLight(3, new Light(new Vector3f(150, 10, 20), new Vector3f(1, 0.5f, 0)));
     }
 
     protected abstract void onGameClientClosing();
@@ -131,33 +141,6 @@ public abstract class GameLoader {
             playerHandler.getCamController().firstPerson = true;
             playerHandler.getGameObject().isVisible = false;
         }
-
-        // temporary; to be removed
-        if (KeyInput.isKeyDown(GLFW_KEY_U)) {
-            switch (lightCount) {
-                case 0:
-                    LightSettings.addLight(0, new Light(new Vector3f(0, 10, 0), new Vector3f(1, 1, 1)));
-                    break;
-                case 1:
-                    LightSettings.addLight(1, new Light(new Vector3f(40, 10, 40), new Vector3f(1, 0, 1)));
-                    break;
-                case 2:
-                    LightSettings.addLight(2, new Light(new Vector3f(-40, 10, -40), new Vector3f(0, 1, 0)));
-                    break;
-                case 3:
-                    LightSettings.addLight(3, new Light(new Vector3f(150, 10, 20), new Vector3f(1, 0.5f, 0)));
-                    break;
-                default:
-                    Random r = new Random();
-                    Vector3f position = new Vector3f(r.nextInt(600)-300, 10, r.nextInt(600)-300);
-                    Vector3f color = new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat());
-                    LightSettings.addLight(lightCount, new Light(position, color));
-            }
-
-            lightCount++;
-        }
     }
-
-    private int lightCount;
 
 }

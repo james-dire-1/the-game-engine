@@ -20,10 +20,13 @@ public class ColorModelRenderer extends AbstractRenderer {
     @Override
     public void prepare() {
         shader.start();
+
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
-        shader.loadMinBrightness(LightSettings.getMinBrightness());
+
+        LightSettings.loadSettingsFirstTime(shader);
         FogSettings.loadSettingsFirstTime(shader);
+
         shader.stop();
     }
 
@@ -37,7 +40,7 @@ public class ColorModelRenderer extends AbstractRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
-        // shader.loadLight(LightSettings.getLights().toArray(new Light[0])[0]);
+        LightSettings.loadFrameSettings(shader);
         FogSettings.loadFrameSettings(shader);
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
@@ -52,7 +55,7 @@ public class ColorModelRenderer extends AbstractRenderer {
             glEnableVertexAttribArray(1);
             glEnableVertexAttribArray(2);
 
-            shader.loadShineSettings(model.getShineSettings());
+            LightSettings.loadModelSettings(shader, model);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
                 if (!gameObject.isVisible) continue;
@@ -60,7 +63,8 @@ public class ColorModelRenderer extends AbstractRenderer {
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
-                shader.loadFogApplied(gameObject.isAffectedByFog);
+                LightSettings.loadGameObjectSettings(shader, gameObject);
+                FogSettings.loadGameObjectSettings(shader, gameObject);
 
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);

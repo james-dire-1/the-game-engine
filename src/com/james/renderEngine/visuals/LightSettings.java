@@ -4,11 +4,8 @@ import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.shaders.interfaces.ILightShader;
+import com.james.tools.LightHandler;
 import org.lwjgl.util.vector.Vector3f;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LightSettings {
 
@@ -17,15 +14,31 @@ public class LightSettings {
 
     private static float minBrightness = 0.2f;
     private static int userDefinedNumLightsInUse = 4;
-    private static final Map<Integer, Light> idsToLightsMap = new HashMap<>();
 
     private static boolean newMinBrightness = false;
     private static boolean newNumLightsInUse = false;
 
-    public static float getMinBrightness() { return minBrightness; }
-    private static int getNumLightsInUse() { return Math.min(userDefinedNumLightsInUse, idsToLightsMap.size()); }
-    public static Light getLight(int id) { return idsToLightsMap.get(id); }
-    public static Collection<Light> getLights() { return idsToLightsMap.values(); }
+    private static LightHandler lightHandler;
+
+    public static void setLightHandler(LightHandler lightHandler) {
+        LightSettings.lightHandler = lightHandler;
+    }
+
+    public static void onLightAdded() {
+        if (lightHandler.numLights() <= userDefinedNumLightsInUse) {
+            newNumLightsInUse = true;
+        }
+    }
+
+    public static void onLightRemoved() {
+        if (lightHandler.numLights() < userDefinedNumLightsInUse) {
+            newNumLightsInUse = true;
+        }
+    }
+
+    private static int getNumLightsInUse() {
+        return Math.min(userDefinedNumLightsInUse, lightHandler.numLights());
+    }
 
     public static void setMinBrightness(float minBrightness) {
         if (LightSettings.minBrightness != minBrightness) {
@@ -44,29 +57,16 @@ public class LightSettings {
         }
     }
 
-    public static void addLight(int id, Light light) {
-        idsToLightsMap.put(id, light);
-        if (idsToLightsMap.size() <= userDefinedNumLightsInUse) {
-            newNumLightsInUse = true;
-        }
-    }
-
-    public static boolean removeLight(int id) {
-        Light removedLight = idsToLightsMap.remove(id);
-        return removedLight != null;
-    }
-
     public static void loadSettingsFirstTime(ILightShader shader) {
         shader.loadMinBrightness(minBrightness);
-        shader.loadNumLightsInUse(getNumLightsInUse());
     }
 
     public static void loadFrameSettings(ILightShader shader) {
         if (newMinBrightness) shader.loadMinBrightness(minBrightness);
         if (newNumLightsInUse) shader.loadNumLightsInUse(getNumLightsInUse());
 
-        if (idsToLightsMap.size() <= userDefinedNumLightsInUse) {
-            shader.loadLights(idsToLightsMap.values().toArray(new Light[0]));
+        if (lightHandler.numLights() <= userDefinedNumLightsInUse) {
+            shader.loadLights(lightHandler.getLights().toArray(new Light[0]));
         }
     }
 
@@ -75,8 +75,8 @@ public class LightSettings {
     }
 
     public static void loadGameObjectSettings(ILightShader shader, GameObject gameObject) {
-        if (idsToLightsMap.size() > userDefinedNumLightsInUse) {
-            shader.loadLights(LightSettings.getLights().toArray(new Light[0]));
+        if (lightHandler.numLights() > userDefinedNumLightsInUse) {
+            shader.loadLights(lightHandler.getLights().toArray(new Light[0]));
         }
     }
 

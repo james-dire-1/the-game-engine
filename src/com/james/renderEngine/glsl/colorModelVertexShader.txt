@@ -1,12 +1,14 @@
 #version 400 core
 
+#define MAX_LIGHTS 10
+
 in vec3 vertexPosition;
 in vec3 color;
 in vec3 normal;
 
 out vec3 pass_color;
 out vec3 surfaceNormal;
-out vec3 toLightVector;
+out vec3 toLightVectors[MAX_LIGHTS];
 out vec3 toCameraVector;
 out vec4 worldPosition;
 out vec4 positionRelativeToCamera;
@@ -15,7 +17,8 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
-uniform vec3 lightPosition;
+uniform vec3 lightPositions[MAX_LIGHTS];
+uniform int numLightsInUse;
 
 void main(void) {
     worldPosition = transformationMatrix * vec4(vertexPosition, 1.0);
@@ -24,7 +27,11 @@ void main(void) {
 
     pass_color = color;
     surfaceNormal = (transformationMatrix * vec4(normal, 0.0)).xyz;
-    toLightVector = lightPosition - worldPosition.xyz;
+
+    for (int i = 0; i < numLightsInUse; i++) {
+        toLightVectors[i] = lightPositions[i] - worldPosition.xyz;
+    }
+
     vec3 cameraPosition = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
     toCameraVector = cameraPosition - worldPosition.xyz;
 }

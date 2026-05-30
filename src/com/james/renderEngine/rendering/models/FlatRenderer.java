@@ -19,9 +19,12 @@ public class FlatRenderer extends AbstractRenderer {
     @Override
     public void prepare() {
         shader.start();
+
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
+
         FogSettings.loadSettingsFirstTime(shader);
+
         shader.stop();
     }
 
@@ -57,7 +60,7 @@ public class FlatRenderer extends AbstractRenderer {
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
-                shader.loadFogApplied(gameObject.isAffectedByFog);
+                FogSettings.loadGameObjectSettings(shader, gameObject);
 
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
