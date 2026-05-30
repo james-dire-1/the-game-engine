@@ -7,7 +7,6 @@ import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.renderEngine.rendering.models.*;
 import com.james.tools.Time;
-import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.*;
 import com.james.renderEngine.textRendering.FontInfo;
@@ -26,11 +25,8 @@ import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
 import templates.rendering.Renderers;
 import com.james.simulation.ClientLevel;
-import org.lwjgl.util.vector.Vector3f;
 
 public class Main {
-
-    public static final Light light = new Light(new Vector3f(0, 10, 0), new Vector3f(1, 1, 1));
 
     public static GameLoader gameLoader;
 

@@ -1,7 +1,9 @@
 package com.james.renderEngine.visuals;
 
+import com.james.renderEngine.gameObjects.GameObject;
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.tools.ColorUtils;
-import com.james.renderEngine.rendering.interfaces.IFogShader;
+import com.james.renderEngine.shaders.interfaces.IFogShader;
 import org.lwjgl.util.vector.Vector3f;
 
 public class FogSettings {
@@ -60,11 +62,16 @@ public class FogSettings {
         shader.loadFogGradient(fogGradient);
     }
 
-    public static void loadSettings(IFogShader shader) {
+    public static void loadFrameSettings(IFogShader shader) {
         if (newSkyColor) shader.loadSkyColor(skyColor);
         if (newUseSphericalFog) shader.loadFogType(useSphericalFog);
         if (newFogDensity) shader.loadFogDensity(fogDensity);
         if (newFogGradient) shader.loadFogGradient(fogGradient);
+        shader.loadCameraPosition(MasterRenderer.currentCamera.getPosition());
+    }
+
+    public static void loadGameObjectSettings(IFogShader shader, GameObject gameObject) {
+        shader.loadFogApplied(gameObject.isAffectedByFog);
     }
 
     public static void resetState() {

@@ -4,8 +4,6 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Light {
 
-    // TODO: 2026-05-14 Loading light every frame in the shader is a bit inefficient
-
     private final Vector3f position;
     private final Vector3f color;
 

@@ -107,6 +107,10 @@ public abstract class Shader {
         GL20.glUniform1f(uniformLocation, toLoad);
     }
 
+    public void loadIntegerToUniform(int uniformLocation, int value) {
+        GL20.glUniform1i(uniformLocation, value);
+    }
+
     public void cleanUp() {
         stop();
         GL20.glDetachShader(programID, vertexShaderID);

@@ -2,14 +2,13 @@ package com.james.renderEngine.rendering.models;
 
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.WindowResizeInput;
+import com.james.renderEngine.visuals.LightSettings;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.renderEngine.visuals.FogSettings;
 
 import static org.lwjgl.opengl.GL30.*;
 
 public class MasterRenderer {
-
-    public static final float MIN_BRIGHTNESS = 0.4f;
 
     private static boolean newProjectionMatrix = false;
     public static boolean isNewProjectionMatrix() { return newProjectionMatrix; }
@@ -53,6 +52,7 @@ public class MasterRenderer {
         }
 
         newProjectionMatrix = false;
+        LightSettings.resetState();
         FogSettings.resetState();
     }
 

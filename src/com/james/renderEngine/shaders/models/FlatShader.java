@@ -1,7 +1,7 @@
 package com.james.renderEngine.shaders.models;
 
 import com.james.renderEngine.shaders.Shader;
-import com.james.renderEngine.rendering.interfaces.IFogShader;
+import com.james.renderEngine.shaders.interfaces.IFogShader;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 

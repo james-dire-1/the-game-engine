@@ -1,9 +1,9 @@
 package com.james.renderEngine.rendering.models;
 
+import com.james.renderEngine.visuals.LightSettings;
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
-import game.main.Main;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.TexturedModelShader;
@@ -20,10 +20,13 @@ public class TexturedModelRenderer extends AbstractRenderer {
     @Override
     public void prepare() {
         shader.start();
+
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
-        shader.loadMinBrightness(MasterRenderer.MIN_BRIGHTNESS);
+
+        LightSettings.loadSettingsFirstTime(shader);
         FogSettings.loadSettingsFirstTime(shader);
+
         shader.stop();
     }
 
@@ -37,9 +40,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
-        shader.loadLight(Main.light);
-        FogSettings.loadSettings(shader);
-        shader.loadCameraPosition(MasterRenderer.currentCamera.getPosition());
+        LightSettings.loadFrameSettings(shader);
+        FogSettings.loadFrameSettings(shader);
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;
@@ -56,7 +58,7 @@ public class TexturedModelRenderer extends AbstractRenderer {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
 
-            shader.loadShineSettings(model.getShineSettings());
+            LightSettings.loadModelSettings(shader, model);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
                 if (!gameObject.isVisible) continue;
@@ -64,7 +66,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
-                shader.loadFogApplied(gameObject.isAffectedByFog);
+                LightSettings.loadGameObjectSettings(shader, gameObject);
+                FogSettings.loadGameObjectSettings(shader, gameObject);
 
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);

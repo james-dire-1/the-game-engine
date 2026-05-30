@@ -45,7 +45,7 @@ public class BasicShader extends Shader {
     }
 
     public void loadTime() {
-        double seconds = (System.nanoTime()/1_000_000_000.0);
+        double seconds = (System.nanoTime() / 1_000_000_000.0);
         float fraction = (float) (seconds - Math.floor(seconds));
         super.loadFloatToUniform(location_time, fraction);
     }

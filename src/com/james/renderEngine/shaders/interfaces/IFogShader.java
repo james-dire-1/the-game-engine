@@ -1,4 +1,4 @@
-package com.james.renderEngine.rendering.interfaces;
+package com.james.renderEngine.shaders.interfaces;
 
 import org.lwjgl.util.vector.Vector3f;
 

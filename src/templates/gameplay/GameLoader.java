@@ -2,11 +2,13 @@ package templates.gameplay;
 
 import com.james.input.KeyInput;
 import com.james.renderEngine.gameObjects.Camera;
+import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.visuals.FogSettings;
+import com.james.renderEngine.visuals.LightSettings;
 import com.james.simulation.ClientLevel;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.simulation.objects.CachedPhysicalObject;
@@ -129,6 +131,33 @@ public abstract class GameLoader {
             playerHandler.getCamController().firstPerson = true;
             playerHandler.getGameObject().isVisible = false;
         }
+
+        // temporary; to be removed
+        if (KeyInput.isKeyDown(GLFW_KEY_U)) {
+            switch (lightCount) {
+                case 0:
+                    LightSettings.addLight(0, new Light(new Vector3f(0, 10, 0), new Vector3f(1, 1, 1)));
+                    break;
+                case 1:
+                    LightSettings.addLight(1, new Light(new Vector3f(40, 10, 40), new Vector3f(1, 0, 1)));
+                    break;
+                case 2:
+                    LightSettings.addLight(2, new Light(new Vector3f(-40, 10, -40), new Vector3f(0, 1, 0)));
+                    break;
+                case 3:
+                    LightSettings.addLight(3, new Light(new Vector3f(150, 10, 20), new Vector3f(1, 0.5f, 0)));
+                    break;
+                default:
+                    Random r = new Random();
+                    Vector3f position = new Vector3f(r.nextInt(600)-300, 10, r.nextInt(600)-300);
+                    Vector3f color = new Vector3f(r.nextFloat(), r.nextFloat(), r.nextFloat());
+                    LightSettings.addLight(lightCount, new Light(position, color));
+            }
+
+            lightCount++;
+        }
     }
+
+    private int lightCount;
 
 }

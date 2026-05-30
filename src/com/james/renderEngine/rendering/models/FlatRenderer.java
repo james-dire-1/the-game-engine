@@ -35,8 +35,7 @@ public class FlatRenderer extends AbstractRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
-        FogSettings.loadSettings(shader);
-        shader.loadCameraPosition(MasterRenderer.currentCamera.getPosition());
+        FogSettings.loadFrameSettings(shader);
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;

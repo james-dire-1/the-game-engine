@@ -1,5 +1,6 @@
 package com.james.renderEngine.rendering.models;
 
+import com.james.renderEngine.visuals.LightSettings;
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
@@ -7,7 +8,6 @@ import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.ColorModelShader;
 import com.james.tools.BatchedGameObjectsList;
-import game.main.Main;
 import com.james.renderEngine.visuals.FogSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
@@ -22,7 +22,7 @@ public class ColorModelRenderer extends AbstractRenderer {
         shader.start();
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
-        shader.loadMinBrightness(MasterRenderer.MIN_BRIGHTNESS);
+        shader.loadMinBrightness(LightSettings.getMinBrightness());
         FogSettings.loadSettingsFirstTime(shader);
         shader.stop();
     }
@@ -37,9 +37,8 @@ public class ColorModelRenderer extends AbstractRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
-        shader.loadLight(Main.light);
-        FogSettings.loadSettings(shader);
-        shader.loadCameraPosition(MasterRenderer.currentCamera.getPosition());
+        // shader.loadLight(LightSettings.getLights().toArray(new Light[0])[0]);
+        FogSettings.loadFrameSettings(shader);
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
             if (!models.contains(model)) continue;
