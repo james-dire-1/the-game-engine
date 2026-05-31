@@ -4,8 +4,8 @@ import com.james.renderEngine.models.Model;
 import com.james.renderEngine.texturing.ShineSettings;
 import com.james.common.tools.modelLoading.ModelLoader;
 import com.james.common.tools.modelLoading.SingleMesh;
+import org.lwjgl.util.vector.Vector3f;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +14,7 @@ public class ModelBank {
     private static Model stallModel;
     private static Model abstractArtModel;
     private static Model colorAbstractArtModel;
+    private static Model lightSourceModel;
     private static Model wallModel;
     private static Model testEnvironmentModel;
     private static Model[] desertEnvironmentModels;
@@ -59,12 +60,39 @@ public class ModelBank {
             }
             colorAbstractArtModel.setColors(colors);
 
-            colorAbstractArtModel.setNormals(loader.normals());
             colorAbstractArtModel.setShineSettings(new ShineSettings(1, 200));
             colorAbstractArtModel.setRenderer(Renderers.colorModelRenderer);
         }
 
         return colorAbstractArtModel;
+    }
+
+    public static Model getLightSource(Vector3f color) {
+        if (lightSourceModel == null) {
+            ModelLoader loader = ModelLoader.get("/objects/abstract-art.dae");
+            lightSourceModel = new Model(loader.vertexPositions(), loader.indices());
+
+            int uniqueVertexCount = lightSourceModel.getUniqueVertexCount();
+            float[] colors = new float[uniqueVertexCount * 3];
+            for (int i = 0; i < uniqueVertexCount; i++) {
+                colors[i * 3] = color.x;
+                colors[i * 3 + 1] = color.y;
+                colors[i * 3 + 2] = color.z;
+            }
+            lightSourceModel.setColors(colors);
+
+            float[] normals = loader.normals();
+            float[] normalsCopy = new float[normals.length];
+            for (int i = 0; i < normalsCopy.length; i++) {
+                normalsCopy[i] = -normals[i];
+            }
+            lightSourceModel.setNormals(normalsCopy);
+
+            lightSourceModel.disableCulling();
+            lightSourceModel.setRenderer(Renderers.colorModelRenderer);
+        }
+
+        return lightSourceModel;
     }
 
     public static Model getWall() {

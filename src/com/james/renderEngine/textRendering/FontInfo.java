@@ -19,8 +19,10 @@ public class FontInfo {
     public int lineHeight;
 
     public FontInfo(String fontFilePath, String textureAtlasPath) {
-        if (!fontFilePath.endsWith(".fnt") || !textureAtlasPath.endsWith(".png"))
-            throw new IllegalStateException("Incorrect file extensions for files. Verify that you are passing in correct files.");
+        if (!fontFilePath.endsWith(".fnt") || !textureAtlasPath.endsWith(".png")) {
+            System.out.println("Incorrect file extensions for files. Verify that you are passing in correct files.");
+            throw new RuntimeException();
+        }
 
         String fullFontFilePath = GlobalConstants.FONTS_BASE_DIRECTORY + fontFilePath;
         String fullTextureAtlasPath = GlobalConstants.FONTS_BASE_DIRECTORY + textureAtlasPath;

@@ -7,13 +7,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // Used ThinMatrix video
 public class OBJParser {
 
     public static ModelData parseOBJFile(String name) {
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(OBJParser.class.getResourceAsStream(name)));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(OBJParser.class.getResourceAsStream(name))));
         String line;
         List<Vector3f> vertexPositions = new ArrayList<>();
         List<Vector2f> textureCoords = new ArrayList<>();

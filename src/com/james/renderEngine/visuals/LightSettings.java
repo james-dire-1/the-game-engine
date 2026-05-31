@@ -19,6 +19,8 @@ public class LightSettings {
     private static boolean newNumLightsInUse = false;
 
     private static LightHandler lightHandler;
+    private static final ClosestKLightsSelector selector =
+            new ClosestKLightsSelector(userDefinedNumLightsInUse);
 
     public static void setLightHandler(LightHandler lightHandler) {
         LightSettings.lightHandler = lightHandler;
@@ -76,7 +78,10 @@ public class LightSettings {
 
     public static void loadGameObjectSettings(ILightShader shader, GameObject gameObject) {
         if (lightHandler.numLights() > userDefinedNumLightsInUse) {
-            shader.loadLights(lightHandler.getLights().toArray(new Light[0]));
+            selector.setK(userDefinedNumLightsInUse);
+            Light[] allLights = lightHandler.getLights().toArray(new Light[0]);
+            selector.determineClosest(allLights, gameObject.getPosition());
+            shader.loadLights(selector.getClosestLights());
         }
     }
 
