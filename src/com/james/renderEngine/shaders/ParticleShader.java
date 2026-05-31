@@ -12,6 +12,7 @@ public class ParticleShader extends Shader {
 
     public ParticleShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
+        getUniformLocations();
     }
 
     @Override

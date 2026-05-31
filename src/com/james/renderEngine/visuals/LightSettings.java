@@ -3,7 +3,7 @@ package com.james.renderEngine.visuals;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.models.Model;
-import com.james.renderEngine.shaders.interfaces.ILightShader;
+import com.james.renderEngine.shaders.models.interfaces.ILightShader;
 import com.james.tools.LightHandler;
 import org.lwjgl.util.vector.Vector3f;
 

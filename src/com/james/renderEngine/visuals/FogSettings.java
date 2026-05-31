@@ -2,8 +2,8 @@ package com.james.renderEngine.visuals;
 
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.rendering.models.MasterRenderer;
+import com.james.renderEngine.shaders.models.interfaces.IFogShader;
 import com.james.tools.ColorUtils;
-import com.james.renderEngine.shaders.interfaces.IFogShader;
 import org.lwjgl.util.vector.Vector3f;
 
 public class FogSettings {

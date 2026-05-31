@@ -28,9 +28,6 @@ public abstract class Shader {
         bindAttributes();
         GL20.glLinkProgram(programID);
         GL20.glValidateProgram(programID);
-        getUniformLocations();
-
-        // TODO reconsider the ordering of these function calls
     }
 
     private static int loadShader(String file, int type) {
@@ -76,7 +73,7 @@ public abstract class Shader {
         GL20.glBindAttribLocation(programID, attributeNumber, variableName);
     }
 
-    protected int getUniformLocation(String uniformName) {
+    public int getUniformLocation(String uniformName) {
         return GL20.glGetUniformLocation(programID, uniformName);
     }
 

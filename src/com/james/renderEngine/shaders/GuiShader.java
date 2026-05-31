@@ -15,6 +15,7 @@ public class GuiShader extends Shader {
 
     public GuiShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
+        getUniformLocations();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class GuiShader extends Shader {
     }
 
     public void loadRenderingMode(Gui.RenderingMode renderingMode) {
-        float toLoad = 0;
+        float toLoad;
         if (renderingMode == Gui.RenderingMode.Texture) toLoad = 1;
         else if (renderingMode == Gui.RenderingMode.ColorGradient) toLoad = 2;
         else if (renderingMode == Gui.RenderingMode.SingleColor) toLoad = 3;

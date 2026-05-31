@@ -1,6 +1,5 @@
 package com.james.renderEngine.shaders;
 
-import com.james.renderEngine.shaders.Shader;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class SkyboxShader extends Shader {
@@ -13,6 +12,7 @@ public class SkyboxShader extends Shader {
 
     public SkyboxShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
+        getUniformLocations();
     }
 
     @Override

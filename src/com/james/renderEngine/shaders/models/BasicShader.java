@@ -1,21 +1,22 @@
 package com.james.renderEngine.shaders.models;
 
+import com.james.renderEngine.shaders.models.interfaces.IModelShader;
 import com.james.renderEngine.shaders.Shader;
-import org.lwjgl.util.vector.Matrix4f;
+import com.james.renderEngine.shaders.models.components.ModelShaderFeature;
 
-public class BasicShader extends Shader {
+public class BasicShader extends Shader implements IModelShader {
 
     private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/basicVertexShader.txt";
     private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/basicFragmentShader.txt";
 
-    private int location_transformationMatrix;
-    private int location_projectionMatrix;
-    private int location_viewMatrix;
-
+    public final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
     private int location_time;
+
+    @Override public ModelShaderFeature model() { return modelShaderFeature; }
 
     public BasicShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
+        getUniformLocations();
     }
 
     @Override
@@ -26,22 +27,8 @@ public class BasicShader extends Shader {
 
     @Override
     protected void getUniformLocations() {
-        location_transformationMatrix = super.getUniformLocation("transformationMatrix");
-        location_projectionMatrix = super.getUniformLocation("projectionMatrix");
-        location_viewMatrix = super.getUniformLocation("viewMatrix");
+        modelShaderFeature.getUniformLocations();
         location_time = super.getUniformLocation("time");
-    }
-
-    public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadMatrixToUniform(location_transformationMatrix, matrix);
-    }
-
-    public void loadProjectionMatrix(Matrix4f matrix) {
-        super.loadMatrixToUniform(location_projectionMatrix, matrix);
-    }
-
-    public void loadViewMatrix(Matrix4f matrix) {
-        super.loadMatrixToUniform(location_viewMatrix, matrix);
     }
 
     public void loadTime() {
