@@ -11,8 +11,8 @@ public class FlatShader extends Shader implements IModelShader, IFogShader {
     private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/flatVertexShader.txt";
     private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/flatFragmentShader.txt";
 
-    public final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
-    public final FogShaderFeature fogShaderFeature = new FogShaderFeature(this);
+    private final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
+    private final FogShaderFeature fogShaderFeature = new FogShaderFeature(this);
 
     @Override public ModelShaderFeature model() { return modelShaderFeature; }
     @Override public FogShaderFeature fog() { return fogShaderFeature; }

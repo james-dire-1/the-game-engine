@@ -9,7 +9,7 @@ public class BasicShader extends Shader implements IModelShader {
     private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/basicVertexShader.txt";
     private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/basicFragmentShader.txt";
 
-    public final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
+    private final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
     private int location_time;
 
     @Override public ModelShaderFeature model() { return modelShaderFeature; }

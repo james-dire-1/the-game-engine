@@ -1,5 +1,6 @@
 package com.james.renderEngine.shaders.models.interfaces;
 
+import com.james.renderEngine.gameObjects.DirectionalLight;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.shaders.models.components.LightShaderFeature;
 import com.james.renderEngine.texturing.ShineSettings;
@@ -12,6 +13,10 @@ public interface ILightShader {
         light().loadLights(lights);
     }
 
+    default void loadDirectionalLights(DirectionalLight[] directionalLights) {
+        light().loadDirectionalLights(directionalLights);
+    }
+
     default void loadShineSettings(ShineSettings shineSettings) {
         light().loadShineSettings(shineSettings);
     }
@@ -22,6 +27,10 @@ public interface ILightShader {
 
     default void loadNumLightsInUse(int numLightsInUse) {
         light().loadNumLightsInUse(numLightsInUse);
+    }
+
+    default void loadNumDirectionalLightsInUse(int numDirectionalLightsInUse) {
+        light().loadNumDirectionalLightsInUse(numDirectionalLightsInUse);
     }
 
 }

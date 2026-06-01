@@ -1,6 +1,7 @@
 #version 400 core
 
 #define MAX_LIGHTS 10
+#define MAX_LIGHTS_DIRECTIONAL 5
 
 in vec3 pass_color;
 in vec3 surfaceNormal;
@@ -11,11 +12,14 @@ in vec4 positionRelativeToCamera;
 
 out vec4 out_Color;
 
+uniform vec3 toLightVectorsDirectional[MAX_LIGHTS_DIRECTIONAL];
 uniform vec3 lightColors[MAX_LIGHTS];
+uniform vec3 directionalLightColors[MAX_LIGHTS_DIRECTIONAL];
 uniform float reflectivity;
 uniform float shineDamper;
 uniform float minBrightness;
 uniform int numLightsInUse;
+uniform int numDirectionalLightsInUse;
 
 uniform vec3 skyColor;
 uniform float fogType;
@@ -43,6 +47,20 @@ void main(void) {
         if (isnan(dampedFactor)) dampedFactor = 0.0;
         totalSpecular += dampedFactor * reflectivity * lightColors[i];
     }
+
+    for (int i = 0; i < numDirectionalLightsInUse; i++) {
+        vec3 unitToLightVector = normalize(toLightVectorsDirectional[i]);
+        float brightness = max(0.0, dot(unitSurfaceNormal, unitToLightVector));
+        totalDiffuse += brightness * directionalLightColors[i];
+
+        vec3 lightDirection = -unitToLightVector;
+        vec3 reflectedLightDirection = reflect(lightDirection, unitSurfaceNormal);
+        float specularFactor = max(0.0, dot(reflectedLightDirection, unitToCameraVector));
+        float dampedFactor = pow(specularFactor, shineDamper);
+        if (isnan(dampedFactor)) dampedFactor = 0.0;
+        totalSpecular += dampedFactor * reflectivity * directionalLightColors[i];
+    }
+
     totalDiffuse = max(totalDiffuse, minBrightness);
 
     float visibility;

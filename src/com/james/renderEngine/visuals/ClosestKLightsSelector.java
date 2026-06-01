@@ -13,13 +13,17 @@ public class ClosestKLightsSelector {
     private int k;
 
     public ClosestKLightsSelector(int k) {
-        setK(k);
-    }
-
-    public void setK(int k) {
         this.k = k;
         this.closestLights = new Light[k];
         this.smallestDistances = new float[k];
+    }
+
+    public void setK(int k) {
+        if (this.k != k) {
+            this.k = k;
+            this.closestLights = new Light[k];
+            this.smallestDistances = new float[k];
+        }
     }
 
     public Light[] getClosestLights() {

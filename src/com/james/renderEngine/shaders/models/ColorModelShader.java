@@ -13,9 +13,9 @@ public class ColorModelShader extends Shader implements IModelShader, ILightShad
     private static final String VERTEX_FILE = "/com/james/renderEngine/glsl/colorModelVertexShader.txt";
     private static final String FRAGMENT_FILE = "/com/james/renderEngine/glsl/colorModelFragmentShader.txt";
 
-    public final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
-    public final LightShaderFeature lightShaderFeature = new LightShaderFeature(this);
-    public final FogShaderFeature fogShaderFeature = new FogShaderFeature(this);
+    private final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
+    private final LightShaderFeature lightShaderFeature = new LightShaderFeature(this);
+    private final FogShaderFeature fogShaderFeature = new FogShaderFeature(this);
 
     @Override public ModelShaderFeature model() { return modelShaderFeature; }
     @Override public LightShaderFeature light() { return lightShaderFeature; }
