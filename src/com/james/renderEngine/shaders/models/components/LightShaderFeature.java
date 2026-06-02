@@ -20,6 +20,7 @@ public class LightShaderFeature implements ShaderFeature {
     private int[] location_toLightVectorsDirectional;
     private int[] location_lightColors;
     private int[] location_directionalLightColors;
+    private int[] location_lightAttenuations;
 
     public LightShaderFeature(Shader shader) {
         this.shader = shader;
@@ -37,12 +38,15 @@ public class LightShaderFeature implements ShaderFeature {
         location_toLightVectorsDirectional = new int[LightSettings.MAX_LIGHTS_DIRECTIONAL];
         location_lightColors = new int[LightSettings.MAX_LIGHTS];
         location_directionalLightColors = new int[LightSettings.MAX_LIGHTS_DIRECTIONAL];
+        location_lightAttenuations = new int[LightSettings.MAX_LIGHTS];
 
         for (int i = 0; i < LightSettings.MAX_LIGHTS; i++) {
             String lightPositionName = String.format("lightPositions[%d]", i);
             String lightColorName = String.format("lightColors[%d]", i);
+            String lightAttenuationName = String.format("lightAttenuations[%d]", i);
             location_lightPositions[i] = shader.getUniformLocation(lightPositionName);
             location_lightColors[i] = shader.getUniformLocation(lightColorName);
+            location_lightAttenuations[i] = shader.getUniformLocation(lightAttenuationName);
         }
 
         for (int i = 0; i < LightSettings.MAX_LIGHTS_DIRECTIONAL; i++) {
@@ -57,18 +61,22 @@ public class LightShaderFeature implements ShaderFeature {
         for (int i = 0; i < LightSettings.MAX_LIGHTS; i++) {
             Vector3f positionToLoad;
             Vector3f colorToLoad;
+            Vector3f attenuationToLoad;
 
             if (i < lights.length) {
                 Light light = lights[i];
                 positionToLoad = light.getPosition();
                 colorToLoad = light.getColor();
+                attenuationToLoad = light.getAttenuation();
             } else {
                 positionToLoad = LightSettings.reusableVector;
                 colorToLoad = LightSettings.reusableVector;
+                attenuationToLoad = LightSettings.reusableVector;
             }
 
             shader.loadVector3fToUniform(location_lightPositions[i], positionToLoad);
             shader.loadVector3fToUniform(location_lightColors[i], colorToLoad);
+            shader.loadVector3fToUniform(location_lightAttenuations[i], attenuationToLoad);
         }
     }
 

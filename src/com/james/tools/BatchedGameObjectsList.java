@@ -34,8 +34,10 @@ public class BatchedGameObjectsList {
         List<GameObject> batch = gameObjectsMap.get(gameObject.model);
         boolean success = batch.remove(gameObject);
 
-        if (!success)
-            throw new RuntimeException("No such game object was found.");
+        if (!success) {
+            System.out.println("No such game object was found.");
+            throw new RuntimeException();
+        }
 
         if (batch.isEmpty()) {
             gameObjectsMap.remove(gameObject.model);

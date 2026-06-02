@@ -31,6 +31,10 @@ public class GameObject {
     public boolean isVisible = true;
     public boolean isAffectedByFog = true;
 
+    public GameObject(Model model, Vector3f position) {
+        this(model, position, new Vector3f(), 1);
+    }
+
     public GameObject(Model model, Vector3f position, Vector3f rotation, float scale) {
         this.model = model;
         this.position = position;

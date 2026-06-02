@@ -15,6 +15,7 @@ out vec4 out_Color;
 uniform vec3 toLightVectorsDirectional[MAX_LIGHTS_DIRECTIONAL];
 uniform vec3 lightColors[MAX_LIGHTS];
 uniform vec3 directionalLightColors[MAX_LIGHTS_DIRECTIONAL];
+uniform vec3 lightAttenuations[MAX_LIGHTS];
 uniform float reflectivity;
 uniform float shineDamper;
 uniform float minBrightness;
@@ -36,16 +37,20 @@ void main(void) {
     vec3 totalSpecular = vec3(0.0);
 
     for (int i = 0; i < numLightsInUse; i++) {
+        float distance = length(toLightVectors[i]);
+        vec3 attenuation = lightAttenuations[i];
+        float attenuationFactor = attenuation.x + attenuation.y * distance + attenuation.z * distance * distance;
+
         vec3 unitToLightVector = normalize(toLightVectors[i]);
         float brightness = max(0.0, dot(unitSurfaceNormal, unitToLightVector));
-        totalDiffuse += brightness * lightColors[i];
+        totalDiffuse += (brightness * lightColors[i]) / attenuationFactor;
 
         vec3 lightDirection = -unitToLightVector;
         vec3 reflectedLightDirection = reflect(lightDirection, unitSurfaceNormal);
         float specularFactor = max(0.0, dot(reflectedLightDirection, unitToCameraVector));
         float dampedFactor = pow(specularFactor, shineDamper);
         if (isnan(dampedFactor)) dampedFactor = 0.0;
-        totalSpecular += dampedFactor * reflectivity * lightColors[i];
+        totalSpecular += (dampedFactor * reflectivity * lightColors[i]) / attenuationFactor;
     }
 
     for (int i = 0; i < numDirectionalLightsInUse; i++) {
