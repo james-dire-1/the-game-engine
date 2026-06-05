@@ -20,6 +20,7 @@ public class ModelBank {
     private static Model[] desertEnvironmentModels;
     private static Model desertEnvironmentModel;
     private static Model[] beachEnvironmentModels;
+    private static Model plainsEnvironmentModel;
 
     public static Model getStall() {
         if (stallModel == null) {
@@ -60,6 +61,7 @@ public class ModelBank {
             }
             colorAbstractArtModel.setColors(colors);
 
+            colorAbstractArtModel.setNormals(loader.normals());
             colorAbstractArtModel.setShineSettings(new ShineSettings(1, 200));
             colorAbstractArtModel.setRenderer(Renderers.colorModelRenderer);
         }
@@ -123,7 +125,7 @@ public class ModelBank {
             for (int i = 0; i < desertEnvironmentModels.length; i++) {
                 SingleMesh singleMesh = singleMeshes.get(i);
                 Model model = new Model(singleMesh.vertexPositions, singleMesh.indices);
-                model.setTextureAndTextureCoords("/textures/scenes/desertScene/stone-ground.png", singleMesh.textureCoords);
+                model.setTextureAndTextureCoords("/textures/scenes/beachScene/sand.png", singleMesh.textureCoords);
                 model.setNormals(singleMesh.normals);
                 model.setRenderer(Renderers.texturedModelRenderer);
                 desertEnvironmentModels[i] = model;
@@ -137,7 +139,7 @@ public class ModelBank {
         if (desertEnvironmentModel == null) {
             ModelLoader loader = ModelLoader.get("/scenes/desert-scene.dae");
             desertEnvironmentModel = new Model(loader.vertexPositionsForAllSingleMeshes(), loader.indicesForAllSingleMeshes());
-            desertEnvironmentModel.setTextureAndTextureCoords("/textures/scenes/desertScene/stone-ground.png", loader.textureCoordsForAllSingleMeshes());
+            desertEnvironmentModel.setTextureAndTextureCoords("/textures/scenes/beachScene/sand.png", loader.textureCoordsForAllSingleMeshes());
             desertEnvironmentModel.setNormals(loader.normalsForAllSingleMeshes());
             desertEnvironmentModel.setRenderer(Renderers.texturedModelRenderer);
         }
@@ -201,6 +203,25 @@ public class ModelBank {
         }
 
         return beachEnvironmentModels;
+    }
+
+    public static Model getPlainsEnvironment() {
+        if (plainsEnvironmentModel == null) {
+            ModelLoader loader = ModelLoader.get("/scenes/plains-scene.dae");
+            plainsEnvironmentModel = new Model(loader.vertexPositions(), loader.indices());
+
+            float[] textureCoordsCopy = new float[loader.textureCoords().length];
+            System.arraycopy(loader.textureCoords(), 0, textureCoordsCopy, 0, textureCoordsCopy.length);
+            for (int i = 0; i < textureCoordsCopy.length; i++) {
+                textureCoordsCopy[i] *= 15;
+            }
+            plainsEnvironmentModel.setTextureAndTextureCoords("/textures/scenes/plainsScene/grass.png", textureCoordsCopy);
+
+            plainsEnvironmentModel.setNormals(loader.normals());
+            plainsEnvironmentModel.setRenderer(Renderers.texturedModelRenderer);
+        }
+
+        return plainsEnvironmentModel;
     }
 
 }

@@ -48,11 +48,12 @@ public class Main {
                 "/textures/scenes/beachScene/black-and-pink-stone.png", "/textures/scenes/beachScene/palm-bark-and-wood.png", "/textures/scenes/beachScene/palm-bark.png",
                 "/textures/scenes/beachScene/palm-leaves.png", "/textures/scenes/beachScene/palm-leaves-2.png", "/textures/scenes/beachScene/palm-tree.png",
                 "/textures/scenes/beachScene/pebbles.png", "/textures/scenes/beachScene/purple.png", "/textures/scenes/beachScene/red.png", "/textures/scenes/beachScene/sand.png",
-                "/textures/scenes/beachScene/stone.png", "/textures/scenes/beachScene/water.png", "/textures/scenes/beachScene/wood.png", "/textures/scenes/beachScene/yellow.png");
+                "/textures/scenes/beachScene/stone.png", "/textures/scenes/beachScene/water.png", "/textures/scenes/beachScene/wood.png", "/textures/scenes/beachScene/yellow.png",
+                "/textures/scenes/plainsScene/grass.png");
         ModelLoader.init("/objects/stall.obj", "/objects/abstract-art.dae", "/objects/one-sided-wall.dae", "/scenes/test-scene.dae",
-                "/scenes/desert-scene.dae", "/scenes/beach-scene.dae");
+                "/scenes/desert-scene.dae", "/scenes/beach-scene.dae", "/scenes/plains-scene.dae");
 
-        ModelMeshBankInR3.init("/objects/one-sided-wall.dae", "/scenes/test-scene.dae", "/scenes/desert-scene.dae", "/scenes/beach-scene.dae");
+        ModelMeshBankInR3.init("/objects/one-sided-wall.dae", "/scenes/test-scene.dae", "/scenes/desert-scene.dae", "/scenes/beach-scene.dae", "/scenes/plains-scene.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 0.5f, 3, 0.5f } } );
 
         GLFWUtilities.init(GLFWWindowTitles.MAIN);

@@ -9,8 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 public class LevelProperties {
 
     public float secondsPerGameTick = 0.05f;
-//    public Vector3f gravity = new Vector3f(0, -4f, 0);
-    public Vector3f gravity = new Vector3f(0, 0, 0);
+    public Vector3f gravity = new Vector3f(0, -4f, 0);
 
     public void setTicksPerSecond(int ticksPerSecond) {
         secondsPerGameTick = 1.0f / ticksPerSecond;

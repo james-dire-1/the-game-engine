@@ -41,16 +41,16 @@ public class ClientPacketReceiveActions {
         }
     }
 
-    public static void usernameSuccessReceived(String username, int color) {
+    public static void usernameSuccessReceived(String username, int color, Vector3f spawnPoint) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernameSuccessReceived");
 
         PlayerHandler.localUsername = username;
         PlayerHandler.localColor = ColorUtils.asNormalizedRGBArray(color);
 
         if (LevelInitializer.isOnlineGame) {
-            Main.gameLoader = new OnlineGameLoader();
+            Main.gameLoader = new OnlineGameLoader(spawnPoint);
         } else {
-            Main.gameLoader = new LocalGameLoader();
+            Main.gameLoader = new LocalGameLoader(spawnPoint);
         }
     }
 

@@ -51,11 +51,11 @@ public abstract class GameLoader {
 
     private final float referenceTime;
 
-    public GameLoader(ClientPacketSendEvents events) {
+    public GameLoader(ClientPacketSendEvents events, Vector3f spawnPoint) {
         batchedGameObjectsList = new BatchedGameObjectsList();
         Camera.defaultCamera.setPosition(new Vector3f(0, 0, 5));
 
-        this.clientLevel = new ClientLevel(events, new Vector3f(-5, 8, 0), new Vector3f(1, 1, 1));
+        this.clientLevel = new ClientLevel(events, spawnPoint, new Vector3f(1, 1, 1));
         this.playerHandler = new PlayerHandler(batchedGameObjectsList, this.clientLevel, focusCamera);
 
         Player player = ClientLevel.get().getPlayer();
@@ -71,23 +71,7 @@ public abstract class GameLoader {
 
         lightHandler = new LightHandler();
         LightSettings.setLightHandler(lightHandler);
-//        lightHandler.addDirectionalLight(1, new DirectionalLight(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
-
-        Vector3f sharedPosition1 = new Vector3f(-50, -5, -60);
-        lightHandler.addLight(0, new Light(sharedPosition1, new Vector3f(1, 0, 1), Light.DEFAULT_ATTENUATION));
-        batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getLightSource(), sharedPosition1));
-
-        Vector3f sharedPosition2 = new Vector3f(25, 5, 80);
-        lightHandler.addLight(1, new Light(sharedPosition2, new Vector3f(0, 1, 0), Light.DEFAULT_ATTENUATION));
-        batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getLightSource(), sharedPosition2));
-
-        Vector3f sharedPosition3 = new Vector3f(30, 10, -50);
-        lightHandler.addLight(2, new Light(sharedPosition3, new Vector3f(1, 0.5f, 0), Light.DEFAULT_ATTENUATION));
-        batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getLightSource(), sharedPosition3));
-
-        Vector3f sharedPosition4 = new Vector3f(-20, 15, 5);
-        lightHandler.addLight(3, new Light(sharedPosition4, new Vector3f(1, 1, 0), Light.DEFAULT_ATTENUATION));
-        batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getLightSource(), sharedPosition4));
+        lightHandler.addDirectionalLight(1, new DirectionalLight(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
 
         this.referenceTime = Time.getCurrentTime();
     }
@@ -127,10 +111,10 @@ public abstract class GameLoader {
             onGameClientClosing();
         }
 
-//        float normalizedTimeOfDay = ((Time.getCurrentTime() - referenceTime) % 1200) / 1200;
-//        float xDirection = (float) Math.cos(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
-//        float yDirection = (float) Math.sin(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
-//        lightHandler.getDirectionalLight(1).setToLightDirection(xDirection, yDirection, 0);
+        float normalizedTimeOfDay = ((Time.getCurrentTime() - referenceTime) % 1200) / 1200;
+        float xDirection = (float) Math.cos(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
+        float yDirection = (float) Math.sin(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
+        lightHandler.getDirectionalLight(1).setToLightDirection(xDirection, yDirection, 0);
     }
 
     public void render() {
@@ -165,52 +149,6 @@ public abstract class GameLoader {
             playerHandler.getCamController().firstPerson = true;
             playerHandler.getGameObject().isVisible = false;
         }
-
-        float deltaX = 0;
-        if (KeyInput.isKeyPressed(GLFW_KEY_RIGHT)) {
-            deltaX += 0.2f;
-        }
-        if (KeyInput.isKeyPressed(GLFW_KEY_LEFT)) {
-            deltaX -= 0.2f;
-        }
-
-        float deltaZ = 0;
-        if (KeyInput.isKeyPressed(GLFW_KEY_UP)) {
-            deltaZ -= 0.2f;
-        }
-        if (KeyInput.isKeyPressed(GLFW_KEY_DOWN)) {
-            deltaZ += 0.2f;
-        }
-
-        float deltaY = 0;
-        if (KeyInput.isKeyPressed(GLFW_KEY_O)) {
-            deltaY += 0.2f;
-        }
-        if (KeyInput.isKeyPressed(GLFW_KEY_P)) {
-            deltaY -= 0.2f;
-        }
-
-        if (deltaX != 0 || deltaY != 0 || deltaZ != 0) {
-            lightHandler.getLight(currentLight).getPosition().translate(deltaX, deltaY, deltaZ);
-        }
-
-        if (KeyInput.isKeyDown(GLFW_KEY_U)) {
-            state = !state;
-            Vector3f attenuation;
-            if (state) {
-                attenuation = Light.NO_ATTENUATION;
-            } else {
-                attenuation = Light.DEFAULT_ATTENUATION;
-            }
-            lightHandler.getLight(currentLight).setAttenuation(attenuation.x, attenuation.y, attenuation.z);
-        }
-
-        if (KeyInput.isKeyDown(GLFW_KEY_Y)) {
-            currentLight = (currentLight + 1) % 4;
-        }
     }
-
-    int currentLight;
-    boolean state;
 
 }

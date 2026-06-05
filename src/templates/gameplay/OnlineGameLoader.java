@@ -15,8 +15,8 @@ import templates.communication.ClientPacketReceiveActions;
 
 public class OnlineGameLoader extends GameLoader {
 
-    public OnlineGameLoader() {
-        super(OnlineClientPacketSendEvents.get());
+    public OnlineGameLoader(Vector3f spawnPoint) {
+        super(OnlineClientPacketSendEvents.get(), spawnPoint);
 
         GLFWUtilities.setWindowTitle(GLFWWindowTitles.MULTIPLAYER);
     }
@@ -33,9 +33,10 @@ public class OnlineGameLoader extends GameLoader {
     public static void usernameSuccessReceived(Object[] objects) {
         String username = (String) objects[0];
         int color = (int) objects[1];
+        Vector3f spawnPoint = (Vector3f) objects[2];
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.usernameSuccessReceived(username, color);
+            ClientPacketReceiveActions.usernameSuccessReceived(username, color, spawnPoint);
         });
     }
 

@@ -5,12 +5,14 @@ import com.james.renderEngine.ui.ClickedComponent;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.serverSide.LevelInitializer;
+import com.james.serverSide.ServerThreadManager;
+import com.james.serverSide.simulation.Level;
 import com.james.simulation.ClientLevel;
 import game.ui.uiElements.PersistentTitleHeader;
+import templates.common.GlobalConstants;
 import templates.gameplay.LocalGameLoader;
 import game.main.Main;
 import game.ui.uiElements.TitleButton;
-import game.ui.uiElements.TitleHeader;
 import templates.gameplay.GameLoader;
 import templates.gameplay.OnlineGameLoader;
 
@@ -51,7 +53,11 @@ public class PauseScreen extends Screen {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 isOpen = false;
-                queueScreenForAddition(new TitleScreen());
+                if (GlobalConstants.IS_QUICK_START) {
+                    queueScreenForAddition(new TitleScreen());
+                } else {
+                    queueScreenForAddition(new SceneSelectScreen());
+                }
 
                 GameLoader loader = Main.gameLoader;
                 if (loader instanceof LocalGameLoader) {
@@ -62,6 +68,8 @@ public class PauseScreen extends Screen {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Level.clearNameToLevelMap();
+                    ServerThreadManager.clearEverything();
                 } else if (loader instanceof OnlineGameLoader) {
                     Client.get().disconnect();
                 }

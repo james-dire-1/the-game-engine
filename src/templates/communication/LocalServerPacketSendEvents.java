@@ -33,11 +33,11 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void notifyUsernameSuccess(PlayerInfo playerInfo, String username, int color) {
+    public void notifyUsernameSuccess(PlayerInfo playerInfo, String username, int color, Vector3f spawnPoint) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.notifyUsernameSuccess");
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.usernameSuccessReceived(username, color);
+            ClientPacketReceiveActions.usernameSuccessReceived(username, color, spawnPoint);
         });
     }
 

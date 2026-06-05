@@ -15,7 +15,8 @@ import java.util.List;
 
 public class TitleButton implements GuiGroup {
 
-    private static final float[] GRAY_WHITE = new float[] {0.85f, 0.85f, 0.85f};
+    private static final float[] GRAY_WHITE = new float[] { 0.85f, 0.85f, 0.85f };
+    private static final float[] BLACK = new float[] { 0.0f, 0.0f, 0.0f };
 
     private static int currentVerticalPosition;
     private static final int DISTANCE_BETWEEN_BUTTONS = 75;
@@ -28,10 +29,14 @@ public class TitleButton implements GuiGroup {
     private float[] highlightColor = new float[] {1, 1, 1};
 
     public TitleButton(String text) {
-        this(text, GRAY_WHITE);
+        this(text, GRAY_WHITE, BLACK);
     }
 
     public TitleButton(String text, float[] normalColor) {
+        this(text, normalColor, BLACK);
+    }
+
+    public TitleButton(String text, float[] normalColor, float[] textColor) {
         this.button = new GuiButton(new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition)), new ScreenSize(449 * 0.9f, 46 * 0.9f), null);
         button.setTextureAndSamplingData("/textures/ui/title-button.png");
         button.setSingleColor(normalColor[0], normalColor[1], normalColor[2]);
@@ -45,6 +50,7 @@ public class TitleButton implements GuiGroup {
 
         this.persistentGuiText = new PersistentGuiText(text, Main.dustismo, 0.3f, new AnchoredPosition(AnchorPoint.TOP, new ScreenSize(0, -currentVerticalPosition-7)));
         persistentGuiText.setAlignment(TextAlignment.CENTER_ALIGNED);
+        persistentGuiText.setSingleColor(textColor[0], textColor[1], textColor[2]);
         persistentGuiText.apply();
         guis.add(persistentGuiText.getMesh());
 

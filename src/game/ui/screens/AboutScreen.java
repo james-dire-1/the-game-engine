@@ -14,10 +14,10 @@ import game.ui.uiElements.TitleHeader;
 
 public class AboutScreen extends Screen {
 
-    private static final String ABOUT_TEXT = "Laser Tag is a game built by James in a custom-built engine. The game was " +
+    private static final String ABOUT_TEXT = "Survival Game is a game built by James in a custom-built engine. The game was " +
             "made to test the capabilities of the engine. The engine has been in the works since the summer of 2022, and " +
-            "is only developed during summer and winter breaks. During the summer of 2025, the game engine had just enough " +
-            "features for a simple game to be made in it. Thus, Laser Tag was created, and is the first game to be made in " +
+            "is only developed during summer and winter breaks. During the summer of 2026, the game engine had just enough " +
+            "features for a simple game to be made in it. Thus, Survival Game was created, and is the first game to be made in " +
             "the game engine.\n\n" +
             "Technical details:\n\n" +
             "The engine and game are programmed in Java. LWJGL was used for graphics rendering (it includes Java bindings " +

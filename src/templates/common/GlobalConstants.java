@@ -1,9 +1,15 @@
 package templates.common;
 
+import com.james.serverSide.LevelInitializer;
+import com.james.serverSide.Scene;
+import templates.serverSide.Scenes;
+
 public class GlobalConstants {
 
     public static final boolean IS_NETWORK_DEBUG = false;
     public static final boolean IS_DETAILED_NETWORK_DEBUG = false;
+    public static final boolean IS_QUICK_START = false;
+    public static final Scene QUICK_START_SCENE = Scenes.beachScene;
 
     // TODO: 2026-05-11 Where is the TEXTURES_BASE_DIRECTORY ???
     public static final String FONTS_BASE_DIRECTORY = "/fonts";

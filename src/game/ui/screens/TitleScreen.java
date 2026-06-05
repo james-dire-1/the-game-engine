@@ -14,6 +14,7 @@ import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.ui.uiElements.PersistentTitleHeader;
+import templates.common.GlobalConstants;
 import templates.settings.GLFWWindowTitles;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
@@ -84,11 +85,15 @@ public class TitleScreen extends Screen {
 
         TitleButton.resetCurrentVerticalPosition(700);
 
-        TitleButton playButton = new TitleButton("Debug Mode", lime);
+        TitleButton playButton = new TitleButton("Testing Mode", lime);
         playButton.button.setClickAction((ClickedComponent.MouseButton button) -> {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
-                queueScreenForAddition(new LoadingScreen());
+                if (GlobalConstants.IS_QUICK_START) {
+                    queueScreenForAddition(new LoadingScreen(GlobalConstants.QUICK_START_SCENE));
+                } else {
+                    queueScreenForAddition(new SceneSelectScreen());
+                }
             }
         });
         super.addGuis(playButton.getAllGuis());

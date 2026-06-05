@@ -27,6 +27,8 @@ public class PhysicalToVisualConverter {
             models = ModelBank.getBeachEnvironmentManyModels();
         } else if (type == PhysicalObjectType.Other) {
             models = new Model[] { ModelBank.getColorAbstractArt() };
+        } else if (type == PhysicalObjectType.PlainsEnvironment) {
+            models = new Model[] { ModelBank.getPlainsEnvironment() };
         }
 
         return models;
