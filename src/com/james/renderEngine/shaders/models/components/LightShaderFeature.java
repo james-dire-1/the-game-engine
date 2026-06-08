@@ -3,7 +3,7 @@ package com.james.renderEngine.shaders.models.components;
 import com.james.renderEngine.gameObjects.DirectionalLight;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.shaders.Shader;
-import com.james.renderEngine.texturing.ShineSettings;
+import com.james.renderEngine.visuals.ShineParameters;
 import com.james.renderEngine.visuals.LightSettings;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -99,13 +99,13 @@ public class LightShaderFeature implements ShaderFeature {
         }
     }
 
-    public void loadShineSettings(ShineSettings shineSettings) {
+    public void loadShineParameters(ShineParameters shineParameters) {
         float reflectivity = 0;
         float shineDamper = 0;
 
-        if (shineSettings != null) {
-            reflectivity = shineSettings.reflectivity;
-            shineDamper = shineSettings.shineDamper;
+        if (shineParameters != null) {
+            reflectivity = shineParameters.reflectivity;
+            shineDamper = shineParameters.shineDamper;
         }
 
         shader.loadFloatToUniform(location_reflectivity, reflectivity);

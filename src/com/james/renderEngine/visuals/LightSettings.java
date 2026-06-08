@@ -106,7 +106,7 @@ public class LightSettings {
     }
 
     public static void loadModelSettings(ILightShader shader, Model model) {
-        shader.loadShineSettings(model.getShineSettings());
+        shader.loadShineParameters(model.getShineParameters());
     }
 
     public static void loadGameObjectSettings(ILightShader shader, GameObject gameObject) {

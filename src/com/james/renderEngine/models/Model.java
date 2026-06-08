@@ -3,7 +3,8 @@ package com.james.renderEngine.models;
 import com.james.renderEngine.rendering.models.AbstractRenderer;
 import com.james.renderEngine.texturing.ImageTexture;
 import com.james.renderEngine.utilities.GLUtilities;
-import com.james.renderEngine.texturing.ShineSettings;
+import com.james.renderEngine.visuals.ShineParameters;
+import com.james.renderEngine.texturing.TextureBlendPack;
 
 /**
  * Represents a model with enough information for rendering. Includes the vertex positions (RawModel), and any
@@ -13,10 +14,15 @@ public class Model {
 
     public final RawModel rawModel;
 
-    private ImageTexture texture;
     private float[] textureCoords;
+
+    private ImageTexture texture;
     public boolean hasTexture() { return texture != null; }
     public ImageTexture getTexture() { return texture; }
+
+    private TextureBlendPack textureBlendPack;
+    public boolean hasTextureBlendPack() { return textureBlendPack != null; }
+    public TextureBlendPack getTextureBlendPack() { return textureBlendPack; }
 
     private float[] colors;
     public boolean hasColors() { return colors != null; }
@@ -27,8 +33,8 @@ public class Model {
     private boolean culling = true;
     public boolean usesCulling() { return culling; }
 
-    private ShineSettings shineSettings;
-    public ShineSettings getShineSettings() { return shineSettings; }
+    private ShineParameters shineParameters;
+    public ShineParameters getShineParameters() { return shineParameters; }
 
     /**
      * Unlike vertexCount in RawModel, uniqueVertexCount counts NON-REPEATING vertices. Used generally for
@@ -60,6 +66,15 @@ public class Model {
 
     public void setTextureAndTextureCoords(String path, float[] textureCoords) {
         this.texture = ImageTexture.getOrCreate(path);
+        setTextureCoords(textureCoords);
+    }
+
+    public void setTextureBlendPackAndTextureCoords(TextureBlendPack textureBlendPack, float[] textureCoords) {
+        this.textureBlendPack = textureBlendPack;
+        setTextureCoords(textureCoords);
+    }
+
+    private void setTextureCoords(float[] textureCoords) {
         this.textureCoords = textureCoords;
 
         GLUtilities.bindVAO(rawModel.vaoId);
@@ -93,8 +108,8 @@ public class Model {
         culling = false;
     }
 
-    public void setShineSettings(ShineSettings shineSettings) {
-        this.shineSettings = shineSettings;
+    public void setShineParameters(ShineParameters shineParameters) {
+        this.shineParameters = shineParameters;
     }
 
     /**

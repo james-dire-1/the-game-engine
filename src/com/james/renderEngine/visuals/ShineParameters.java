@@ -1,11 +1,11 @@
-package com.james.renderEngine.texturing;
+package com.james.renderEngine.visuals;
 
-public class ShineSettings {
+public class ShineParameters {
 
     public float reflectivity;
     public float shineDamper;
 
-    public ShineSettings(float reflectivity, float shineDamper) {
+    public ShineParameters(float reflectivity, float shineDamper) {
         this.reflectivity = reflectivity;
         this.shineDamper = shineDamper;
     }

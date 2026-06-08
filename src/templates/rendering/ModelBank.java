@@ -1,9 +1,10 @@
 package templates.rendering;
 
 import com.james.renderEngine.models.Model;
-import com.james.renderEngine.texturing.ShineSettings;
+import com.james.renderEngine.visuals.ShineParameters;
 import com.james.common.tools.modelLoading.ModelLoader;
 import com.james.common.tools.modelLoading.SingleMesh;
+import com.james.renderEngine.texturing.TextureBlendPack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +63,7 @@ public class ModelBank {
             colorAbstractArtModel.setColors(colors);
 
             colorAbstractArtModel.setNormals(loader.normals());
-            colorAbstractArtModel.setShineSettings(new ShineSettings(1, 200));
+            colorAbstractArtModel.setShineParameters(new ShineParameters(1, 200));
             colorAbstractArtModel.setRenderer(Renderers.colorModelRenderer);
         }
 
@@ -210,15 +211,17 @@ public class ModelBank {
             ModelLoader loader = ModelLoader.get("/scenes/plains-scene.dae");
             plainsEnvironmentModel = new Model(loader.vertexPositions(), loader.indices());
 
-            float[] textureCoordsCopy = new float[loader.textureCoords().length];
-            System.arraycopy(loader.textureCoords(), 0, textureCoordsCopy, 0, textureCoordsCopy.length);
-            for (int i = 0; i < textureCoordsCopy.length; i++) {
-                textureCoordsCopy[i] *= 15;
-            }
-            plainsEnvironmentModel.setTextureAndTextureCoords("/textures/scenes/plainsScene/grass.png", textureCoordsCopy);
+            TextureBlendPack texturePack = new TextureBlendPack();
+            texturePack.setBdChannelTexture("/textures/scenes/plainsScene/thin-matrix-grass.png");
+            texturePack.setRChannelTexture("/textures/scenes/plainsScene/thin-matrix-mud.png");
+            texturePack.setGChannelTexture("/textures/scenes/plainsScene/thin-matrix-flowers.png");
+            texturePack.setBChannelTexture("/textures/scenes/plainsScene/thin-matrix-path.png");
+            texturePack.setBlendMap("/textures/scenes/plainsScene/thin-matrix-blend-map.png");
+            texturePack.tiledTextureCoordsMultiplier = 50.0f;
 
+            plainsEnvironmentModel.setTextureBlendPackAndTextureCoords(texturePack, loader.textureCoords());
             plainsEnvironmentModel.setNormals(loader.normals());
-            plainsEnvironmentModel.setRenderer(Renderers.texturedModelRenderer);
+            plainsEnvironmentModel.setRenderer(Renderers.textureBlendModelRenderer);
         }
 
         return plainsEnvironmentModel;

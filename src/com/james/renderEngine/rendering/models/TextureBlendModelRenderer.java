@@ -1,21 +1,22 @@
 package com.james.renderEngine.rendering.models;
 
+import com.james.renderEngine.visuals.LightSettings;
 import com.james.tools.RenderingMath;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.input.WindowResizeInput;
 import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
-import com.james.renderEngine.shaders.models.FlatShader;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.renderEngine.visuals.FogSettings;
+import com.james.renderEngine.shaders.models.TextureBlendModelShader;
 import com.james.renderEngine.visuals.TextureSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
 
-public class FlatRenderer extends AbstractRenderer {
+public class TextureBlendModelRenderer extends AbstractRenderer {
 
-    private final FlatShader shader = new FlatShader();
+    private final TextureBlendModelShader shader = new TextureBlendModelShader();
 
     @Override
     public void prepare() {
@@ -24,7 +25,9 @@ public class FlatRenderer extends AbstractRenderer {
         Matrix4f projectionMatrix = RenderingMath.createProjectionMatrix(WindowResizeInput.width, WindowResizeInput.height);
         shader.loadProjectionMatrix(projectionMatrix);
 
+        LightSettings.loadSettingsFirstTime(shader);
         FogSettings.loadSettingsFirstTime(shader);
+        TextureSettings.loadSettingsFirstTimeForTextureBlendModel(shader);
 
         shader.stop();
     }
@@ -39,6 +42,7 @@ public class FlatRenderer extends AbstractRenderer {
         }
 
         shader.loadViewMatrix(MasterRenderer.currentCamera.getViewMatrix());
+        LightSettings.loadFrameSettings(shader);
         FogSettings.loadFrameSettings(shader);
 
         for (Model model : batchedGameObjectsList.getGameObjectsMap().keySet()) {
@@ -51,8 +55,10 @@ public class FlatRenderer extends AbstractRenderer {
             glBindVertexArray(rawModel.vaoId);
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
+            glEnableVertexAttribArray(2);
 
-            TextureSettings.loadModelSettingsForTexturedModel(model);
+            TextureSettings.loadModelSettingsForTextureBlendModel(shader, model);
+            LightSettings.loadModelSettings(shader, model);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
                 if (!gameObject.isVisible) continue;
@@ -60,6 +66,7 @@ public class FlatRenderer extends AbstractRenderer {
                 Matrix4f transformationMatrix = RenderingMath.createTransformationMatrix(gameObject.getPosition(), gameObject.getRotation(), gameObject.getScale());
                 shader.loadTransformationMatrix(transformationMatrix);
 
+                LightSettings.loadGameObjectSettings(shader, gameObject);
                 FogSettings.loadGameObjectSettings(shader, gameObject);
 
                 if (rawModel.usesIndexBuffer) {
@@ -73,6 +80,7 @@ public class FlatRenderer extends AbstractRenderer {
 
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
+            glDisableVertexAttribArray(2);
             glBindVertexArray(0);
 
             glEnable(GL_CULL_FACE);
@@ -84,7 +92,7 @@ public class FlatRenderer extends AbstractRenderer {
 
     @Override
     public boolean satisfiesModelCriteria(Model model) {
-        return model.hasTexture();
+        return model.hasTextureBlendPack() && model.hasNormals();
     }
 
     @Override

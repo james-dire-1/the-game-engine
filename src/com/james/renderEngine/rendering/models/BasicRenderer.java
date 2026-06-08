@@ -7,6 +7,7 @@ import com.james.renderEngine.models.Model;
 import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.BasicShader;
 import com.james.tools.BatchedGameObjectsList;
+import com.james.renderEngine.visuals.TextureSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -46,8 +47,7 @@ public class BasicRenderer extends AbstractRenderer {
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
+            TextureSettings.loadModelSettingsForTexturedModel(model);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
                 if (!gameObject.isVisible) continue;

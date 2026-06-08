@@ -3,8 +3,6 @@ package templates.gameplay;
 import com.james.input.KeyInput;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.DirectionalLight;
-import com.james.renderEngine.gameObjects.GameObject;
-import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
@@ -26,7 +24,6 @@ import com.james.tools.LightHandler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
-import templates.rendering.ModelBank;
 
 import java.util.Random;
 

@@ -20,6 +20,7 @@ import com.james.renderEngine.texturing.CubeMapTexture;
 import com.james.renderEngine.visuals.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
 import com.james.common.tools.modelLoading.ModelLoader;
+import com.james.renderEngine.rendering.models.TextureBlendModelRenderer;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
@@ -49,7 +50,8 @@ public class Main {
                 "/textures/scenes/beachScene/palm-leaves.png", "/textures/scenes/beachScene/palm-leaves-2.png", "/textures/scenes/beachScene/palm-tree.png",
                 "/textures/scenes/beachScene/pebbles.png", "/textures/scenes/beachScene/purple.png", "/textures/scenes/beachScene/red.png", "/textures/scenes/beachScene/sand.png",
                 "/textures/scenes/beachScene/stone.png", "/textures/scenes/beachScene/water.png", "/textures/scenes/beachScene/wood.png", "/textures/scenes/beachScene/yellow.png",
-                "/textures/scenes/plainsScene/grass.png");
+                "/textures/scenes/plainsScene/grass.png", "/textures/scenes/plainsScene/thin-matrix-blend-map.png", "/textures/scenes/plainsScene/thin-matrix-flowers.png",
+                "/textures/scenes/plainsScene/thin-matrix-grass.png", "/textures/scenes/plainsScene/thin-matrix-mud.png", "/textures/scenes/plainsScene/thin-matrix-path.png");
         ModelLoader.init("/objects/stall.obj", "/objects/abstract-art.dae", "/objects/one-sided-wall.dae", "/scenes/test-scene.dae",
                 "/scenes/desert-scene.dae", "/scenes/beach-scene.dae", "/scenes/plains-scene.dae");
 
@@ -71,8 +73,9 @@ public class Main {
         Renderers.flatRenderer = new FlatRenderer();
         Renderers.texturedModelRenderer = new TexturedModelRenderer();
         Renderers.colorModelRenderer = new ColorModelRenderer();
+        Renderers.textureBlendModelRenderer = new TextureBlendModelRenderer();
 
-        MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer);
+        MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer, Renderers.textureBlendModelRenderer);
         ParticleRenderer.prepare();
         SkyboxRenderer.prepare();
         GuiRenderer.prepare();

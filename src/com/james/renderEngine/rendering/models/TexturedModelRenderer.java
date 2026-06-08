@@ -9,6 +9,7 @@ import com.james.renderEngine.models.RawModel;
 import com.james.renderEngine.shaders.models.TexturedModelShader;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.renderEngine.visuals.FogSettings;
+import com.james.renderEngine.visuals.TextureSettings;
 import org.lwjgl.util.vector.Matrix4f;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -55,9 +56,7 @@ public class TexturedModelRenderer extends AbstractRenderer {
             glEnableVertexAttribArray(1);
             glEnableVertexAttribArray(2);
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, model.getTexture().id);
-
+            TextureSettings.loadModelSettingsForTexturedModel(model);
             LightSettings.loadModelSettings(shader, model);
 
             for (GameObject gameObject : batchedGameObjectsList.getGameObjectsMap().get(model)) {
