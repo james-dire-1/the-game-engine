@@ -28,5 +28,15 @@ public interface ServerPacketSendEvents {
     void confirmChatMessageReception(PlayerInfo playerInfo, int localMessageId);
     void broadcastChatMessage(int playerId, String message, PlayerInfo exceptPlayerInfo);
     void broadcastSystemMessage(String message);
+    void sendVirtualLightAddedToLevel(int id, Vector3f position, Vector3f color, Vector3f attenuation, PlayerInfo... playerInfoArray);
+    void sendVirtualLightMoved(int id, float x, float y, float z);
+    void sendVirtualLightColorChanged(int id, float r, float g, float b);
+    void sendVirtualLightAttenuationChanged(int id, float att1, float att2, float att3);
+    void sendVirtualLightPropertiesChanged(int id, Vector3f position, Vector3f color, Vector3f attenuation);
+    void sendVirtualDirectionalLightAddedToLevel(int id, Vector3f toLightDirection, Vector3f color, PlayerInfo... playerInfoArray);
+    void sendVirtualDirectionalLightToLightDirectionChanged(int id, float x, float y, float z);
+    void sendVirtualDirectionalLightColorChanged(int id, float r, float g, float b);
+    void sendVirtualDirectionalLightPropertiesChanged(int id, Vector3f toLightDirection, Vector3f color);
+    void sendSkyboxChanged(String name, boolean unmoving, PlayerInfo... playerInfoArray);
 
 }

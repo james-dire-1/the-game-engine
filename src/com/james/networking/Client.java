@@ -50,12 +50,11 @@ public class Client implements Runnable {
      *
      * Update July 2025: Actually, there is more nuance to what is stated above. The EOFException clause
      * will run if the server was PROPERLY closed (i.e. closed by closing the streams and socket).
-     * However, if the server was not properly closed (such as by pressing the X icon to forcibly close
-     * the server window), then the SocketException clause will run instead. Thus, the way to determine
-     * whether a SocketException was caused by the server closing the connection or by the client closing
-     * the connection is to see the exception message. A message of "Connection reset" means the server
-     * closed the connection (improperly) and a message of "Socket closed" means the client closed the
-     * connection. With this in mind, the code below has been updated.
+     * However, if the server was not properly closed, then the SocketException clause will run instead.
+     * Thus, the way to determine whether a SocketException was caused by the server closing the connection
+     * or by the client closing the connection is to see the exception message. A message of "Connection
+     * reset" means the server closed the connection (improperly) and a message of "Socket closed" means
+     * the client closed the connection. With this in mind, the code below has been updated.
      */
     @Override
     public void run() {

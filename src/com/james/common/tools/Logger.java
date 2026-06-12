@@ -2,7 +2,7 @@ package com.james.common.tools;
 
 public class Logger {
 
-    public static void log(String message) {
+    public static void println(String message) {
         System.out.println(message);
     }
 

@@ -5,17 +5,14 @@ import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.collisionEngine.CollisionHandler;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.common.simulation.LevelProperties;
-import com.james.serverSide.simulation.objects.MovableObject;
-import com.james.serverSide.simulation.objects.PhysicalObject;
+import com.james.serverSide.simulation.objects.*;
 import org.lwjgl.util.vector.Vector3f;
 import templates.serverSide.communication.ServerPacketSendEvents;
-import com.james.serverSide.simulation.objects.ConnectedPlayer;
 import templates.serverSide.PlayerInfo;
 import com.james.serverSide.ServerThreadManager;
 
 import java.util.*;
 
-// TODO: 2026-06-04 This class is kind of a mess; maybe restructure?
 /**
  * Class representing an instance of a game world, sort of what some game engines would call a "Scene". Each
  * instance of Level contains a list of PhysicalObjects belonging to it, as well as an update method which gets
@@ -32,6 +29,11 @@ public class Level extends LevelProperties {
     private final Map<PlayerInfo, ConnectedPlayer> connectedPlayersMap = new HashMap<>();
     private final List<PhysicalObject> physicalObjects = new ArrayList<>();
     private final CollisionHandler collisionHandler = new CollisionHandler(this);
+
+    private final List<VirtualLight> virtualLights = new ArrayList<>();
+    private final List<VirtualDirectionalLight> virtualDirectionalLights = new ArrayList<>();
+    public String skyboxName;
+    public boolean skyboxUnmoving;
 
     private final List<ServerThreadManager.Action> actionsCopied = new ArrayList<>();
 
@@ -92,16 +94,16 @@ public class Level extends LevelProperties {
             collisionHandler.update();
 
             // Logic other than move (including rotations!)
-            Iterator<PhysicalObject> iterator = physicalObjects.iterator();
-            while (iterator.hasNext()) {
-                PhysicalObject obj = iterator.next();
+            Iterator<PhysicalObject> physicalObjectsIterator = physicalObjects.iterator();
+            while (physicalObjectsIterator.hasNext()) {
+                PhysicalObject obj = physicalObjectsIterator.next();
 
                 prevRotation.set(obj.getRotation());
                 boolean shouldDelete = obj.update();
 
                 if (shouldDelete) {
                     // TODO: 2025-07-02 At the moment, we don't have a way of removing PhysicalObjects client side
-                    iterator.remove();
+                    physicalObjectsIterator.remove();
                 } else {
                     Vector3f newRotation = obj.getRotation();
                     if (!newRotation.equals(prevRotation)) {
@@ -131,12 +133,12 @@ public class Level extends LevelProperties {
         return connectedPlayersMap.get(playerInfo);
     }
 
-    // TODO: 2025-07-23 Continue from here (replace Server.get().sendToAllClients()) - this is from server code
     public Set<PlayerInfo> getAllPlayerInfo() {
         return connectedPlayersMap.keySet();
     }
 
     private final List<PhysicalObject> objectsToAdd = new ArrayList<>();
+
     public void add(PhysicalObject obj) {
         objectsToAdd.add(obj);
     }
@@ -155,6 +157,30 @@ public class Level extends LevelProperties {
 
     public List<AABBHitbox> getAABBHitboxes() {
         return collisionHandler.aabbHitboxes;
+    }
+
+    public void addVirtualLight(VirtualLight virtualLight) {
+        virtualLights.add(virtualLight);
+    }
+
+    public boolean removeVirtualLight(VirtualLight virtualLight) {
+        return virtualLights.remove(virtualLight);
+    }
+
+    public List<VirtualLight> getVirtualLights() {
+        return virtualLights;
+    }
+
+    public void addVirtualDirectionalLight(VirtualDirectionalLight virtualDirectionalLight) {
+        virtualDirectionalLights.add(virtualDirectionalLight);
+    }
+
+    public boolean removeVirtualDirectionalLight(VirtualDirectionalLight virtualDirectionalLight) {
+        return virtualDirectionalLights.remove(virtualDirectionalLight);
+    }
+
+    public List<VirtualDirectionalLight> getVirtualDirectionalLights() {
+        return virtualDirectionalLights;
     }
 
     /**

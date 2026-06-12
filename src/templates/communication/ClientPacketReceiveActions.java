@@ -1,5 +1,8 @@
 package templates.communication;
 
+import com.james.renderEngine.gameObjects.DirectionalLight;
+import com.james.renderEngine.gameObjects.Light;
+import com.james.renderEngine.visuals.Skybox;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.renderEngine.ui.Screen;
 import com.james.serverSide.LevelInitializer;
@@ -22,6 +25,7 @@ import templates.gameplay.PlayerHandler;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
+import templates.rendering.Skyboxes;
 
 import static templates.common.GlobalConstants.IS_DETAILED_NETWORK_DEBUG;
 import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
@@ -271,6 +275,124 @@ public class ClientPacketReceiveActions {
             }
         } else {
             Warnings.warn("Attempting to receive a system message, but the client's ClientLevel object hasn't even been instantiated yet");
+        }
+    }
+
+    public static void virtualLightAddedReceived(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightAddedReceived");
+
+        Light light = new Light(new Vector3f(position), new Vector3f(color), new Vector3f(attenuation));
+        boolean alreadyExists = GameLoader.lightHandler.addLight(id, light);
+        if (alreadyExists) {
+            Warnings.warn(String.format("Light of id %d already exists client-side", id));
+        }
+    }
+
+    public static void virtualLightMovedReceived(int id, float x, float y, float z) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightMovedReceived");
+
+        Light light = GameLoader.lightHandler.getLight(id);
+
+        if (light != null) {
+            light.setPosition(x, y, z);
+        } else {
+            Warnings.warn("Attempting to move a Light client-side by id, but that Light doesn't exist client-side");
+        }
+    }
+
+    public static void virtualLightColorChangedReceived(int id, float r, float g, float b) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightColorChangedReceived");
+
+        Light light = GameLoader.lightHandler.getLight(id);
+
+        if (light != null) {
+            light.setColor(r, g, b);
+        } else {
+            Warnings.warn("Attempting to change a Light's color client-side by id, but that Light doesn't exist client-side");
+        }
+    }
+
+    public static void virtualLightAttenuationChangedReceived(int id, float att1, float att2, float att3) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightAttenuationChangedReceived");
+
+        Light light = GameLoader.lightHandler.getLight(id);
+
+        if (light != null) {
+            light.setAttenuation(att1, att2, att3);
+        } else {
+            Warnings.warn("Attempting to change a Light's attenuation client-side by id, but that Light doesn't exist client-side");
+        }
+    }
+
+    public static void virtualLightPropertiesChangedReceived(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightPropertiesChangedReceived");
+
+        Light light = GameLoader.lightHandler.getLight(id);
+
+        if (light != null) {
+            light.setPosition(position.x, position.y, position.z);
+            light.setColor(color.x, color.y, color.z);
+            light.setAttenuation(attenuation.x, attenuation.y, attenuation.z);
+        } else {
+            Warnings.warn("Attempting to change a Light's properties client-side by id, but that Light doesn't exist client-side");
+        }
+    }
+
+    public static void virtualDirectionalLightAddedReceived(int id, Vector3f toLightDirection, Vector3f color) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightAddedReceived");
+
+        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(toLightDirection), new Vector3f(color));
+        boolean alreadyExists = GameLoader.lightHandler.addDirectionalLight(id, directionalLight);
+        if (alreadyExists) {
+            Warnings.warn(String.format("DirectionalLight of id %d already exists client-side", id));
+        }
+    }
+
+    public static void virtualDirectionalLightToLightDirectionChangedReceived(int id, float x, float y, float z) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightToLightDirectionChangedReceived");
+
+        DirectionalLight directionalLight = GameLoader.lightHandler.getDirectionalLight(id);
+
+        if (directionalLight != null) {
+            directionalLight.setToLightDirection(x, y, z);
+        } else {
+            Warnings.warn("Attempting to change a DirectionalLight's toLightDirection client-side by id, but that DirectionalLight doesn't exist client-side");
+        }
+    }
+
+    public static void virtualDirectionalLightColorChangedReceived(int id, float r, float g, float b) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightColorChangedReceived");
+
+        DirectionalLight directionalLight = GameLoader.lightHandler.getDirectionalLight(id);
+
+        if (directionalLight != null) {
+            directionalLight.setColor(r, g, b);
+        } else {
+            Warnings.warn("Attempting to change a DirectionalLight's color client-side by id, but that DirectionalLight doesn't exist client-side");
+        }
+    }
+
+    public static void virtualDirectionalLightPropertiesChangedReceived(int id, Vector3f toLightDirection, Vector3f color) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightPropertiesChangedReceived");
+
+        DirectionalLight directionalLight = GameLoader.lightHandler.getDirectionalLight(id);
+
+        if (directionalLight != null) {
+            directionalLight.setToLightDirection(toLightDirection.x, toLightDirection.y, toLightDirection.z);
+            directionalLight.setColor(color.x, color.y, color.z);
+        } else {
+            Warnings.warn("Attempting to change a DirectionalLight's properties client-side by id, but that DirectionalLight doesn't exist client-side");
+        }
+    }
+
+    public static void skyboxChangedReceived(String name, boolean unmoving) {
+        Skybox skybox = Skyboxes.getByName(name);
+
+        if (skybox != null) {
+            Skybox.currentSkybox = skybox;
+            Skybox.currentSkybox.unmoving = unmoving;
+        } else {
+            Warnings.warn(String.format("Skybox `%s` doesn't exist client-side", name));
         }
     }
 

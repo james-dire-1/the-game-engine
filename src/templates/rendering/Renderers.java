@@ -14,4 +14,12 @@ public class Renderers {
     public static ColorModelRenderer colorModelRenderer;
     public static TextureBlendModelRenderer textureBlendModelRenderer;
 
+    public static void init() {
+        basicRenderer = new BasicRenderer();
+        flatRenderer = new FlatRenderer();
+        texturedModelRenderer = new TexturedModelRenderer();
+        colorModelRenderer = new ColorModelRenderer();
+        textureBlendModelRenderer = new TextureBlendModelRenderer();
+    }
+
 }

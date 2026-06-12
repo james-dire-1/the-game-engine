@@ -24,6 +24,7 @@ import com.james.tools.LightHandler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
+import templates.rendering.Skyboxes;
 
 import java.util.Random;
 
@@ -46,7 +47,7 @@ public abstract class GameLoader {
 
     private static final float SECONDS_PER_SEND = 0.1f;
 
-    private final float referenceTime;
+//    private final float referenceTime;
 
     public GameLoader(ClientPacketSendEvents events, Vector3f spawnPoint) {
         batchedGameObjectsList = new BatchedGameObjectsList();
@@ -70,7 +71,9 @@ public abstract class GameLoader {
         LightSettings.setLightHandler(lightHandler);
         lightHandler.addDirectionalLight(1, new DirectionalLight(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
 
-        this.referenceTime = Time.getCurrentTime();
+        Skybox.currentSkybox = Skyboxes.getByName(Skyboxes.DEFAULT_SKYBOX_NAME);
+
+//        this.referenceTime = Time.getCurrentTime();
     }
 
     protected abstract void onGameClientClosing();
@@ -108,10 +111,10 @@ public abstract class GameLoader {
             onGameClientClosing();
         }
 
-        float normalizedTimeOfDay = ((Time.getCurrentTime() - referenceTime) % 1200) / 1200;
-        float xDirection = (float) Math.cos(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
-        float yDirection = (float) Math.sin(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
-        lightHandler.getDirectionalLight(1).setToLightDirection(xDirection, yDirection, 0);
+//        float normalizedTimeOfDay = ((Time.getCurrentTime() - referenceTime) % 1200) / 1200;
+//        float xDirection = (float) Math.cos(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
+//        float yDirection = (float) Math.sin(normalizedTimeOfDay * 2 * Math.PI + Math.toRadians(80));
+//        lightHandler.getDirectionalLight(1).setToLightDirection(xDirection, yDirection, 0);
     }
 
     public void render() {

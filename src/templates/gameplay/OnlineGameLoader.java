@@ -194,6 +194,8 @@ public class OnlineGameLoader extends GameLoader {
 
                 ClientLevel.delete();
                 Main.gameLoader = null;
+
+                GLFWUtilities.lockCursor(false);
              }
         });
     }

@@ -167,4 +167,94 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
         });
     }
 
+    @Override
+    public void sendVirtualLightAddedToLevel(int id, Vector3f position, Vector3f color, Vector3f attenuation, PlayerInfo... playerInfoArray) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightAddedToLevel");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightAddedReceived(id, position, color, attenuation);
+        });
+    }
+
+    @Override
+    public void sendVirtualLightMoved(int id, float x, float y, float z) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightMoved");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightMovedReceived(id, x, y, z);
+        });
+    }
+
+    @Override
+    public void sendVirtualLightColorChanged(int id, float r, float g, float b) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightColorChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightColorChangedReceived(id, r, g, b);
+        });
+    }
+
+    @Override
+    public void sendVirtualLightAttenuationChanged(int id, float att1, float att2, float att3) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightAttenuationChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightAttenuationChangedReceived(id, att1, att2, att3);
+        });
+    }
+
+    @Override
+    public void sendVirtualLightPropertiesChanged(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightPropertiesChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightPropertiesChangedReceived(id, position, color, attenuation);
+        });
+    }
+
+    @Override
+    public void sendVirtualDirectionalLightAddedToLevel(int id, Vector3f toLightDirection, Vector3f color, PlayerInfo... playerInfoArray) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualDirectionalLightAddedToLevel");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightAddedReceived(id, toLightDirection, color);
+        });
+    }
+
+    @Override
+    public void sendVirtualDirectionalLightToLightDirectionChanged(int id, float x, float y, float z) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualDirectionalLightToLightDirectionChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightToLightDirectionChangedReceived(id, x, y, z);
+        });
+    }
+
+    @Override
+    public void sendVirtualDirectionalLightColorChanged(int id, float r, float g, float b) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualDirectionalLightColorChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightColorChangedReceived(id, r, g, b);
+        });
+    }
+
+    @Override
+    public void sendVirtualDirectionalLightPropertiesChanged(int id, Vector3f toLightDirection, Vector3f color) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualDirectionalLightPropertiesChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightPropertiesChangedReceived(id, toLightDirection, color);
+        });
+    }
+
+    @Override
+    public void sendSkyboxChanged(String name, boolean unmoving, PlayerInfo... playerInfoArray) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendSkyboxChanged");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.skyboxChangedReceived(name, unmoving);
+        });
+    }
+
 }

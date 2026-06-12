@@ -53,13 +53,15 @@ public class PauseScreen extends Screen {
             if (button == ClickedComponent.MouseButton.LEFT) {
                 super.markForDeletion();
                 isOpen = false;
-                if (GlobalConstants.IS_QUICK_START) {
+
+                GameLoader loader = Main.gameLoader;
+
+                if (GlobalConstants.IS_QUICK_START || loader instanceof OnlineGameLoader) {
                     queueScreenForAddition(new TitleScreen());
                 } else {
                     queueScreenForAddition(new SceneSelectScreen());
                 }
 
-                GameLoader loader = Main.gameLoader;
                 if (loader instanceof LocalGameLoader) {
                     LevelInitializer levelInitializer = ((LocalGameLoader) loader).levelInitializer;
                     levelInitializer.shouldRun = false;

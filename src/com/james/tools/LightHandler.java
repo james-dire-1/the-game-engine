@@ -13,14 +13,18 @@ public class LightHandler {
     private final Map<Integer, Light> lightsMap = new HashMap<>();
     private final Map<Integer, DirectionalLight> directionalLightsMap = new HashMap<>();
 
-    public void addLight(int id, Light light) {
-        lightsMap.put(id, light);
+    public boolean addLight(int id, Light light) {
+        Light previousValue = lightsMap.put(id, light);
         LightSettings.onLightAdded();
+
+        return previousValue != null;
     }
 
-    public void addDirectionalLight(int id, DirectionalLight directionalLight) {
-        directionalLightsMap.put(id, directionalLight);
+    public boolean addDirectionalLight(int id, DirectionalLight directionalLight) {
+        DirectionalLight previousValue = directionalLightsMap.put(id, directionalLight);
         LightSettings.onDirectionalLightAdded();
+
+        return previousValue != null;
     }
 
     public boolean removeLight(int id) {

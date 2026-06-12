@@ -5,9 +5,9 @@ import java.util.List;
 
 public class ThreadManager {
 
-    private static final List<Action> executeOnMainThread = new ArrayList<Action>();
-    private static final List<Action> executeCopiedOnMainThread = new ArrayList<Action>();
-    private static boolean actionToExecuteOnMainThread = false;
+    private static final List<Action> executeOnMainThread = new ArrayList<>();
+    private static final List<Action> executeCopiedOnMainThread = new ArrayList<>();
+    private static volatile boolean actionToExecuteOnMainThread = false;
 
     public static void executeOnMainThread(Action action) {
         if (action == null) {
@@ -15,7 +15,7 @@ public class ThreadManager {
             return;
         }
 
-        synchronized (executeOnMainThread)  {
+        synchronized (executeOnMainThread) {
             executeOnMainThread.add(action);
             actionToExecuteOnMainThread = true;
         }

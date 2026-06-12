@@ -21,6 +21,7 @@ import com.james.renderEngine.visuals.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
 import com.james.common.tools.modelLoading.ModelLoader;
 import com.james.renderEngine.rendering.models.TextureBlendModelRenderer;
+import templates.rendering.Skyboxes;
 import templates.settings.GLFWWindowTitles;
 import templates.gameplay.GameLoader;
 import com.james.renderEngine.ui.TypingInputNotifier;
@@ -66,14 +67,9 @@ public class Main {
 
         CubeMapTexture.create("sky with clouds", "/textures/skyboxes/skyWithClouds", new String[] {"right", "left", "top", "bottom", "back", "front"});
         CubeMapTexture.create("sky gradient", "/textures/skyboxes/skyGradient", new String[] {"side", "side", "top", "bottom", "side", "side"});
-        Skybox.currentSkybox = new Skybox("sky gradient");
-        Skybox.currentSkybox.unmoving = false;
 
-        Renderers.basicRenderer = new BasicRenderer();
-        Renderers.flatRenderer = new FlatRenderer();
-        Renderers.texturedModelRenderer = new TexturedModelRenderer();
-        Renderers.colorModelRenderer = new ColorModelRenderer();
-        Renderers.textureBlendModelRenderer = new TextureBlendModelRenderer();
+        Renderers.init();
+        Skyboxes.init();
 
         MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer, Renderers.textureBlendModelRenderer);
         ParticleRenderer.prepare();

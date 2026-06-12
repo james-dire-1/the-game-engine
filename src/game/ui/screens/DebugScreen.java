@@ -1,6 +1,5 @@
 package game.ui.screens;
 
-import com.james.common.simulation.collisionEngine.math.CommonCollisionProcedure;
 import com.james.input.KeyInput;
 import com.james.input.WindowResizeInput;
 import com.james.renderEngine.gameObjects.Camera;

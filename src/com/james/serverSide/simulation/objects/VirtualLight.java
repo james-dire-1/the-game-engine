@@ -1,9 +1,13 @@
-package com.james.renderEngine.gameObjects;
+package com.james.serverSide.simulation.objects;
 
-import com.james.serverSide.simulation.objects.VirtualLight;
 import org.lwjgl.util.vector.Vector3f;
 
-public class Light {
+public class VirtualLight {
+
+    public static final Vector3f DEFAULT_ATTENUATION = new Vector3f(1.0f, 0.01f, 0.002f);
+    public static final Vector3f NO_ATTENUATION = new Vector3f(1, 0, 0);
+
+    public final int id;
 
     private final Vector3f position;
     private final Vector3f color;
@@ -13,14 +17,19 @@ public class Light {
     public Vector3f getColor() { return color; }
     public Vector3f getAttenuation() { return attenuation; }
 
-    public Light(Vector3f position, Vector3f color) {
-        this(position, color, VirtualLight.NO_ATTENUATION);
+    private static int count;
+
+    public VirtualLight(Vector3f position, Vector3f color) {
+        this(position, color, NO_ATTENUATION);
     }
 
-    public Light(Vector3f position, Vector3f color, Vector3f attenuation) {
+    public VirtualLight(Vector3f position, Vector3f color, Vector3f attenuation) {
         this.position = position;
         this.color = color;
         this.attenuation = new Vector3f(attenuation);
+
+        count++;
+        this.id = count;
     }
 
     public void translate(Vector3f toTranslate) {

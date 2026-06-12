@@ -2,6 +2,7 @@ package templates.serverSide;
 
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.serverSide.Scene;
+import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
@@ -14,6 +15,8 @@ public class Scenes {
     public static final Scene nothingScene = new Scene() {
         @Override
         public void onStartup(Level level) {
+            level.skyboxName = "sky gradient";
+            level.skyboxUnmoving = false;
         }
 
         @Override
@@ -65,6 +68,14 @@ public class Scenes {
             };
 
             level.add(abstractArt);
+
+            float xDirection = (float) Math.cos(Math.toRadians(80));
+            float yDirection = (float) Math.sin(Math.toRadians(80));
+            VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
+            level.addVirtualDirectionalLight(sun);
+
+            level.skyboxName = "sky with clouds";
+            level.skyboxUnmoving = false;
         }
 
         @Override
@@ -88,6 +99,14 @@ public class Scenes {
                 AABBHitbox aabbHitbox = new AABBHitbox(desertEnvironment, "/scenes/desert-scene.dae", i);
                 level.addAABBHitbox(aabbHitbox);
             }
+
+            float xDirection = (float) Math.cos(Math.toRadians(80));
+            float yDirection = (float) Math.sin(Math.toRadians(80));
+            VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
+            level.addVirtualDirectionalLight(sun);
+
+            level.skyboxName = "sky gradient";
+            level.skyboxUnmoving = false;
         }
 
         @Override
@@ -111,6 +130,14 @@ public class Scenes {
                 AABBHitbox aabbHitbox = new AABBHitbox(beachEnvironment, "/scenes/beach-scene.dae", i);
                 level.addAABBHitbox(aabbHitbox);
             }
+
+            float xDirection = (float) Math.cos(Math.toRadians(80));
+            float yDirection = (float) Math.sin(Math.toRadians(80));
+            VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
+            level.addVirtualDirectionalLight(sun);
+
+            level.skyboxName = "sky gradient";
+            level.skyboxUnmoving = false;
         }
 
         @Override
@@ -132,6 +159,14 @@ public class Scenes {
 
             AABBHitbox aabbHitbox = new AABBHitbox(plainsEnvironment, "/scenes/plains-scene.dae");
             level.addAABBHitbox(aabbHitbox);
+
+            float xDirection = (float) Math.cos(Math.toRadians(80));
+            float yDirection = (float) Math.sin(Math.toRadians(80));
+            VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
+            level.addVirtualDirectionalLight(sun);
+
+            level.skyboxName = "sky gradient";
+            level.skyboxUnmoving = false;
         }
 
         @Override
@@ -144,5 +179,7 @@ public class Scenes {
             return new Vector3f(0, 5, 0);
         }
     };
+
+    public static final Scene[] allScenes = { nothingScene, testScene, desertScene, beachScene, plainsScene };
 
 }
