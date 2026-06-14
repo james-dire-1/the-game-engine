@@ -7,6 +7,7 @@ import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.common.simulation.LevelProperties;
 import com.james.serverSide.simulation.objects.*;
 import org.lwjgl.util.vector.Vector3f;
+import templates.common.audio.Sound;
 import templates.serverSide.communication.ServerPacketSendEvents;
 import templates.serverSide.PlayerInfo;
 import com.james.serverSide.ServerThreadManager;
@@ -115,6 +116,8 @@ public class Level extends LevelProperties {
             physicalObjects.addAll(objectsToAdd);
             objectsToAdd.clear();
         }
+
+        events.sendPlaySoundAtPosition(Sound.CLICK, new Vector3f(0, 0, 0));
     }
 
     public void addConnectedPlayer(PlayerInfo playerInfo, ConnectedPlayer connectedPlayer) {

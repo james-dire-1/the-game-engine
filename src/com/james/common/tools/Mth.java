@@ -39,4 +39,28 @@ public class Mth {
         return w1 >= 0 && w2 >= 0 && w1+w2 <= 1;
     }
 
+    public static Vector3f pitchAndYawToGLCartesianCoordinates(float rho, float pitch, float yaw, Vector3f dest) {
+        float theta = 180 - yaw;
+        float phi = 90 + pitch;
+        dest = sphericalToCartesianCoordinates(rho, theta, phi, dest);
+        dest.set(dest.y, dest.z, dest.x);
+
+        return dest;
+    }
+
+    public static Vector3f sphericalToCartesianCoordinates(float rho, float theta, float phi, Vector3f dest) {
+        double firstPart = rho * Math.sin(Math.toRadians(phi));
+        float x = (float) (firstPart * Math.cos(Math.toRadians(theta)));
+        float y = (float) (firstPart * Math.sin(Math.toRadians(theta)));
+        float z = (float) (rho * Math.cos(Math.toRadians(phi)));
+
+        if (dest == null) {
+            dest = new Vector3f(x, y, z);
+        } else {
+            dest.set(x, y, z);
+        }
+
+        return dest;
+    }
+
 }

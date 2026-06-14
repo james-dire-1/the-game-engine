@@ -1,5 +1,6 @@
 package templates.serverSide.communication;
 
+import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
 import templates.serverSide.PlayerInfo;
 import org.lwjgl.util.vector.Vector3f;
@@ -38,5 +39,11 @@ public interface ServerPacketSendEvents {
     void sendVirtualDirectionalLightColorChanged(int id, float r, float g, float b);
     void sendVirtualDirectionalLightPropertiesChanged(int id, Vector3f toLightDirection, Vector3f color);
     void sendSkyboxChanged(String name, boolean unmoving, PlayerInfo... playerInfoArray);
+    void sendPlaySoundAtPhysicalObject(Sound sound, int id);
+    void sendPlaySoundAtPosition(Sound sound, Vector3f position);
+    void sendCreateSoundEmitter(int customIdentifier, Vector3f position, PlayerInfo... playerInfoArray);
+    void sendDestroySoundEmitter(int customIdentifier);
+    void sendPlaySoundAtSoundEmitter(Sound sound, int customIdentifier);
+    void sendUpdatePositionOfSoundEmitter(int customIdentifier, float x, float y, float z);
 
 }

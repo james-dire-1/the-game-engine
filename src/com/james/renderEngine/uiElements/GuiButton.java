@@ -65,7 +65,7 @@ public class GuiButton extends Gui implements HoveredComponent, ClickedComponent
         }
 
         if (soundId != -1) {
-            AudioSourcePool.play(soundId, 0.075f);
+            AudioSourcePool.playRelative(soundId, 0.075f);
         }
     }
 

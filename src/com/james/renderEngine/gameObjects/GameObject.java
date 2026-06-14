@@ -31,6 +31,8 @@ public class GameObject {
     public boolean isVisible = true;
     public boolean isAffectedByFog = true;
 
+    public boolean deleted = false;
+
     public GameObject(Model model, Vector3f position) {
         this(model, position, new Vector3f(), 1);
     }

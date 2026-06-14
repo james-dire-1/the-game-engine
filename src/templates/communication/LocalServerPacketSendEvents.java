@@ -1,6 +1,7 @@
 package templates.communication;
 
 import com.james.serverSide.LevelInitializer;
+import templates.common.audio.Sound;
 import templates.serverSide.PlayerInfo;
 import com.james.tools.ThreadManager;
 import templates.common.simulation.objects.PhysicalObjectType;
@@ -254,6 +255,60 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.skyboxChangedReceived(name, unmoving);
+        });
+    }
+
+    @Override
+    public void sendPlaySoundAtPhysicalObject(Sound sound, int id) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPlaySoundAtPhysicalObject");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.playSoundAtPhysicalObjectReceived(sound, id);
+        });
+    }
+
+    @Override
+    public void sendPlaySoundAtPosition(Sound sound, Vector3f position) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPlaySoundAtPosition");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.playSoundAtPositionReceived(sound, position);
+        });
+    }
+
+    @Override
+    public void sendCreateSoundEmitter(int customIdentifier, Vector3f position, PlayerInfo... playerInfoArray) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendCreateSoundEmitter");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.createSoundEmitterReceived(customIdentifier, position);
+        });
+    }
+
+    @Override
+    public void sendDestroySoundEmitter(int customIdentifier) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendDestroySoundEmitter");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.destroySoundEmitterReceived(customIdentifier);
+        });
+    }
+
+    @Override
+    public void sendPlaySoundAtSoundEmitter(Sound sound, int customIdentifier) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPlaySoundAtSoundEmitter");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.playSoundAtSoundEmitterReceived(sound, customIdentifier);
+        });
+    }
+
+    @Override
+    public void sendUpdatePositionOfSoundEmitter(int customIdentifier, float x, float y, float z) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendUpdatePositionOfSoundEmitter");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.updatePositionOfSoundEmitterReceived(customIdentifier, x, y, z);
         });
     }
 

@@ -94,6 +94,8 @@ public class Main {
             GuiRenderer.render(UiHandler.guisToRender);
             GLFWUtilities.render();
 
+            AudioSourcePool.update();
+
             // fps timer
             fpsAccumulator++;
             if (System.nanoTime() / 1000000 - lastTime > 1000) {

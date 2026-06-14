@@ -2,7 +2,7 @@ package com.james.tools;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class GameObjectInterpolator {
+public class Vector3fInterpolator {
 
     public static float secondsPerGameTick;
 

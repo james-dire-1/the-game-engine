@@ -3,6 +3,9 @@ package templates.communication;
 import com.james.renderEngine.gameObjects.DirectionalLight;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.visuals.Skybox;
+import com.james.audio.PositionalAudioMaster;
+import templates.audio.SoundToPathConverter;
+import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.renderEngine.ui.Screen;
 import com.james.serverSide.LevelInitializer;
@@ -385,15 +388,67 @@ public class ClientPacketReceiveActions {
         }
     }
 
-    public static void skyboxChangedReceived(String name, boolean unmoving) {
-        Skybox skybox = Skyboxes.getByName(name);
+    public static void skyboxChangedReceived(String skyboxName, boolean unmoving) {
+        Skybox skybox = Skyboxes.getByName(skyboxName);
 
         if (skybox != null) {
             Skybox.currentSkybox = skybox;
             Skybox.currentSkybox.unmoving = unmoving;
         } else {
-            Warnings.warn(String.format("Skybox `%s` doesn't exist client-side", name));
+            Warnings.warn(String.format("Skybox `%s` doesn't exist client-side", skyboxName));
         }
+    }
+
+    public static void playSoundAtPhysicalObjectReceived(Sound sound, int id) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.playSoundAtPhysicalObjectReceived");
+
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedPhysicalObject object = level.getCachedPhysicalObject(id);
+
+            if (object != null) {
+                GameObject gameObject = object.getGameObject();
+                String soundPath = SoundToPathConverter.convert(sound);
+                PositionalAudioMaster.playSoundAtGameObject(soundPath, gameObject);
+            } else {
+                Warnings.warn("Attempting to play a sound at a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+            }
+        } else {
+            Warnings.warn("Attempting to play a sound at a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+        }
+    }
+
+    public static void playSoundAtPositionReceived(Sound sound, Vector3f position) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.playSoundAtPositionReceived");
+
+        String soundPath = SoundToPathConverter.convert(sound);
+        PositionalAudioMaster.playSoundAtPosition(soundPath, position);
+    }
+
+    public static void createSoundEmitterReceived(int customIdentifier, Vector3f position) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.createSoundEmitterReceived");
+
+        PositionalAudioMaster.createSoundEmitter(customIdentifier, position);
+    }
+
+    public static void destroySoundEmitterReceived(int customIdentifier) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.destroySoundEmitterReceived");
+
+        PositionalAudioMaster.destroySoundEmitter(customIdentifier);
+    }
+
+    public static void playSoundAtSoundEmitterReceived(Sound sound, int customIdentifier) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.playSoundAtSoundEmitterReceived");
+
+        String soundPath = SoundToPathConverter.convert(sound);
+        PositionalAudioMaster.playSoundAtSoundEmitter(soundPath, customIdentifier);
+    }
+
+    public static void updatePositionOfSoundEmitterReceived(int customIdentifier, float x, float y, float z) {
+        if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.updatePositionOfSoundEmitterReceived");
+
+        PositionalAudioMaster.updatePositionOfSoundEmitter(customIdentifier, x, y, z);
     }
 
 }

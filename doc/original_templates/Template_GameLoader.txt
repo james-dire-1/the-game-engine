@@ -20,7 +20,7 @@ import com.james.tools.MousePicker;
 import com.james.tools.Time;
 import templates.gameplay.PlayerHandler;
 import game.ui.screens.PauseScreen;
-import com.james.tools.GameObjectInterpolator;
+import com.james.tools.Vector3fInterpolator;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;

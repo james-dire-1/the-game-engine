@@ -8,13 +8,12 @@ import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.models.Model;
 import com.james.tools.Time;
-import com.james.tools.GameObjectInterpolator;
+import com.james.tools.Vector3fInterpolator;
 import org.lwjgl.util.vector.Vector3f;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector2f;
 
-import static com.james.input.KeyInput.isKeyDown;
 import static org.lwjgl.glfw.GLFW.*;
 import static com.james.input.KeyInput.isKeyPressed;
 
@@ -55,7 +54,7 @@ public class PlayerHandler {
         this.camController = new CameraController(camera, gameObject.getPosition(), 15);
         camController.setFirstPersonOffset(0, 1.75f, 0);
 
-        GameObjectInterpolator.secondsPerGameTick = levelProperties.secondsPerGameTick;
+        Vector3fInterpolator.secondsPerGameTick = levelProperties.secondsPerGameTick;
     }
 
     /**
@@ -101,7 +100,7 @@ public class PlayerHandler {
             ClientLevel.get().update();
         }
 
-        GameObjectInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), player.lastTime, Time.getCurrentTime());
+        Vector3fInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), player.lastTime, Time.getCurrentTime());
 
         camController.update();
     }
