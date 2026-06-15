@@ -38,6 +38,36 @@ import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
  */
 public class ClientPacketReceiveActions {
 
+    private static final String WARN_PHYS_OBJ_ADD       = "Attempted to add                     PhysicalObject of id %d and of type %s      ; already exists    client-side".replaceAll("\\s+", " ");
+    private static final String WARN_CON_PLR_ADD        = "Attempted to add                     ConnectedPlayer of id %d and of username %s ; already exists    client-side".replaceAll("\\s+", " ");
+    private static final String WARN_LIGHT_ADD          = "Attempted to add                     Light of id %d                              ; already exists    client-side".replaceAll("\\s+", " ");
+    private static final String WARN_DIR_LIGHT_ADD      = "Attempted to add                     DirectionalLight of id %d                   ; already exists    client-side".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_REM       = "Attempted to remove                  PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_MOV_OBJ   = "Attempted to move                    PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_ROT_OBJ   = "Attempted to rotate                  PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_SCA_OBJ   = "Attempted to scale                   PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_TRANS_OBJ = "Attempted to transform               PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_CON_PLR_TRANS_OBJ  = "Attempted to transform               ConnectedPlayer of id %d                    ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_LIGHT_MOV          = "Attempted to move                    Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_LIGHT_COLOR        = "Attempted to change color of         Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_LIGHT_ATT          = "Attempted to change attenuation of   Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_LIGHT_PROP         = "Attempted to change properties of    Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_DIR_LIGHT_DIR      = "Attempted to change direction of     DirectionalLight of id %d                   ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_DIR_LIGHT_COLOR    = "Attempted to change color of         DirectionalLight of id %d                   ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_DIR_LIGHT_PROP     = "Attempted to change properties of    DirectionalLight of id %d                   ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_SKYBOX             = "Attempted to change                  Skybox with one of name `%s`                ; doesn't exist     client-side".replaceAll("\\s+", " ");
+    private static final String WARN_SND_PHYS_OBJ_OBJ   = "Attempted to play                    sound `%s` at PhysicalObject of id %d       ; doesn't exist     client-side (PhysicalObject)".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_MOV_LVL   = "Attempted to move                    PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_ROT_LVL   = "Attempted to rotate                  PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_SCA_LVL   = "Attempted to scale                   PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_PHYS_OBJ_TRANS_LVL = "Attempted to transform               PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_CON_PLR_TRANS_LVL  = "Attempted to transform               ConnectedPlayer of id %d                    ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_CHAT_MSG_SCREEN    = "Attempted to receive                 chat message from player of id %d           ; ChatScreen        object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_CHAT_MSG_LVL       = "Attempted to receive                 chat message from player of id %d           ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_SYS_MSG_SCREEN     = "Attempted to receive                 system message                              ; ChatScreen        object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_SYS_MSG_LVL        = "Attempted to receive                 system message                              ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String WARN_SND_PHYS_OBJ_LVL   = "Attempted to play                    sound `%s` at PhysicalObject of id %d       ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+
     public static void usernamePromptReceived() {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernamePromptReceived");
 
@@ -71,9 +101,9 @@ public class ClientPacketReceiveActions {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectAddedReceived " + "{id=" + id + "} {type=" + type +"}");
 
         CachedPhysicalObject object = new CachedPhysicalObject(new Vector3f(position), new Vector3f(rotation), scale);
-        boolean alreadyExists = ClientLevel.get().addCachedPhysicalObject(id, object);
-        if (alreadyExists) {
-            Warnings.warn("PhysicalObject of id " + id + " and of type " + type + " already exists client-side");
+        boolean success = ClientLevel.get().addCachedPhysicalObject(id, object);
+        if (!success) {
+            Warnings.warn(String.format(WARN_PHYS_OBJ_ADD, id, type));
         }
 
         Model[] modelList = PhysicalToVisualConverter.convert(type);
@@ -86,7 +116,12 @@ public class ClientPacketReceiveActions {
         }
     }
 
-    // TODO: 2024-07-21 There seems to be a lot of code duplication here..
+    public static void physicalObjectRemovedReceived(int id) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectRemovedReceived");
+
+        // CONTINUE HERE
+    }
+
     public static void physicalObjectMovedReceived(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectMovedReceived");
 
@@ -100,10 +135,10 @@ public class ClientPacketReceiveActions {
                 object.setPosition(x, y, z);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn("Attempting to move a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn(String.format(WARN_PHYS_OBJ_MOV_OBJ, id));
             }
         } else {
-            Warnings.warn("Attempting to move a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_PHYS_OBJ_MOV_LVL, id));
         }
     }
 
@@ -120,10 +155,10 @@ public class ClientPacketReceiveActions {
                 object.setRotation(rotX, rotY, rotZ);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn("Attempting to rotate a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn(String.format(WARN_PHYS_OBJ_ROT_OBJ, id));
             }
         } else {
-            Warnings.warn("Attempting to rotate a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_PHYS_OBJ_ROT_LVL, id));
         }
     }
 
@@ -140,10 +175,10 @@ public class ClientPacketReceiveActions {
                 // This must be done manually since scale is a value type, not a reference type
                 object.getGameObject().setScale(scale);
             } else {
-                Warnings.warn("Attempting to scale a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn(String.format(WARN_PHYS_OBJ_SCA_OBJ, id));
             }
         } else {
-            Warnings.warn("Attempting to scale a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_PHYS_OBJ_SCA_LVL, id));
         }
     }
 
@@ -165,10 +200,10 @@ public class ClientPacketReceiveActions {
                 object.getGameObject().setScale(scale);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn("Attempting to transform a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn(String.format(WARN_PHYS_OBJ_TRANS_OBJ, id));
             }
         } else {
-            Warnings.warn("Attempting to transform a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_PHYS_OBJ_TRANS_LVL, id));
         }
     }
 
@@ -178,13 +213,19 @@ public class ClientPacketReceiveActions {
         ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath, subMeshIdentifier));
     }
 
+    public static void aabbHitboxRemovedReceived(int id, String meshPath, int subMeshIdentifier) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.aabbHitboxRemovedReceived");
+
+        // CONTINUE HERE
+    }
+
     public static void connectedPlayerAddedReceived(int id, String username, int color, float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerAddedReceived " + "{id=" + id + "}");
 
         CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(username, color, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
         boolean alreadyExists = ClientLevel.get().addCachedConnectedPlayer(id, cachedConnectedPlayer);
         if (alreadyExists) {
-            Warnings.warn("ConnectedPlayer of id " + id + " already exists client-side");
+            Warnings.warn(String.format(WARN_CON_PLR_ADD, id, username));
         }
 
         Model model = ModelBank.getAbstractArt();
@@ -212,10 +253,10 @@ public class ClientPacketReceiveActions {
                 cachedConnectedPlayer.setRotation(0, rotY, 0);
                 cachedConnectedPlayer.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn("Attempting to transform a ConnectedPlayer client-side by id, but that ConnectedPlayer doesn't exist client-side");
+                Warnings.warn(String.format(WARN_CON_PLR_TRANS_OBJ, id));
             }
         } else {
-            Warnings.warn("Attempting to transform a ConnectedPlayer client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_CON_PLR_TRANS_LVL, id));
         }
     }
 
@@ -257,10 +298,10 @@ public class ClientPacketReceiveActions {
                 float[] color = cachedConnectedPlayer.color;
                 chatScreen.appendChatWithPlayerMessage(username, color, message);
             } else {
-                Warnings.warn("Attempting to receive a chat message, but the client's ChatScreen object hasn't even been instantiated yet");
+                Warnings.warn(String.format(WARN_CHAT_MSG_SCREEN, playerId));
             }
         } else {
-            Warnings.warn("Attempting to receive a chat message, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_CHAT_MSG_LVL, playerId));
         }
     }
 
@@ -274,10 +315,10 @@ public class ClientPacketReceiveActions {
             if (chatScreen != null) {
                 chatScreen.appendChatWithSystemMessage(message);
             } else {
-                Warnings.warn("Attempting to receive a system message, but the client's ChatScreen object hasn't even been instantiated yet");
+                Warnings.warn(WARN_SYS_MSG_SCREEN);
             }
         } else {
-            Warnings.warn("Attempting to receive a system message, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(WARN_SYS_MSG_LVL);
         }
     }
 
@@ -287,8 +328,14 @@ public class ClientPacketReceiveActions {
         Light light = new Light(new Vector3f(position), new Vector3f(color), new Vector3f(attenuation));
         boolean alreadyExists = GameLoader.lightHandler.addLight(id, light);
         if (alreadyExists) {
-            Warnings.warn(String.format("Light of id %d already exists client-side", id));
+            Warnings.warn(String.format(WARN_LIGHT_ADD, id));
         }
+    }
+
+    public static void virtualLightRemovedReceived(int id) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightRemovedReceived");
+
+        // CONTINUE HERE
     }
 
     public static void virtualLightMovedReceived(int id, float x, float y, float z) {
@@ -299,7 +346,7 @@ public class ClientPacketReceiveActions {
         if (light != null) {
             light.setPosition(x, y, z);
         } else {
-            Warnings.warn("Attempting to move a Light client-side by id, but that Light doesn't exist client-side");
+            Warnings.warn(String.format(WARN_LIGHT_MOV, id));
         }
     }
 
@@ -311,7 +358,7 @@ public class ClientPacketReceiveActions {
         if (light != null) {
             light.setColor(r, g, b);
         } else {
-            Warnings.warn("Attempting to change a Light's color client-side by id, but that Light doesn't exist client-side");
+            Warnings.warn(String.format(WARN_LIGHT_COLOR, id));
         }
     }
 
@@ -323,7 +370,7 @@ public class ClientPacketReceiveActions {
         if (light != null) {
             light.setAttenuation(att1, att2, att3);
         } else {
-            Warnings.warn("Attempting to change a Light's attenuation client-side by id, but that Light doesn't exist client-side");
+            Warnings.warn(String.format(WARN_LIGHT_ATT, id));
         }
     }
 
@@ -337,7 +384,7 @@ public class ClientPacketReceiveActions {
             light.setColor(color.x, color.y, color.z);
             light.setAttenuation(attenuation.x, attenuation.y, attenuation.z);
         } else {
-            Warnings.warn("Attempting to change a Light's properties client-side by id, but that Light doesn't exist client-side");
+            Warnings.warn(String.format(WARN_LIGHT_PROP, id));
         }
     }
 
@@ -347,8 +394,14 @@ public class ClientPacketReceiveActions {
         DirectionalLight directionalLight = new DirectionalLight(new Vector3f(toLightDirection), new Vector3f(color));
         boolean alreadyExists = GameLoader.lightHandler.addDirectionalLight(id, directionalLight);
         if (alreadyExists) {
-            Warnings.warn(String.format("DirectionalLight of id %d already exists client-side", id));
+            Warnings.warn(String.format(WARN_DIR_LIGHT_ADD, id));
         }
+    }
+
+    public static void virtualDirectionalLightRemovedReceived(int id) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightRemovedReceived");
+
+        // CONTINUE HERE
     }
 
     public static void virtualDirectionalLightToLightDirectionChangedReceived(int id, float x, float y, float z) {
@@ -359,7 +412,7 @@ public class ClientPacketReceiveActions {
         if (directionalLight != null) {
             directionalLight.setToLightDirection(x, y, z);
         } else {
-            Warnings.warn("Attempting to change a DirectionalLight's toLightDirection client-side by id, but that DirectionalLight doesn't exist client-side");
+            Warnings.warn(String.format(WARN_DIR_LIGHT_DIR, id));
         }
     }
 
@@ -371,7 +424,7 @@ public class ClientPacketReceiveActions {
         if (directionalLight != null) {
             directionalLight.setColor(r, g, b);
         } else {
-            Warnings.warn("Attempting to change a DirectionalLight's color client-side by id, but that DirectionalLight doesn't exist client-side");
+            Warnings.warn(String.format(WARN_DIR_LIGHT_COLOR, id));
         }
     }
 
@@ -384,7 +437,7 @@ public class ClientPacketReceiveActions {
             directionalLight.setToLightDirection(toLightDirection.x, toLightDirection.y, toLightDirection.z);
             directionalLight.setColor(color.x, color.y, color.z);
         } else {
-            Warnings.warn("Attempting to change a DirectionalLight's properties client-side by id, but that DirectionalLight doesn't exist client-side");
+            Warnings.warn(String.format(WARN_DIR_LIGHT_PROP, id));
         }
     }
 
@@ -395,7 +448,7 @@ public class ClientPacketReceiveActions {
             Skybox.currentSkybox = skybox;
             Skybox.currentSkybox.unmoving = unmoving;
         } else {
-            Warnings.warn(String.format("Skybox `%s` doesn't exist client-side", skyboxName));
+            Warnings.warn(String.format(WARN_SKYBOX, skyboxName));
         }
     }
 
@@ -412,10 +465,10 @@ public class ClientPacketReceiveActions {
                 String soundPath = SoundToPathConverter.convert(sound);
                 PositionalAudioMaster.playSoundAtGameObject(soundPath, gameObject);
             } else {
-                Warnings.warn("Attempting to play a sound at a PhysicalObject client-side by id, but that PhysicalObject doesn't exist client-side");
+                Warnings.warn(String.format(WARN_SND_PHYS_OBJ_OBJ, sound, id));
             }
         } else {
-            Warnings.warn("Attempting to play a sound at a PhysicalObject client-side by id, but the client's ClientLevel object hasn't even been instantiated yet");
+            Warnings.warn(String.format(WARN_SND_PHYS_OBJ_LVL, sound, id));
         }
     }
 
