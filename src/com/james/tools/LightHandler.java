@@ -17,14 +17,14 @@ public class LightHandler {
         Light previousValue = lightsMap.put(id, light);
         LightSettings.onLightAdded();
 
-        return previousValue != null;
+        return previousValue == null;
     }
 
     public boolean addDirectionalLight(int id, DirectionalLight directionalLight) {
         DirectionalLight previousValue = directionalLightsMap.put(id, directionalLight);
         LightSettings.onDirectionalLightAdded();
 
-        return previousValue != null;
+        return previousValue == null;
     }
 
     public boolean removeLight(int id) {

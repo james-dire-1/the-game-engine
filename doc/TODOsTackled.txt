@@ -103,3 +103,24 @@ the TextMeshCreator [GuiText]
 // TO DO: 2024-07-07 Does this need to implement Serializable? [PacketType]
 
 // TO DO: 2025-07-23 Make this more general perhaps for local games too [UsernamePromptScreen]
+
+// TO DO: 2026-05-11 Where is the TEXTURES_BASE_DIRECTORY ??? [GlobalConstants]
+-> Figured that it's not a great idea to have that
+
+// TO DO: 2024-07-11 Problems will happen if a wait is placed here, should a client join during that time [Main in server code]
+-> Moved things around to fix this; very simple actually
+
+// TO DO: 2025-07-23 Continue from here (replace Server.get().sendToAllClients()) - this is from server code [Level]
+-> I don't know what this is referring to
+
+// TO DO: 2026-06-04 This class is kind of a mess; maybe restructure? [Level]
+-> Did not actually restructure
+
+// TO DO: 2026-06-11 Way to remove lights client-side [Level]
+-> Will be done soon
+
+// TO DO: 2024-06-20 This implementation is going to have to change once we add the networking eventually [LocalServerPacketSendEvents]
+-> Not quite sure what this is referring to, but I guess it's been sorted out by now
+
+// TO DO: 2024-07-21 There seems to be a lot of code duplication here.. [ClientPacketReceiveActions]
+-> Did not change anything; not sure if there's a good way of doing so

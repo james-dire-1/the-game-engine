@@ -4,7 +4,6 @@ import com.james.audio.objects.AudioListener;
 import com.james.common.tools.Mth;
 import com.james.input.KeyInput;
 import com.james.renderEngine.gameObjects.Camera;
-import com.james.renderEngine.gameObjects.DirectionalLight;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
@@ -75,7 +74,6 @@ public abstract class GameLoader {
 
         lightHandler = new LightHandler();
         LightSettings.setLightHandler(lightHandler);
-        lightHandler.addDirectionalLight(1, new DirectionalLight(new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
 
         Skybox.currentSkybox = Skyboxes.getByName(Skyboxes.DEFAULT_SKYBOX_NAME);
 

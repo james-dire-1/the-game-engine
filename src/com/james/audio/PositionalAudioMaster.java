@@ -110,6 +110,7 @@ public class PositionalAudioMaster {
         }
     }
 
+    // TODO: 2026-08-12 This should be called somewhere
     public static void clearEverything() {
         gameObjectsMap.clear();
         soundEmittersMap.clear();

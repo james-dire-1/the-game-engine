@@ -9,8 +9,8 @@ import com.james.simulation.objects.Player;
 import game.ui.screens.DebugScreen;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Collision handler to be used client-side. This collision handler is used for ellipsoid vs triangle
@@ -19,7 +19,7 @@ import java.util.List;
 public class ClientCollisionHandler {
 
     public final PlayerHitbox playerHitbox;
-    public final List<CachedAABBHitbox> cachedAABBHitboxes = new ArrayList<>();
+    public final Map<CachedAABBHitbox.Identifier, CachedAABBHitbox> cachedAABBHitboxes = new HashMap<>();
 
     private final LevelProperties levelProperties;
     private final Player player;
@@ -38,7 +38,7 @@ public class ClientCollisionHandler {
      */
     public void update() {
         if (player.isAffectedByAABBCollisions) {
-            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerHitbox, cachedAABBHitboxes, levelProperties, DebugScreen.collisionsAccumulator);
+            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerHitbox, cachedAABBHitboxes.values(), levelProperties, DebugScreen.collisionsAccumulator);
             if (!algorithmPerformed) {
                 player.moveUpdate();
             }

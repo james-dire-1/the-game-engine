@@ -3,6 +3,7 @@ package templates.serverSide;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.serverSide.Scene;
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
+import com.james.tools.Time;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
@@ -42,6 +43,12 @@ public class Scenes {
             MovableObject abstractArt = new MovableObject(level, PhysicalObjectType.Other, new Vector3f(0, 5, 0), new Vector3f(), 1) {
                 private boolean firstTime = true;
 
+                private final float startTime;
+
+                {
+                    startTime = Time.getCurrentTime();
+                }
+
                 @Override
                 public boolean update() {
                     rotate(0, 10, 0);
@@ -64,6 +71,10 @@ public class Scenes {
                     }
 
                     super.moveUpdate();
+
+                    if (Time.getCurrentTime() - startTime > 10) {
+                        level.events.sendPhysicalObjectRemovedFromLevel(super.id);
+                    }
                 }
             };
 

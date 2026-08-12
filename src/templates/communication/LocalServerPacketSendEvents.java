@@ -49,13 +49,21 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
         ThreadManager.executeOnMainThread(ClientPacketReceiveActions::levelIsReadyReceived);
     }
 
-    // TODO: 2024-06-20 This implementation is going to have to change once we add the networking eventually
     @Override
     public void sendPhysicalObjectAddedToLevel(int id, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale, PlayerInfo... playerInfoArray) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPhysicalObjectAddedToLevel " + "{id=" + id + "} {type=" + type +"}");
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.physicalObjectAddedReceived(id, type, position, rotation, scale);
+        });
+    }
+
+    @Override
+    public void sendPhysicalObjectRemovedFromLevel(int id) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendPhysicalObjectRemovedFromLevel");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.physicalObjectRemovedReceived(id);
         });
     }
 
@@ -101,6 +109,15 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath, subMeshIdentifier);
+        });
+    }
+
+    @Override
+    public void sendAABBHitboxRemoved(int id, String meshPath, int subMeshIdentifier) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendAABBHitboxRemoved");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.aabbHitboxRemovedReceived(id, meshPath, subMeshIdentifier);
         });
     }
 
@@ -178,6 +195,15 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
+    public void sendVirtualLightRemovedFromLevel(int id) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightRemovedFromLevel");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightRemovedReceived(id);
+        });
+    }
+
+    @Override
     public void sendVirtualLightMoved(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualLightMoved");
 
@@ -219,6 +245,15 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.virtualDirectionalLightAddedReceived(id, toLightDirection, color);
+        });
+    }
+
+    @Override
+    public void sendVirtualDirectionalLightRemovedFromLevel(int id) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendVirtualDirectionalLightRemovedFromLevel");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightRemovedReceived(id);
         });
     }
 

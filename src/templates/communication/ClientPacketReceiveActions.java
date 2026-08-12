@@ -4,6 +4,7 @@ import com.james.renderEngine.gameObjects.DirectionalLight;
 import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.visuals.Skybox;
 import com.james.audio.PositionalAudioMaster;
+import com.james.tools.LightHandler;
 import templates.audio.SoundToPathConverter;
 import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
@@ -32,41 +33,115 @@ import templates.rendering.Skyboxes;
 
 import static templates.common.GlobalConstants.IS_DETAILED_NETWORK_DEBUG;
 import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
+import static templates.communication.Warnings.warn;
 
 /**
  * Methods that handle what should happen on the client side when particular events occur on the server side.
  */
 public class ClientPacketReceiveActions {
 
-    private static final String WARN_PHYS_OBJ_ADD       = "Attempted to add                     PhysicalObject of id %d and of type %s      ; already exists    client-side".replaceAll("\\s+", " ");
-    private static final String WARN_CON_PLR_ADD        = "Attempted to add                     ConnectedPlayer of id %d and of username %s ; already exists    client-side".replaceAll("\\s+", " ");
-    private static final String WARN_LIGHT_ADD          = "Attempted to add                     Light of id %d                              ; already exists    client-side".replaceAll("\\s+", " ");
-    private static final String WARN_DIR_LIGHT_ADD      = "Attempted to add                     DirectionalLight of id %d                   ; already exists    client-side".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_REM       = "Attempted to remove                  PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_MOV_OBJ   = "Attempted to move                    PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_ROT_OBJ   = "Attempted to rotate                  PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_SCA_OBJ   = "Attempted to scale                   PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_TRANS_OBJ = "Attempted to transform               PhysicalObject of id %d                     ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_CON_PLR_TRANS_OBJ  = "Attempted to transform               ConnectedPlayer of id %d                    ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_LIGHT_MOV          = "Attempted to move                    Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_LIGHT_COLOR        = "Attempted to change color of         Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_LIGHT_ATT          = "Attempted to change attenuation of   Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_LIGHT_PROP         = "Attempted to change properties of    Light of id %d                              ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_DIR_LIGHT_DIR      = "Attempted to change direction of     DirectionalLight of id %d                   ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_DIR_LIGHT_COLOR    = "Attempted to change color of         DirectionalLight of id %d                   ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_DIR_LIGHT_PROP     = "Attempted to change properties of    DirectionalLight of id %d                   ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_SKYBOX             = "Attempted to change                  Skybox with one of name `%s`                ; doesn't exist     client-side".replaceAll("\\s+", " ");
-    private static final String WARN_SND_PHYS_OBJ_OBJ   = "Attempted to play                    sound `%s` at PhysicalObject of id %d       ; doesn't exist     client-side (PhysicalObject)".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_MOV_LVL   = "Attempted to move                    PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_ROT_LVL   = "Attempted to rotate                  PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_SCA_LVL   = "Attempted to scale                   PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_PHYS_OBJ_TRANS_LVL = "Attempted to transform               PhysicalObject of id %d                     ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_CON_PLR_TRANS_LVL  = "Attempted to transform               ConnectedPlayer of id %d                    ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_CHAT_MSG_SCREEN    = "Attempted to receive                 chat message from player of id %d           ; ChatScreen        object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_CHAT_MSG_LVL       = "Attempted to receive                 chat message from player of id %d           ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_SYS_MSG_SCREEN     = "Attempted to receive                 system message                              ; ChatScreen        object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_SYS_MSG_LVL        = "Attempted to receive                 system message                              ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
-    private static final String WARN_SND_PHYS_OBJ_LVL   = "Attempted to play                    sound `%s` at PhysicalObject of id %d       ; ClientLevel       object hasn't even been instantiated yet".replaceAll("\\s+", " ");
+    private static final String
+            WARN_ADD = "Attempted to add ",
+            WARN_REM = "Attempted to remove ",
+            WARN_MOV = "Attempted to move ",
+            WARN_ROT = "Attempted to rotate ",
+            WARN_SCA = "Attempted to scale ",
+            WARN_TRA = "Attempted to transform ",
+            WARN_COL = "Attempted to change color of ",
+            WARN_ATT = "Attempted to change attenuation of ",
+            WARN_DIR = "Attempted to change direction of ",
+            WARN_PRO = "Attempted to change properties of ",
+            WARN_SET = "Attempted to set ",
+            WARN_SND = "Attempted to play ",
+            WARN_MSG = "Attempted to receive ";
+
+    private static final String
+            PHYS_OBJ_ID_AND_TYPE    = "PhysicalObject of id %d and of type %s",
+            PHYS_OBJ_ID             = "PhysicalObject of id %d",
+            AABB_ID_PATH_IDENTIFIER = "AABBHitbox of mesh path %s and of sub mesh identifier %d, for PhysicalObject of id %d",
+            CON_PLR_ID_AND_NAME     = "ConnectedPlayer of id %d and of username %s",
+            CON_PLR_ID              = "ConnectedPlayer of id %d",
+            SECS_PER_TICK           = "seconds per game tick to %f",
+            GRAVITY                 = "gravity to (%f, %f, %f)",
+            LIGHT_ID                = "Light of id %d",
+            DIR_LIGHT_ID            = "DirectionalLight of id %d",
+            SKYBOX_NAME             = "Skybox of name `%s`",
+            SND_PHYS_OBJ            = "sound `%s` at PhysicalObject of id %d",
+            SND_POS                 = "sound `%s` at position %s",
+            SND_EMIT                = "sound `%s` at SoundEmitter of id %d",
+            CHAT_MSG_PLR_ID         = "chat message from player of id %d",
+            SYS_MSG                 = "system message";
+
+    private static final String
+            EXISTS          = "; already exists client-side",
+            DNE             = "; doesn't exist client-side",
+            DNE_PHYS_OBJ    = "; PhysicalObject doesn't exist client-side",
+            DNE_CON_PLR     = "; ConnectedPlayer doesn't exist client-side",
+            LVL_NOT_INST    = "; ClientLevel object hasn't even been instantiated yet",
+            CHAT_NOT_INST   = "; ChatScreen object hasn't even been instantiated yet",
+            HAND_NOT_INST   = "; LightHandler object hasn't even been instantiated yet",
+            DNE_SND         = "; sound doesn't exist client-side";
+
+    private static final String
+            PHYS_ADD_EXISTS     = WARN_ADD + PHYS_OBJ_ID_AND_TYPE + EXISTS,
+            PHYS_ADD_LVL        = WARN_ADD + PHYS_OBJ_ID_AND_TYPE + LVL_NOT_INST,
+            PHYS_REM_DNE        = WARN_REM + PHYS_OBJ_ID + DNE,
+            PHYS_REM_LVL        = WARN_REM + PHYS_OBJ_ID + LVL_NOT_INST,
+            PHYS_MOV_DNE        = WARN_MOV + PHYS_OBJ_ID + DNE,
+            PHYS_MOV_LVL        = WARN_MOV + PHYS_OBJ_ID + LVL_NOT_INST,
+            PHYS_ROT_DNE        = WARN_ROT + PHYS_OBJ_ID + DNE,
+            PHYS_ROT_LVL        = WARN_ROT + PHYS_OBJ_ID + LVL_NOT_INST,
+            PHYS_SCA_DNE        = WARN_SCA + PHYS_OBJ_ID + DNE,
+            PHYS_SCA_LVL        = WARN_SCA + PHYS_OBJ_ID + LVL_NOT_INST,
+            PHYS_TRA_DNE        = WARN_TRA + PHYS_OBJ_ID + DNE,
+            PHYS_TRA_LVL        = WARN_TRA + PHYS_OBJ_ID + LVL_NOT_INST,
+            AABB_ADD_DNE_PHYS   = WARN_ADD + AABB_ID_PATH_IDENTIFIER + DNE_PHYS_OBJ,
+            AABB_ADD_EXISTS     = WARN_ADD + AABB_ID_PATH_IDENTIFIER + EXISTS,
+            AABB_ADD_LVL        = WARN_ADD + AABB_ID_PATH_IDENTIFIER + LVL_NOT_INST,
+            AABB_REM_DNE_PHYS   = WARN_REM + AABB_ID_PATH_IDENTIFIER + DNE_PHYS_OBJ,
+            AABB_REM_DNE        = WARN_REM + AABB_ID_PATH_IDENTIFIER + DNE,
+            AABB_REM_LVL        = WARN_REM + AABB_ID_PATH_IDENTIFIER + LVL_NOT_INST,
+            PLR_ADD_EXISTS      = WARN_ADD + CON_PLR_ID_AND_NAME + EXISTS,
+            PLR_ADD_LVL         = WARN_ADD + CON_PLR_ID_AND_NAME + LVL_NOT_INST,
+            PLR_TRA_DNE         = WARN_TRA + CON_PLR_ID + DNE,
+            PLR_TRA_LVL         = WARN_TRA + CON_PLR_ID + LVL_NOT_INST,
+            PLR_REM_DNE_PLR     = WARN_REM + CON_PLR_ID + DNE_CON_PLR,
+            PLR_REM_LVL         = WARN_REM + CON_PLR_ID + LVL_NOT_INST,
+            SECS_LVL            = WARN_SET + SECS_PER_TICK + LVL_NOT_INST,
+            GRAV_LVL            = WARN_SET + GRAVITY + LVL_NOT_INST,
+            CHAT_MSG_DNE_PLR    = WARN_MSG + CHAT_MSG_PLR_ID + DNE_CON_PLR,
+            CHAT_MSG_CHAT       = WARN_MSG + CHAT_MSG_PLR_ID + CHAT_NOT_INST,
+            CHAT_MSG_LVL        = WARN_MSG + CHAT_MSG_PLR_ID + LVL_NOT_INST,
+            SYS_MSG_CHAT        = WARN_MSG + SYS_MSG + CHAT_NOT_INST,
+            SYS_MSG_LVL         = WARN_MSG + SYS_MSG + LVL_NOT_INST,
+            LGT_ADD_EXISTS      = WARN_ADD + LIGHT_ID + EXISTS,
+            LGT_ADD_HAND        = WARN_ADD + LIGHT_ID + HAND_NOT_INST,
+            LGT_REM_DNE         = WARN_REM + LIGHT_ID + DNE,
+            LGT_REM_HAND        = WARN_REM + LIGHT_ID + HAND_NOT_INST,
+            LGT_MOV_DNE         = WARN_MOV + LIGHT_ID + DNE,
+            LGT_MOV_HAND        = WARN_MOV + LIGHT_ID + HAND_NOT_INST,
+            LGT_COL_DNE         = WARN_COL + LIGHT_ID + DNE,
+            LGT_COL_HAND        = WARN_COL + LIGHT_ID + HAND_NOT_INST,
+            LGT_ATT_DNE         = WARN_ATT + LIGHT_ID + DNE,
+            LGT_ATT_HAND        = WARN_ATT + LIGHT_ID + HAND_NOT_INST,
+            LGT_PRO_DNE         = WARN_PRO + LIGHT_ID + DNE,
+            LGT_PRO_HAND        = WARN_PRO + LIGHT_ID + HAND_NOT_INST,
+            DIR_LGT_ADD_EXISTS  = WARN_ADD + DIR_LIGHT_ID + EXISTS,
+            DIR_LGT_ADD_HAND    = WARN_ADD + DIR_LIGHT_ID + HAND_NOT_INST,
+            DIR_LGT_REM_EXISTS  = WARN_REM + DIR_LIGHT_ID + EXISTS,
+            DIR_LGT_REM_HAND    = WARN_REM + DIR_LIGHT_ID + HAND_NOT_INST,
+            DIR_LGT_DIR_DNE     = WARN_DIR + DIR_LIGHT_ID + DNE,
+            DIR_LGT_DIR_HAND    = WARN_DIR + DIR_LIGHT_ID + HAND_NOT_INST,
+            DIR_LGT_COL_DNE     = WARN_COL + DIR_LIGHT_ID + DNE,
+            DIR_LGT_COL_HAND    = WARN_COL + DIR_LIGHT_ID + HAND_NOT_INST,
+            DIR_LGT_PRO_DNE     = WARN_PRO + DIR_LIGHT_ID + DNE,
+            DIR_LGT_PRO_HAND    = WARN_PRO + DIR_LIGHT_ID + HAND_NOT_INST,
+            SKYBOX_DNE          = WARN_SET + SKYBOX_NAME + DNE,
+            SND_PHYS_DNE_SND    = WARN_SND + SND_PHYS_OBJ + DNE_SND,
+            SND_PHYS_DNE_PHYS   = WARN_SND + SND_PHYS_OBJ + DNE_PHYS_OBJ,
+            SND_PHYS_LVL        = WARN_SND + SND_PHYS_OBJ + LVL_NOT_INST,
+            SND_POS_DNE_SND     = WARN_SND + SND_POS + DNE_SND,
+            SND_EMIT_DNE_SND    = WARN_SND + SND_EMIT + DNE_SND;
 
     public static void usernamePromptReceived() {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.usernamePromptReceived");
@@ -101,25 +176,45 @@ public class ClientPacketReceiveActions {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectAddedReceived " + "{id=" + id + "} {type=" + type +"}");
 
         CachedPhysicalObject object = new CachedPhysicalObject(new Vector3f(position), new Vector3f(rotation), scale);
-        boolean success = ClientLevel.get().addCachedPhysicalObject(id, object);
-        if (!success) {
-            Warnings.warn(String.format(WARN_PHYS_OBJ_ADD, id, type));
-        }
+        ClientLevel level = ClientLevel.get();
 
-        Model[] modelList = PhysicalToVisualConverter.convert(type);
+        if (level != null) {
+            boolean success = level.addCachedPhysicalObject(id, object);
 
-        for (Model model : modelList) {
-            GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
-            GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+            if (success) {
+                Model[] modelList = PhysicalToVisualConverter.convert(type);
 
-            object.setGameObject(gameObject);
+                for (Model model : modelList) {
+                    GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
+                    GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+
+                    object.setGameObject(gameObject);
+                }
+            } else {
+                warn(String.format(PHYS_ADD_EXISTS, id, type));
+            }
+        } else {
+            warn(String.format(PHYS_ADD_LVL, id, type));
         }
     }
 
     public static void physicalObjectRemovedReceived(int id) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.physicalObjectRemovedReceived");
 
-        // CONTINUE HERE
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedPhysicalObject object = level.getCachedPhysicalObject(id);
+            boolean success = level.removeCachedPhysicalObject(id);
+
+            if (success) {
+                GameLoader.batchedGameObjectsList.removeGameObject(object.getGameObject());
+            } else {
+                warn(String.format(PHYS_REM_DNE, id));
+            }
+        } else {
+            warn(String.format(PHYS_REM_LVL, id));
+        }
     }
 
     public static void physicalObjectMovedReceived(int id, float x, float y, float z) {
@@ -135,10 +230,10 @@ public class ClientPacketReceiveActions {
                 object.setPosition(x, y, z);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn(String.format(WARN_PHYS_OBJ_MOV_OBJ, id));
+                warn(String.format(PHYS_MOV_DNE, id));
             }
         } else {
-            Warnings.warn(String.format(WARN_PHYS_OBJ_MOV_LVL, id));
+            warn(String.format(PHYS_MOV_LVL, id));
         }
     }
 
@@ -155,10 +250,10 @@ public class ClientPacketReceiveActions {
                 object.setRotation(rotX, rotY, rotZ);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn(String.format(WARN_PHYS_OBJ_ROT_OBJ, id));
+                warn(String.format(PHYS_ROT_DNE, id));
             }
         } else {
-            Warnings.warn(String.format(WARN_PHYS_OBJ_ROT_LVL, id));
+            warn(String.format(PHYS_ROT_LVL, id));
         }
     }
 
@@ -175,10 +270,10 @@ public class ClientPacketReceiveActions {
                 // This must be done manually since scale is a value type, not a reference type
                 object.getGameObject().setScale(scale);
             } else {
-                Warnings.warn(String.format(WARN_PHYS_OBJ_SCA_OBJ, id));
+                warn(String.format(PHYS_SCA_DNE, id));
             }
         } else {
-            Warnings.warn(String.format(WARN_PHYS_OBJ_SCA_LVL, id));
+            warn(String.format(PHYS_SCA_LVL, id));
         }
     }
 
@@ -200,42 +295,75 @@ public class ClientPacketReceiveActions {
                 object.getGameObject().setScale(scale);
                 object.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn(String.format(WARN_PHYS_OBJ_TRANS_OBJ, id));
+                warn(String.format(PHYS_TRA_DNE, id));
             }
         } else {
-            Warnings.warn(String.format(WARN_PHYS_OBJ_TRANS_LVL, id));
+            warn(String.format(PHYS_TRA_LVL, id));
         }
     }
 
     public static void aabbHitboxAddedReceived(int id, String meshPath, int subMeshIdentifier) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.aabbHitboxAddedReceived " + "{id=" + id + "}");
 
-        ClientLevel.get().addCachedAABBHitbox(new CachedAABBHitbox(id, meshPath, subMeshIdentifier));
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            if (level.getCachedPhysicalObject(id) == null) {
+                warn(String.format(AABB_ADD_DNE_PHYS, meshPath, subMeshIdentifier, id));
+            }
+
+            boolean success = level.addCachedAABBHitbox(id, new CachedAABBHitbox(id, meshPath, subMeshIdentifier));
+            if (!success) {
+                warn(String.format(AABB_ADD_EXISTS, meshPath, subMeshIdentifier, id));
+            }
+        } else {
+            warn(String.format(AABB_ADD_LVL, meshPath, subMeshIdentifier, id));
+        }
     }
 
     public static void aabbHitboxRemovedReceived(int id, String meshPath, int subMeshIdentifier) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.aabbHitboxRemovedReceived");
 
-        // CONTINUE HERE
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            if (level.getCachedPhysicalObject(id) == null) {
+                warn(String.format(AABB_REM_DNE_PHYS, meshPath, subMeshIdentifier, id));
+            }
+
+            boolean success = level.removeCachedAABBHitbox(id, meshPath, subMeshIdentifier);
+            if (!success) {
+                warn(String.format(AABB_REM_DNE, meshPath, subMeshIdentifier, id));
+            }
+        } else {
+            warn(String.format(AABB_REM_LVL, meshPath, subMeshIdentifier, id));
+        }
     }
 
     public static void connectedPlayerAddedReceived(int id, String username, int color, float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerAddedReceived " + "{id=" + id + "}");
 
-        CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(username, color, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
-        boolean alreadyExists = ClientLevel.get().addCachedConnectedPlayer(id, cachedConnectedPlayer);
-        if (alreadyExists) {
-            Warnings.warn(String.format(WARN_CON_PLR_ADD, id, username));
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedConnectedPlayer cachedConnectedPlayer = new CachedConnectedPlayer(username, color, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
+            boolean success = level.addCachedConnectedPlayer(id, cachedConnectedPlayer);
+
+            if (success) {
+                Model model = ModelBank.getAbstractArt();
+                GameObject gameObject = new GameObject(model, new Vector3f(cachedConnectedPlayer.getPosition()), new Vector3f(cachedConnectedPlayer.getRotation()), 1);
+                GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+
+                cachedConnectedPlayer.setGameObject(gameObject);
+
+                GeneralSphereHitbox generalSphereHitbox = new GeneralSphereHitbox(id, 1);
+                ClientLevel.get().addGeneralSphereHitbox(generalSphereHitbox);
+            } else {
+                warn(String.format(PLR_ADD_EXISTS, id, username));
+            }
+        } else {
+            warn(String.format(PLR_ADD_LVL, id, username));
         }
-
-        Model model = ModelBank.getAbstractArt();
-        GameObject gameObject = new GameObject(model, new Vector3f(cachedConnectedPlayer.getPosition()), new Vector3f(cachedConnectedPlayer.getRotation()), 1);
-        GameLoader.batchedGameObjectsList.addGameObject(gameObject);
-
-        cachedConnectedPlayer.setGameObject(gameObject);
-
-        GeneralSphereHitbox generalSphereHitbox = new GeneralSphereHitbox(id, 1);
-        ClientLevel.get().addGeneralSphereHitbox(generalSphereHitbox);
     }
 
     // TODO: 2025-07-01 Make a method that separates transform and rotation perhaps
@@ -246,6 +374,7 @@ public class ClientPacketReceiveActions {
 
         if (level != null) {
             CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(id);
+
             if (cachedConnectedPlayer != null) {
                 cachedConnectedPlayer.updatePrevPosition();
                 cachedConnectedPlayer.updatePrevRotation();
@@ -253,30 +382,54 @@ public class ClientPacketReceiveActions {
                 cachedConnectedPlayer.setRotation(0, rotY, 0);
                 cachedConnectedPlayer.lastTime = Time.getCurrentTime();
             } else {
-                Warnings.warn(String.format(WARN_CON_PLR_TRANS_OBJ, id));
+                warn(String.format(PLR_TRA_DNE, id));
             }
         } else {
-            Warnings.warn(String.format(WARN_CON_PLR_TRANS_LVL, id));
+            warn(String.format(PLR_TRA_LVL, id));
         }
     }
 
     public static void connectedPlayerLeftReceived(int id) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerLeftReceived");
 
-        CachedConnectedPlayer cachedConnectedPlayer = ClientLevel.get().removeCachedConnectedPlayer(id);
-        GameLoader.batchedGameObjectsList.removeGameObject(cachedConnectedPlayer.getGameObject());
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(id);
+            boolean success = level.removeCachedConnectedPlayer(id);
+
+            if (success) {
+                GameLoader.batchedGameObjectsList.removeGameObject(cachedConnectedPlayer.getGameObject());
+            } else {
+                warn(String.format(PLR_REM_DNE_PLR, id));
+            }
+        } else {
+            warn(String.format(PLR_REM_LVL, id));
+        }
     }
 
     public static void levelSecondsPerGameTickChangedReceived(float secondsPerGameTick) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelSecondsPerGameTickChangedReceived");
 
-        ClientLevel.get().secondsPerGameTick = secondsPerGameTick;
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            level.secondsPerGameTick = secondsPerGameTick;
+        } else {
+            warn(String.format(SECS_LVL, secondsPerGameTick));
+        }
     }
 
     public static void levelGravityChangedReceived(float x, float y, float z) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.levelGravityChangedReceived");
 
-        ClientLevel.get().gravity.set(x, y, z);
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            level.gravity.set(x, y, z);
+        } else {
+            warn(String.format(GRAV_LVL, x, y, z));
+        }
     }
 
     public static void chatMessageReceptionConfirmationReceived(int localMessageId) {
@@ -294,14 +447,19 @@ public class ClientPacketReceiveActions {
         if (level != null) {
             if (chatScreen != null) {
                 CachedConnectedPlayer cachedConnectedPlayer = level.getCachedConnectedPlayer(playerId);
-                String username = cachedConnectedPlayer.username;
-                float[] color = cachedConnectedPlayer.color;
-                chatScreen.appendChatWithPlayerMessage(username, color, message);
+
+                if (cachedConnectedPlayer != null) {
+                    String username = cachedConnectedPlayer.username;
+                    float[] color = cachedConnectedPlayer.color;
+                    chatScreen.appendChatWithPlayerMessage(username, color, message);
+                } else {
+                    warn(String.format(CHAT_MSG_DNE_PLR, playerId));
+                }
             } else {
-                Warnings.warn(String.format(WARN_CHAT_MSG_SCREEN, playerId));
+                warn(String.format(CHAT_MSG_CHAT, playerId));
             }
         } else {
-            Warnings.warn(String.format(WARN_CHAT_MSG_LVL, playerId));
+            warn(String.format(CHAT_MSG_LVL, playerId));
         }
     }
 
@@ -315,129 +473,205 @@ public class ClientPacketReceiveActions {
             if (chatScreen != null) {
                 chatScreen.appendChatWithSystemMessage(message);
             } else {
-                Warnings.warn(WARN_SYS_MSG_SCREEN);
+                warn(SYS_MSG_CHAT);
             }
         } else {
-            Warnings.warn(WARN_SYS_MSG_LVL);
+            warn(SYS_MSG_LVL);
         }
     }
 
     public static void virtualLightAddedReceived(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightAddedReceived");
 
-        Light light = new Light(new Vector3f(position), new Vector3f(color), new Vector3f(attenuation));
-        boolean alreadyExists = GameLoader.lightHandler.addLight(id, light);
-        if (alreadyExists) {
-            Warnings.warn(String.format(WARN_LIGHT_ADD, id));
+        LightHandler lightHandler = GameLoader.lightHandler;
+
+        if (lightHandler != null) {
+            Light light = new Light(new Vector3f(position), new Vector3f(color), new Vector3f(attenuation));
+            boolean success = lightHandler.addLight(id, light);
+
+            if (!success) {
+                warn(String.format(LGT_ADD_EXISTS, id));
+            }
+        } else {
+            warn(String.format(LGT_ADD_HAND, id));
         }
     }
 
     public static void virtualLightRemovedReceived(int id) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightRemovedReceived");
 
-        // CONTINUE HERE
+        LightHandler lightHandler = GameLoader.lightHandler;
+
+        if (lightHandler != null) {
+            boolean success = lightHandler.removeLight(id);
+
+            if (!success) {
+                warn(String.format(LGT_REM_DNE, id));
+            }
+        } else {
+            warn(String.format(LGT_REM_HAND, id));
+        }
     }
 
     public static void virtualLightMovedReceived(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightMovedReceived");
 
-        Light light = GameLoader.lightHandler.getLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (light != null) {
-            light.setPosition(x, y, z);
+        if (lightHandler != null) {
+            Light light = lightHandler.getLight(id);
+
+            if (light != null) {
+                light.setPosition(x, y, z);
+            } else {
+                warn(String.format(LGT_MOV_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_LIGHT_MOV, id));
+            warn(String.format(LGT_MOV_HAND, id));
         }
     }
 
     public static void virtualLightColorChangedReceived(int id, float r, float g, float b) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightColorChangedReceived");
 
-        Light light = GameLoader.lightHandler.getLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (light != null) {
-            light.setColor(r, g, b);
+        if (lightHandler != null) {
+            Light light = lightHandler.getLight(id);
+
+            if (light != null) {
+                light.setColor(r, g, b);
+            } else {
+                warn(String.format(LGT_COL_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_LIGHT_COLOR, id));
+            warn(String.format(LGT_COL_HAND, id));
         }
     }
 
     public static void virtualLightAttenuationChangedReceived(int id, float att1, float att2, float att3) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightAttenuationChangedReceived");
 
-        Light light = GameLoader.lightHandler.getLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (light != null) {
-            light.setAttenuation(att1, att2, att3);
+        if (lightHandler != null) {
+            Light light = lightHandler.getLight(id);
+
+            if (light != null) {
+                light.setAttenuation(att1, att2, att3);
+            } else {
+                warn(String.format(LGT_ATT_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_LIGHT_ATT, id));
+            warn(String.format(LGT_ATT_HAND, id));
         }
     }
 
     public static void virtualLightPropertiesChangedReceived(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightPropertiesChangedReceived");
 
-        Light light = GameLoader.lightHandler.getLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (light != null) {
-            light.setPosition(position.x, position.y, position.z);
-            light.setColor(color.x, color.y, color.z);
-            light.setAttenuation(attenuation.x, attenuation.y, attenuation.z);
+        if (lightHandler != null) {
+            Light light = lightHandler.getLight(id);
+
+            if (light != null) {
+                light.setPosition(position.x, position.y, position.z);
+                light.setColor(color.x, color.y, color.z);
+                light.setAttenuation(attenuation.x, attenuation.y, attenuation.z);
+            } else {
+                warn(String.format(LGT_PRO_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_LIGHT_PROP, id));
+            warn(String.format(LGT_PRO_HAND, id));
         }
     }
 
     public static void virtualDirectionalLightAddedReceived(int id, Vector3f toLightDirection, Vector3f color) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightAddedReceived");
 
-        DirectionalLight directionalLight = new DirectionalLight(new Vector3f(toLightDirection), new Vector3f(color));
-        boolean alreadyExists = GameLoader.lightHandler.addDirectionalLight(id, directionalLight);
-        if (alreadyExists) {
-            Warnings.warn(String.format(WARN_DIR_LIGHT_ADD, id));
+        LightHandler lightHandler = GameLoader.lightHandler;
+
+        if (lightHandler != null) {
+            DirectionalLight directionalLight = new DirectionalLight(new Vector3f(toLightDirection), new Vector3f(color));
+            boolean success = lightHandler.addDirectionalLight(id, directionalLight);
+
+            if (!success) {
+                warn(String.format(DIR_LGT_ADD_EXISTS, id));
+            }
+        } else {
+            warn(String.format(DIR_LGT_ADD_HAND, id));
         }
     }
 
     public static void virtualDirectionalLightRemovedReceived(int id) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightRemovedReceived");
 
-        // CONTINUE HERE
+        LightHandler lightHandler = GameLoader.lightHandler;
+
+        if (lightHandler != null) {
+            boolean success = lightHandler.removeDirectionalLight(id);
+
+            if (!success) {
+                warn(String.format(DIR_LGT_REM_EXISTS, id));
+            }
+        } else {
+            warn(String.format(DIR_LGT_REM_HAND, id));
+        }
     }
 
     public static void virtualDirectionalLightToLightDirectionChangedReceived(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightToLightDirectionChangedReceived");
 
-        DirectionalLight directionalLight = GameLoader.lightHandler.getDirectionalLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (directionalLight != null) {
-            directionalLight.setToLightDirection(x, y, z);
+        if (lightHandler != null) {
+            DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
+
+            if (directionalLight != null) {
+                directionalLight.setToLightDirection(x, y, z);
+            } else {
+                warn(String.format(DIR_LGT_DIR_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_DIR_LIGHT_DIR, id));
+            warn(String.format(DIR_LGT_DIR_HAND, id));
         }
     }
 
     public static void virtualDirectionalLightColorChangedReceived(int id, float r, float g, float b) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightColorChangedReceived");
 
-        DirectionalLight directionalLight = GameLoader.lightHandler.getDirectionalLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (directionalLight != null) {
-            directionalLight.setColor(r, g, b);
+        if (lightHandler != null) {
+            DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
+
+            if (directionalLight != null) {
+                directionalLight.setColor(r, g, b);
+            } else {
+                warn(String.format(DIR_LGT_COL_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_DIR_LIGHT_COLOR, id));
+            warn(String.format(DIR_LGT_COL_HAND, id));
         }
     }
 
     public static void virtualDirectionalLightPropertiesChangedReceived(int id, Vector3f toLightDirection, Vector3f color) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightPropertiesChangedReceived");
 
-        DirectionalLight directionalLight = GameLoader.lightHandler.getDirectionalLight(id);
+        LightHandler lightHandler = GameLoader.lightHandler;
 
-        if (directionalLight != null) {
-            directionalLight.setToLightDirection(toLightDirection.x, toLightDirection.y, toLightDirection.z);
-            directionalLight.setColor(color.x, color.y, color.z);
+        if (lightHandler != null) {
+            DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
+
+            if (directionalLight != null) {
+                directionalLight.setToLightDirection(toLightDirection.x, toLightDirection.y, toLightDirection.z);
+                directionalLight.setColor(color.x, color.y, color.z);
+            } else {
+                warn(String.format(DIR_LGT_PRO_DNE, id));
+            }
         } else {
-            Warnings.warn(String.format(WARN_DIR_LIGHT_PROP, id));
+            warn(String.format(DIR_LGT_PRO_HAND, id));
         }
     }
 
@@ -448,7 +682,7 @@ public class ClientPacketReceiveActions {
             Skybox.currentSkybox = skybox;
             Skybox.currentSkybox.unmoving = unmoving;
         } else {
-            Warnings.warn(String.format(WARN_SKYBOX, skyboxName));
+            warn(String.format(SKYBOX_DNE, skyboxName));
         }
     }
 
@@ -463,12 +697,17 @@ public class ClientPacketReceiveActions {
             if (object != null) {
                 GameObject gameObject = object.getGameObject();
                 String soundPath = SoundToPathConverter.convert(sound);
-                PositionalAudioMaster.playSoundAtGameObject(soundPath, gameObject);
+
+                if (soundPath != null) {
+                    PositionalAudioMaster.playSoundAtGameObject(soundPath, gameObject);
+                } else {
+                    warn(String.format(SND_PHYS_DNE_SND, sound, id));
+                }
             } else {
-                Warnings.warn(String.format(WARN_SND_PHYS_OBJ_OBJ, sound, id));
+                warn(String.format(SND_PHYS_DNE_PHYS, sound, id));
             }
         } else {
-            Warnings.warn(String.format(WARN_SND_PHYS_OBJ_LVL, sound, id));
+            warn(String.format(SND_PHYS_LVL, sound, id));
         }
     }
 
@@ -476,7 +715,12 @@ public class ClientPacketReceiveActions {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.playSoundAtPositionReceived");
 
         String soundPath = SoundToPathConverter.convert(sound);
-        PositionalAudioMaster.playSoundAtPosition(soundPath, position);
+
+        if (soundPath != null) {
+            PositionalAudioMaster.playSoundAtPosition(soundPath, position);
+        } else {
+            warn(String.format(SND_POS_DNE_SND, sound, position));
+        }
     }
 
     public static void createSoundEmitterReceived(int customIdentifier, Vector3f position) {
@@ -495,7 +739,12 @@ public class ClientPacketReceiveActions {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.playSoundAtSoundEmitterReceived");
 
         String soundPath = SoundToPathConverter.convert(sound);
-        PositionalAudioMaster.playSoundAtSoundEmitter(soundPath, customIdentifier);
+
+        if (soundPath != null) {
+            PositionalAudioMaster.playSoundAtSoundEmitter(soundPath, customIdentifier);
+        } else {
+            warn(String.format(SND_EMIT_DNE_SND, sound, customIdentifier));
+        }
     }
 
     public static void updatePositionOfSoundEmitterReceived(int customIdentifier, float x, float y, float z) {

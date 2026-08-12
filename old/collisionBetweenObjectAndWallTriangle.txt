@@ -17,8 +17,8 @@ private static void collisionBetweenObjectAndWallTriangle(PlayerHitbox playerHit
             p = new Vector2f(playerPosition.x, playerPosition.z);
         }
 
-        // TODO: 2023-08-16 Optimize this code in the future so that t isn't negative in front of the wall
-        // TODO: 2023-08-16 and so that we can reverse the conditionals in the if statement
+        // TO DO: 2023-08-16 Optimize this code in the future so that t isn't negative in front of the wall
+        // TO DO: 2023-08-16 and so that we can reverse the conditionals in the if statement
         if (Mth.pointInTriangle(a, b, c, p)) {
             float t = Vector3f.dot(triangle.unitVector, triangle.points[0]) - Vector3f.dot(triangle.unitVector, playerHitbox.player.getPosition());
 

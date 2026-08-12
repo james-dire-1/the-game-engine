@@ -56,16 +56,17 @@ public class ClientLevel extends LevelProperties {
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {
-        boolean alreadyExists;
-
-        if (!cachedPhysicalObjects.containsKey(id)) {
-            alreadyExists = false;
-            cachedPhysicalObjects.put(id, obj);
-        } else {
-            alreadyExists = true;
+        if (cachedPhysicalObjects.containsKey(id)) {
+            return false;
         }
 
-        return alreadyExists;
+        cachedPhysicalObjects.put(id, obj);
+        return true;
+    }
+
+    public boolean removeCachedPhysicalObject(int id) {
+        CachedPhysicalObject previousValue = cachedPhysicalObjects.remove(id);
+        return previousValue != null;
     }
 
     public CachedPhysicalObject getCachedPhysicalObject(int id) {
@@ -76,29 +77,35 @@ public class ClientLevel extends LevelProperties {
         return cachedPhysicalObjects.values();
     }
 
-    public void addCachedAABBHitbox(CachedAABBHitbox cachedAABBHitbox) {
-        clientCollisionHandler.cachedAABBHitboxes.add(cachedAABBHitbox);
+    public boolean addCachedAABBHitbox(int physicalObjectId, CachedAABBHitbox cachedAABBHitbox) {
+        CachedAABBHitbox.Identifier identifier = new CachedAABBHitbox.Identifier(physicalObjectId, cachedAABBHitbox.meshPath, cachedAABBHitbox.subMeshIdentifier);
+
+        if (clientCollisionHandler.cachedAABBHitboxes.containsKey(identifier)) {
+            return false;
+        }
+
+        clientCollisionHandler.cachedAABBHitboxes.put(identifier, cachedAABBHitbox);
+        return true;
+    }
+
+    public boolean removeCachedAABBHitbox(int physicalObjectId, String meshPath, int subMeshIdentifier) {
+        CachedAABBHitbox.Identifier identifier = new CachedAABBHitbox.Identifier(physicalObjectId, meshPath, subMeshIdentifier);
+        CachedAABBHitbox previousValue = clientCollisionHandler.cachedAABBHitboxes.remove(identifier);
+        return previousValue != null;
     }
 
     public boolean addCachedConnectedPlayer(int id, CachedConnectedPlayer connectedPlayer) {
-        boolean alreadyExists;
-
-        if (!cachedConnectedPlayers.containsKey(id)) {
-            alreadyExists = false;
-            cachedConnectedPlayers.put(id, connectedPlayer);
-        } else {
-            alreadyExists = true;
+        if (cachedConnectedPlayers.containsKey(id)) {
+            return false;
         }
 
-        return alreadyExists;
+        cachedConnectedPlayers.put(id, connectedPlayer);
+        return true;
     }
 
-    public void addGeneralSphereHitbox(GeneralSphereHitbox generalSphereHitbox) {
-        generalSphereCollisionHandler.generalSphereHitboxes.add(generalSphereHitbox);
-    }
-
-    public CachedConnectedPlayer removeCachedConnectedPlayer(int id) {
-        return cachedConnectedPlayers.remove(id);
+    public boolean removeCachedConnectedPlayer(int id) {
+        CachedConnectedPlayer previousValue = cachedConnectedPlayers.remove(id);
+        return previousValue != null;
     }
 
     public CachedConnectedPlayer getCachedConnectedPlayer(int id) {
@@ -107,6 +114,10 @@ public class ClientLevel extends LevelProperties {
 
     public Collection<CachedConnectedPlayer> getCachedConnectedPlayers() {
         return cachedConnectedPlayers.values();
+    }
+
+    public void addGeneralSphereHitbox(GeneralSphereHitbox generalSphereHitbox) {
+        generalSphereCollisionHandler.generalSphereHitboxes.add(generalSphereHitbox);
     }
 
     private static ClientLevel instance;

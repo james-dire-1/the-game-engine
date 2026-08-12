@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 // Note: most of the contents of this class are implemented from Fauerby's report:
@@ -28,7 +29,7 @@ public class CommonCollisionProcedure {
      *
      * @return whether the narrow phase test was performed
      */
-    public static boolean performEntireCollisionDetectionAlgorithm(AbstractEllipsoidHitbox ellipsoidHitbox, List<? extends AbstractAABBHitbox> aabbHitboxes, LevelProperties levelProperties, DebugAccumulator debugAccumulator) {
+    public static boolean performEntireCollisionDetectionAlgorithm(AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes, LevelProperties levelProperties, DebugAccumulator debugAccumulator) {
         List<Triangle> allTrianglesInEllipsoidWorldSpaceList = new ArrayList<>();
 
         for (AbstractAABBHitbox aabbHitbox : aabbHitboxes) {
