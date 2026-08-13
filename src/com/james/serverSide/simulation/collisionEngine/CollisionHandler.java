@@ -1,7 +1,6 @@
 package com.james.serverSide.simulation.collisionEngine;
 
 import com.james.common.simulation.collisionEngine.math.CommonCollisionProcedure;
-import com.james.common.simulation.LevelProperties;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
@@ -21,7 +20,7 @@ public class CollisionHandler {
 
     private final Level level;
 
-    private final Vector3f prevPosition = new Vector3f();
+    private final Vector3f reusablePrevPosition = new Vector3f();
 
     public CollisionHandler(Level level) {
         this.level = level;
@@ -38,7 +37,7 @@ public class CollisionHandler {
             MovableObject movableObject = ellipsoidHitbox.movableObject;
 
             if (movableObject.isAffectedByAABBCollisions) {
-                prevPosition.set(movableObject.getPosition());
+                reusablePrevPosition.set(movableObject.getPosition());
 
                 boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, level, null);
                 if (!algorithmPerformed) {
@@ -46,7 +45,7 @@ public class CollisionHandler {
                 }
 
                 Vector3f newPosition = movableObject.getPosition();
-                if (!newPosition.equals(prevPosition)) {
+                if (!newPosition.equals(reusablePrevPosition)) {
                     level.events.sendPhysicalObjectMoved(movableObject.id, newPosition.x, newPosition.y, newPosition.z);
                 }
             }

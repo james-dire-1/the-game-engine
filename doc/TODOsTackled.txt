@@ -124,3 +124,12 @@ the TextMeshCreator [GuiText]
 
 // TO DO: 2024-07-21 There seems to be a lot of code duplication here.. [ClientPacketReceiveActions]
 -> Did not change anything; not sure if there's a good way of doing so
+
+// TO DO: 2024-07-21 Should this always be sent, even if the player didn't move? [Level]
+-> Restructured much of the Level infrastructure code
+
+// TO DO: 2025-07-02 At the moment, we don't have a way of removing PhysicalObjects client side [Level]
+-> Restructured much of the Level infrastructure code
+
+// TO DO: 2026-08-12 How will AABB hitboxes be handled? [NetworkBroadcaster]
+-> Only need to worry about broadcasting additions and removals

@@ -1,9 +1,12 @@
 package templates.serverSide;
 
+import com.james.common.simulation.LevelProperties;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.serverSide.Scene;
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import com.james.tools.Time;
+import com.james.serverSide.simulation.objects.Updatable;
+import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
@@ -16,8 +19,7 @@ public class Scenes {
     public static final Scene nothingScene = new Scene() {
         @Override
         public void onStartup(Level level) {
-            level.skyboxName = "sky gradient";
-            level.skyboxUnmoving = false;
+            level.setSkyboxDetails("sky gradient", false);
         }
 
         @Override
@@ -40,24 +42,19 @@ public class Scenes {
             AABBHitbox aabbHitbox = new AABBHitbox(testEnvironment, "/scenes/test-scene.dae");
             level.addAABBHitbox(aabbHitbox);
 
-            MovableObject abstractArt = new MovableObject(level, PhysicalObjectType.Other, new Vector3f(0, 5, 0), new Vector3f(), 1) {
+            class CoolObject extends MovableObject implements Updatable {
                 private boolean firstTime = true;
-
                 private final float startTime;
 
-                {
+                private CoolObject(LevelProperties levelProperties, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
+                    super(levelProperties, type, position, rotation, scale);
                     startTime = Time.getCurrentTime();
                 }
 
                 @Override
-                public boolean update() {
+                public void moveUpdate() {
                     rotate(0, 10, 0);
 
-                    return super.update();
-                }
-
-                @Override
-                public void moveUpdate() {
                     if (firstTime) {
                         firstTime = false;
                         isAffectedByGravity = false;
@@ -71,22 +68,31 @@ public class Scenes {
                     }
 
                     super.moveUpdate();
-
-                    if (Time.getCurrentTime() - startTime > 10) {
-                        level.events.sendPhysicalObjectRemovedFromLevel(super.id);
-                    }
                 }
-            };
 
-            level.add(abstractArt);
+                @Override
+                public boolean update() {
+                    if (Time.getCurrentTime() - startTime > 20) {
+                        level.remove(this);
+                        return true;
+                    }
+
+                    level.events.sendPlaySoundAtPhysicalObject(Sound.CLICK, id);
+
+                    return false;
+                }
+            }
+
+            CoolObject coolObject = new CoolObject(level, PhysicalObjectType.Other, new Vector3f(0, 5, 0), new Vector3f(), 1);
+            level.add(coolObject);
+            level.addUpdatable(coolObject, null);
 
             float xDirection = (float) Math.cos(Math.toRadians(80));
             float yDirection = (float) Math.sin(Math.toRadians(80));
             VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
-            level.addVirtualDirectionalLight(sun);
+            level.addVirtualDirectionalLight(sun, false);
 
-            level.skyboxName = "sky with clouds";
-            level.skyboxUnmoving = false;
+            level.setSkyboxDetails("sky with clouds", false);
         }
 
         @Override
@@ -114,10 +120,9 @@ public class Scenes {
             float xDirection = (float) Math.cos(Math.toRadians(80));
             float yDirection = (float) Math.sin(Math.toRadians(80));
             VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
-            level.addVirtualDirectionalLight(sun);
+            level.addVirtualDirectionalLight(sun, false);
 
-            level.skyboxName = "sky gradient";
-            level.skyboxUnmoving = false;
+            level.setSkyboxDetails("sky gradient", false);
         }
 
         @Override
@@ -145,10 +150,9 @@ public class Scenes {
             float xDirection = (float) Math.cos(Math.toRadians(80));
             float yDirection = (float) Math.sin(Math.toRadians(80));
             VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
-            level.addVirtualDirectionalLight(sun);
+            level.addVirtualDirectionalLight(sun, false);
 
-            level.skyboxName = "sky gradient";
-            level.skyboxUnmoving = false;
+            level.setSkyboxDetails("sky gradient", false);
         }
 
         @Override
@@ -174,10 +178,9 @@ public class Scenes {
             float xDirection = (float) Math.cos(Math.toRadians(80));
             float yDirection = (float) Math.sin(Math.toRadians(80));
             VirtualDirectionalLight sun = new VirtualDirectionalLight(new Vector3f(xDirection, yDirection, 0), new Vector3f(1, 1, 1));
-            level.addVirtualDirectionalLight(sun);
+            level.addVirtualDirectionalLight(sun, false);
 
-            level.skyboxName = "sky gradient";
-            level.skyboxUnmoving = false;
+            level.setSkyboxDetails("sky gradient", false);
         }
 
         @Override

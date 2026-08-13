@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
  * An extension of PhysicalObject that allows for velocity and acceleration values, which get applied in the
  * overloaded update() method every game tick.
  */
-public class MovableObject extends PhysicalObject {
+public class MovableObject extends PhysicalObject implements MoveUpdatable {
 
     private final LevelProperties levelProperties;
 
@@ -42,6 +42,7 @@ public class MovableObject extends PhysicalObject {
         this.acceleration.z = z;
     }
 
+    @Override
     public void moveUpdate() {
         if (usesAcceleration) {
             Vector3f.add(velocity, Mth.multiply(this.acceleration, levelProperties.secondsPerGameTick), velocity);

@@ -45,7 +45,7 @@ public class ServerPacketReceiveActions {
 
         Level startLevel = Level.getFirstLevel();
         playerInfo.level = startLevel;
-        ConnectedPlayer connectedPlayer = new ConnectedPlayer(new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
+        ConnectedPlayer connectedPlayer = new ConnectedPlayer(playerInfo, new Vector3f(x, y, z), new Vector3f(0, rotY, 0));
         startLevel.addConnectedPlayer(playerInfo, connectedPlayer);
 
         for (PhysicalObject obj : startLevel.getPhysicalObjects()) {
@@ -75,7 +75,7 @@ public class ServerPacketReceiveActions {
             float joinedRotY = connectedPlayer.getRotation().y;
             startLevel.events.sendConnectedPlayerAdded(connectedPlayer.id, playerInfo.username, playerInfo.color, joinedPosition.x, joinedPosition.y, joinedPosition.z, joinedRotY, otherPlayerInfo);
         }
-        startLevel.events.sendSkyboxChanged(startLevel.skyboxName, startLevel.skyboxUnmoving, playerInfo);
+        startLevel.events.sendSkyboxChanged(startLevel.getSkyboxName(), startLevel.getSkyboxUnmoving(), playerInfo);
         startLevel.events.notifyThatLevelIsReady(playerInfo);
         startLevel.events.broadcastSystemMessage(playerInfo.username + " has joined the game");
     }
