@@ -1,8 +1,10 @@
 package templates.serverSide;
 
 import com.james.common.simulation.LevelProperties;
+import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.serverSide.Scene;
+import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import com.james.tools.Time;
 import com.james.serverSide.simulation.objects.Updatable;
@@ -43,27 +45,22 @@ public class Scenes {
             level.addAABBHitbox(aabbHitbox);
 
             class CoolObject extends MovableObject implements Updatable {
-                private boolean firstTime = true;
                 private final float startTime;
 
                 private CoolObject(LevelProperties levelProperties, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
                     super(levelProperties, type, position, rotation, scale);
                     startTime = Time.getCurrentTime();
+                    isAffectedByGravity = false;
+                    setVelocity(6, 0, 0);
                 }
 
                 @Override
                 public void moveUpdate() {
                     rotate(0, 10, 0);
 
-                    if (firstTime) {
-                        firstTime = false;
-                        isAffectedByGravity = false;
-                        setVelocity(6, 0, 0);
-                    }
-
-                    if (getPosition().x >= 10) {
+                    if (getPosition().x >= 8) {
                         setVelocity(-6, 0, 0);
-                    } else if (getPosition().x <= -10) {
+                    } else if (getPosition().x <= -8) {
                         setVelocity(6, 0, 0);
                     }
 
@@ -83,9 +80,12 @@ public class Scenes {
                 }
             }
 
-            CoolObject coolObject = new CoolObject(level, PhysicalObjectType.Other, new Vector3f(0, 5, 0), new Vector3f(), 1);
+            CoolObject coolObject = new CoolObject(level, PhysicalObjectType.Other, new Vector3f(0, 4, 0), new Vector3f(), 1);
             level.add(coolObject);
             level.addUpdatable(coolObject, null);
+
+            EllipsoidHitbox coolObjectHitbox = new EllipsoidHitbox(coolObject, EllipsoidDimensions.get(1, 1, 1));
+            level.addEllipsoidHitbox(coolObjectHitbox);
 
             float xDirection = (float) Math.cos(Math.toRadians(80));
             float yDirection = (float) Math.sin(Math.toRadians(80));

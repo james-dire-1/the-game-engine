@@ -5,6 +5,7 @@ import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.visuals.Skybox;
 import com.james.audio.PositionalAudioMaster;
 import com.james.tools.LightHandler;
+import newStuff.CachedSphereHitbox;
 import templates.audio.SoundToPathConverter;
 import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
@@ -19,7 +20,6 @@ import com.james.tools.ColorUtils;
 import com.james.tools.Time;
 import game.main.Main;
 import game.ui.screens.ChatScreen;
-import newStuff.rayStuffOnHold.GeneralSphereHitbox;
 import game.ui.screens.UsernamePromptScreen;
 import templates.rendering.PhysicalToVisualConverter;
 import templates.gameplay.GameLoader;
@@ -58,7 +58,8 @@ public class ClientPacketReceiveActions {
     private static final String
             PHYS_OBJ_ID_AND_TYPE    = "PhysicalObject of id %d and of type %s",
             PHYS_OBJ_ID             = "PhysicalObject of id %d",
-            AABB_ID_PATH_IDENTIFIER = "AABBHitbox of mesh path %s and of sub mesh identifier %d, for PhysicalObject of id %d",
+            AABB_PATH_IDENTIFIER_ID = "AABBHitbox of mesh path %s and of sub mesh identifier %d, for PhysicalObject of id %d",
+            SPHERE_RADIUS_ID        = "SphereHitbox of radius %f, for PhysicalObject of id %d",
             CON_PLR_ID_AND_NAME     = "ConnectedPlayer of id %d and of username %s",
             CON_PLR_ID              = "ConnectedPlayer of id %d",
             SECS_PER_TICK           = "seconds per game tick to %f",
@@ -95,12 +96,18 @@ public class ClientPacketReceiveActions {
             PHYS_SCA_LVL        = WARN_SCA + PHYS_OBJ_ID + LVL_NOT_INST,
             PHYS_TRA_DNE        = WARN_TRA + PHYS_OBJ_ID + DNE,
             PHYS_TRA_LVL        = WARN_TRA + PHYS_OBJ_ID + LVL_NOT_INST,
-            AABB_ADD_DNE_PHYS   = WARN_ADD + AABB_ID_PATH_IDENTIFIER + DNE_PHYS_OBJ,
-            AABB_ADD_EXISTS     = WARN_ADD + AABB_ID_PATH_IDENTIFIER + EXISTS,
-            AABB_ADD_LVL        = WARN_ADD + AABB_ID_PATH_IDENTIFIER + LVL_NOT_INST,
-            AABB_REM_DNE_PHYS   = WARN_REM + AABB_ID_PATH_IDENTIFIER + DNE_PHYS_OBJ,
-            AABB_REM_DNE        = WARN_REM + AABB_ID_PATH_IDENTIFIER + DNE,
-            AABB_REM_LVL        = WARN_REM + AABB_ID_PATH_IDENTIFIER + LVL_NOT_INST,
+            AABB_ADD_DNE_PHYS   = WARN_ADD + AABB_PATH_IDENTIFIER_ID + DNE_PHYS_OBJ,
+            AABB_ADD_EXISTS     = WARN_ADD + AABB_PATH_IDENTIFIER_ID + EXISTS,
+            AABB_ADD_LVL        = WARN_ADD + AABB_PATH_IDENTIFIER_ID + LVL_NOT_INST,
+            AABB_REM_DNE_PHYS   = WARN_REM + AABB_PATH_IDENTIFIER_ID + DNE_PHYS_OBJ,
+            AABB_REM_DNE        = WARN_REM + AABB_PATH_IDENTIFIER_ID + DNE,
+            AABB_REM_LVL        = WARN_REM + AABB_PATH_IDENTIFIER_ID + LVL_NOT_INST,
+            SPH_ADD_DNE_PHYS    = WARN_ADD + SPHERE_RADIUS_ID + DNE_PHYS_OBJ,
+            SPH_ADD_EXISTS      = WARN_ADD + SPHERE_RADIUS_ID + EXISTS,
+            SPH_ADD_LVL         = WARN_ADD + SPHERE_RADIUS_ID + LVL_NOT_INST,
+            SPH_REM_DNE_PHYS    = WARN_REM + SPHERE_RADIUS_ID + DNE_PHYS_OBJ,
+            SPH_REM_DNE         = WARN_REM + SPHERE_RADIUS_ID + DNE,
+            SPH_REM_LVL         = WARN_REM + SPHERE_RADIUS_ID + LVL_NOT_INST,
             PLR_ADD_EXISTS      = WARN_ADD + CON_PLR_ID_AND_NAME + EXISTS,
             PLR_ADD_LVL         = WARN_ADD + CON_PLR_ID_AND_NAME + LVL_NOT_INST,
             PLR_TRA_DNE         = WARN_TRA + CON_PLR_ID + DNE,
@@ -340,6 +347,44 @@ public class ClientPacketReceiveActions {
         }
     }
 
+    public static void sphereHitboxAddedReceived(int id, float radius) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.sphereHitboxAddedReceived");
+
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            if (level.getCachedPhysicalObject(id) == null) {
+                warn(String.format(SPH_ADD_DNE_PHYS, radius, id));
+            }
+
+            boolean success = level.addCachedSphereHitbox(id, new CachedSphereHitbox(id, radius));
+            if (!success) {
+                warn(String.format(SPH_ADD_EXISTS, radius, id));
+            }
+        } else {
+            warn(String.format(SPH_ADD_LVL, radius, id));
+        }
+    }
+
+    public static void sphereHitboxRemovedReceived(int id, float radius) {
+        if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.sphereHitboxRemovedReceived");
+
+        ClientLevel level = ClientLevel.get();
+
+        if (level != null) {
+            if (level.getCachedPhysicalObject(id) == null) {
+                warn(String.format(SPH_REM_DNE_PHYS, radius, id));
+            }
+
+            boolean success = level.removeCachedSphereHitbox(id, radius);
+            if (!success) {
+                warn(String.format(SPH_REM_DNE, radius, id));
+            }
+        } else {
+            warn(String.format(SPH_REM_LVL, radius, id));
+        }
+    }
+
     public static void connectedPlayerAddedReceived(int id, String username, int color, float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.connectedPlayerAddedReceived " + "{id=" + id + "}");
 
@@ -355,9 +400,6 @@ public class ClientPacketReceiveActions {
                 GameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
                 cachedConnectedPlayer.setGameObject(gameObject);
-
-                GeneralSphereHitbox generalSphereHitbox = new GeneralSphereHitbox(id, 1);
-                ClientLevel.get().addGeneralSphereHitbox(generalSphereHitbox);
             } else {
                 warn(String.format(PLR_ADD_EXISTS, id, username));
             }

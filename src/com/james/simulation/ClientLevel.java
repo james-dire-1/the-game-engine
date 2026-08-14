@@ -6,8 +6,8 @@ import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import newStuff.rayStuffOnHold.GeneralSphereCollisionHandler;
-import newStuff.rayStuffOnHold.GeneralSphereHitbox;
+import newStuff.CachedSphereHitbox;
+import newStuff.RSTClientCollisionHandler;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -31,14 +31,14 @@ public class ClientLevel extends LevelProperties {
     private final Map<Integer, CachedPhysicalObject> cachedPhysicalObjects = new HashMap<>();
     private final Map<Integer, CachedConnectedPlayer> cachedConnectedPlayers = new HashMap<>();
     private final ClientCollisionHandler clientCollisionHandler;
-    private final GeneralSphereCollisionHandler generalSphereCollisionHandler;
+    private final RSTClientCollisionHandler rstClientCollisionHandler;
 
     public ClientLevel(ClientPacketSendEvents events, Vector3f playerPosition, Vector3f playerHitboxRadius) {
         this.events = events;
 
         this.player = new Player(this, playerPosition);
         this.clientCollisionHandler = new ClientCollisionHandler(this, this.player, playerHitboxRadius);
-        this.generalSphereCollisionHandler = new GeneralSphereCollisionHandler();
+        this.rstClientCollisionHandler = new RSTClientCollisionHandler();
 
         instance = this;
     }
@@ -48,8 +48,10 @@ public class ClientLevel extends LevelProperties {
      * called every game tick. Collisions are updated here. Called from the PlayerHandler.
      */
     public void update() {
+        player.moveUpdate();
+
         if (!player.isAffectedByAABBCollisions) {
-            player.moveUpdate();
+            player.setPositionBasedOnVelocity();
         }
 
         clientCollisionHandler.update();
@@ -77,23 +79,6 @@ public class ClientLevel extends LevelProperties {
         return cachedPhysicalObjects.values();
     }
 
-    public boolean addCachedAABBHitbox(int physicalObjectId, CachedAABBHitbox cachedAABBHitbox) {
-        CachedAABBHitbox.Identifier identifier = new CachedAABBHitbox.Identifier(physicalObjectId, cachedAABBHitbox.meshPath, cachedAABBHitbox.subMeshIdentifier);
-
-        if (clientCollisionHandler.cachedAABBHitboxes.containsKey(identifier)) {
-            return false;
-        }
-
-        clientCollisionHandler.cachedAABBHitboxes.put(identifier, cachedAABBHitbox);
-        return true;
-    }
-
-    public boolean removeCachedAABBHitbox(int physicalObjectId, String meshPath, int subMeshIdentifier) {
-        CachedAABBHitbox.Identifier identifier = new CachedAABBHitbox.Identifier(physicalObjectId, meshPath, subMeshIdentifier);
-        CachedAABBHitbox previousValue = clientCollisionHandler.cachedAABBHitboxes.remove(identifier);
-        return previousValue != null;
-    }
-
     public boolean addCachedConnectedPlayer(int id, CachedConnectedPlayer connectedPlayer) {
         if (cachedConnectedPlayers.containsKey(id)) {
             return false;
@@ -116,8 +101,38 @@ public class ClientLevel extends LevelProperties {
         return cachedConnectedPlayers.values();
     }
 
-    public void addGeneralSphereHitbox(GeneralSphereHitbox generalSphereHitbox) {
-        generalSphereCollisionHandler.generalSphereHitboxes.add(generalSphereHitbox);
+    public boolean addCachedAABBHitbox(int physicalObjectId, CachedAABBHitbox cachedAABBHitbox) {
+        CachedAABBHitbox.Identifier identifier = new CachedAABBHitbox.Identifier(physicalObjectId, cachedAABBHitbox.meshPath, cachedAABBHitbox.subMeshIdentifier);
+
+        if (clientCollisionHandler.cachedAABBHitboxes.containsKey(identifier)) {
+            return false;
+        }
+
+        clientCollisionHandler.cachedAABBHitboxes.put(identifier, cachedAABBHitbox);
+        return true;
+    }
+
+    public boolean removeCachedAABBHitbox(int physicalObjectId, String meshPath, int subMeshIdentifier) {
+        CachedAABBHitbox.Identifier identifier = new CachedAABBHitbox.Identifier(physicalObjectId, meshPath, subMeshIdentifier);
+        CachedAABBHitbox previousValue = clientCollisionHandler.cachedAABBHitboxes.remove(identifier);
+        return previousValue != null;
+    }
+
+    public boolean addCachedSphereHitbox(int physicalObjectId, CachedSphereHitbox cachedSphereHitbox) {
+        CachedSphereHitbox.Identifier identifier = new CachedSphereHitbox.Identifier(physicalObjectId, cachedSphereHitbox.radius);
+
+        if (rstClientCollisionHandler.cachedSphereHitboxes.containsKey(identifier)) {
+            return false;
+        }
+
+        rstClientCollisionHandler.cachedSphereHitboxes.put(identifier, cachedSphereHitbox);
+        return true;
+    }
+
+    public boolean removeCachedSphereHitbox(int physicalObjectId, float radius) {
+        CachedSphereHitbox.Identifier identifier = new CachedSphereHitbox.Identifier(physicalObjectId, radius);
+        CachedSphereHitbox previousValue = rstClientCollisionHandler.cachedSphereHitboxes.remove(identifier);
+        return previousValue != null;
     }
 
     private static ClientLevel instance;

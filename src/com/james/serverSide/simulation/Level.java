@@ -9,6 +9,8 @@ import com.james.serverSide.simulation.objects.*;
 import com.james.serverSide.communication.NetworkBroadcaster;
 import com.james.serverSide.simulation.objects.Updatable;
 import com.james.serverSide.simulation.objects.MoveUpdatable;
+import newStuff.RSTCollisionHandler;
+import newStuff.SphereHitbox;
 import org.lwjgl.util.vector.Vector3f;
 import templates.serverSide.communication.ServerPacketSendEvents;
 import templates.serverSide.PlayerInfo;
@@ -33,6 +35,7 @@ public class Level extends LevelProperties {
     private final Map<PlayerInfo, ConnectedPlayer> connectedPlayersMap = new HashMap<>();
     private final List<PhysicalObject> physicalObjects = new ArrayList<>();
     private final CollisionHandler collisionHandler = new CollisionHandler(this);
+    private final RSTCollisionHandler rstCollisionHandler = new RSTCollisionHandler();
     private final List<Updatable> updatables = new ArrayList<>();
 
     private final List<VirtualLight> virtualLights = new ArrayList<>();
@@ -70,18 +73,14 @@ public class Level extends LevelProperties {
             for (PhysicalObject object : physicalObjects) {
                 if (object instanceof MoveUpdatable) {
                     MoveUpdatable moveUpdatable = (MoveUpdatable) object;
-                    boolean performRegularMove = false;
+                    moveUpdatable.moveUpdate();
 
                     if (moveUpdatable instanceof MovableObject) {
-                        if (!((MovableObject) moveUpdatable).isAffectedByAABBCollisions) {
-                            performRegularMove = true;
-                        }
-                    } else {
-                        performRegularMove = true;
-                    }
+                        MovableObject movableObject = (MovableObject) moveUpdatable;
 
-                    if (performRegularMove) {
-                        moveUpdatable.moveUpdate();
+                        if (!movableObject.isAffectedByAABBCollisions) {
+                            movableObject.setPositionBasedOnVelocity();
+                        }
                     }
                 }
             }
@@ -157,6 +156,20 @@ public class Level extends LevelProperties {
 
     public List<AABBHitbox> getAABBHitboxes() {
         return collisionHandler.aabbHitboxes;
+    }
+
+    public void addSphereHitbox(SphereHitbox sphereHitbox) {
+        rstCollisionHandler.sphereHitboxes.add(sphereHitbox);
+        broadcaster.sphereHitboxQueueAdditionBroadcast(sphereHitbox);
+    }
+
+    public boolean removeSphereHitbox(SphereHitbox sphereHitbox) {
+        broadcaster.sphereHitboxQueueRemovalBroadcast(sphereHitbox);
+        return rstCollisionHandler.sphereHitboxes.remove(sphereHitbox);
+    }
+
+    public List<SphereHitbox> getSphereHitboxes() {
+        return rstCollisionHandler.sphereHitboxes;
     }
 
     public void addUpdatable(Updatable updatable, Updatable.State updatableState) {

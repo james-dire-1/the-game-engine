@@ -77,10 +77,12 @@ public class CommonCollisionProcedure {
         Vector3f finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, basePoint, displacementThisTick, 0);
 
         // Velocity (AKA displacementThisTick) vector is the gravity vector
-        displacementThisTick = Mth.multiply(levelProperties.gravity, levelProperties.secondsPerGameTick);
-        PointOperations.dividePointByEllipsoidRadiusDest(displacementThisTick, ellipsoidHitboxRadius);
+        if (movableObject.isAffectedByGravity) {
+            displacementThisTick = Mth.multiply(levelProperties.gravity, levelProperties.secondsPerGameTick);
+            PointOperations.dividePointByEllipsoidRadiusDest(displacementThisTick, ellipsoidHitboxRadius);
 
-        finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, finalPosition, displacementThisTick, 0);
+            finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, finalPosition, displacementThisTick, 0);
+        }
 
         // Convert result back into R3
         PointOperations.multiplyPointByEllipsoidRadiusDest(finalPosition, ellipsoidHitboxRadius);

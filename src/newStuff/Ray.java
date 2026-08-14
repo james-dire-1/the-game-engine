@@ -1,4 +1,4 @@
-package newStuff.rayStuffOnHold;
+package newStuff;
 
 import org.lwjgl.util.vector.Vector3f;
 

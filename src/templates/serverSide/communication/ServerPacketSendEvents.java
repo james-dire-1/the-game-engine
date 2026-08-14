@@ -23,6 +23,8 @@ public interface ServerPacketSendEvents {
     void sendPhysicalObjectTransformChanged(int id, Vector3f position, Vector3f rotation, float scale);
     void sendAABBHitboxAdded(int id, String meshPath, int subMeshIdentifier, PlayerInfo... playerInfoArray);
     void sendAABBHitboxRemoved(int id, String meshPath, int subMeshIdentifier);
+    void sendSphereHitboxAdded(int id, float radius, PlayerInfo... playerInfoArray);
+    void sendSphereHitboxRemoved(int id, float radius);
     void sendConnectedPlayerAdded(int id, String username, int color, float x, float y, float z, float rotY, PlayerInfo playerInfo);
     void sendConnectedPlayerTransformChanged(int id, float x, float y, float z, float rotY, PlayerInfo exceptPlayerInfo);
     void sendConnectedPlayerLeft(int id, PlayerInfo exceptPlayerInfo);

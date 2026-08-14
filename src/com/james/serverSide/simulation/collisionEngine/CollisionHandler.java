@@ -5,7 +5,6 @@ import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;
-import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +19,11 @@ public class CollisionHandler {
 
     private final Level level;
 
-    private final Vector3f reusablePrevPosition = new Vector3f();
-
     public CollisionHandler(Level level) {
         this.level = level;
     }
 
+    // TODO: 2026-08-14 outdated documentation
     /**
      * Updates collision logic.
      *
@@ -37,16 +35,9 @@ public class CollisionHandler {
             MovableObject movableObject = ellipsoidHitbox.movableObject;
 
             if (movableObject.isAffectedByAABBCollisions) {
-                reusablePrevPosition.set(movableObject.getPosition());
-
                 boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, level, null);
                 if (!algorithmPerformed) {
-                    movableObject.moveUpdate();
-                }
-
-                Vector3f newPosition = movableObject.getPosition();
-                if (!newPosition.equals(reusablePrevPosition)) {
-                    level.events.sendPhysicalObjectMoved(movableObject.id, newPosition.x, newPosition.y, newPosition.z);
+                    movableObject.setPositionBasedOnVelocity();
                 }
             }
         }

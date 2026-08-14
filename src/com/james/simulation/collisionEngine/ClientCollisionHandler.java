@@ -40,7 +40,7 @@ public class ClientCollisionHandler {
         if (player.isAffectedByAABBCollisions) {
             boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerHitbox, cachedAABBHitboxes.values(), levelProperties, DebugScreen.collisionsAccumulator);
             if (!algorithmPerformed) {
-                player.moveUpdate();
+                player.setPositionBasedOnVelocity();
             }
         }
     }

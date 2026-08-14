@@ -19,9 +19,13 @@ public class MovableObject extends PhysicalObject implements MoveUpdatable {
     public Vector3f getVelocity() { return velocity; }
     public Vector3f getAcceleration() { return acceleration; }
 
+    // TODO: 2026-08-14 isAffectedByGravity is not taken into account in collision logic
     public boolean isAffectedByGravity = true;
+    // TODO: 2026-08-14 make more restricted to signify that this should not be modified directly
     public boolean isAffectedByAABBCollisions = false;
     private boolean usesAcceleration = false;
+
+    private final Vector3f tempNetVelocity = new Vector3f();
 
     public MovableObject(LevelProperties levelProperties, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
         super(type, position, rotation, scale);
@@ -48,14 +52,15 @@ public class MovableObject extends PhysicalObject implements MoveUpdatable {
             Vector3f.add(velocity, Mth.multiply(this.acceleration, levelProperties.secondsPerGameTick), velocity);
         }
 
-        Vector3f netVelocity;
         if (isAffectedByGravity) {
-            netVelocity = Vector3f.add(velocity, levelProperties.gravity, null);
+            Vector3f.add(velocity, levelProperties.gravity, tempNetVelocity);
         } else {
-            netVelocity = velocity;
+            tempNetVelocity.set(velocity);
         }
+    }
 
-        Vector3f.add(position, Mth.multiply(netVelocity, levelProperties.secondsPerGameTick), position);
+    public void setPositionBasedOnVelocity() {
+        Vector3f.add(position, Mth.multiply(tempNetVelocity, levelProperties.secondsPerGameTick), position);
     }
 
 }

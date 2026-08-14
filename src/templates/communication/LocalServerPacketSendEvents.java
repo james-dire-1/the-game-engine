@@ -122,6 +122,24 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
+    public void sendSphereHitboxAdded(int id, float radius, PlayerInfo... playerInfoArray) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendSphereHitboxAdded");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.sphereHitboxAddedReceived(id, radius);
+        });
+    }
+
+    @Override
+    public void sendSphereHitboxRemoved(int id, float radius) {
+        if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendSphereHitboxRemoved");
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.sphereHitboxRemovedReceived(id, radius);
+        });
+    }
+
+    @Override
     public void sendConnectedPlayerAdded(int id, String username, int color, float x, float y, float z, float rotY, PlayerInfo playerInfo) {
         if (IS_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendConnectedPlayerAdded " + "{id=" + id + "} to {id=" + playerInfo.getConnectedPlayer().id + "}");
 

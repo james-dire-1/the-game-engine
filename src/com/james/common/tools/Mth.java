@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Mth {
 
+    // TODO: 2026-08-14 A bunch of these methods should be optimized; we're creating new instances like crazy!
     public static Vector3f multiply(Vector3f vector, float a) {
         return new Vector3f(vector.x * a, vector.y * a, vector.z * a);
     }

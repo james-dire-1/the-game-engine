@@ -3,6 +3,7 @@ package com.james.serverSide.communication;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.objects.*;
 import com.james.serverSide.simulation.objects.MoveUpdatable;
+import newStuff.SphereHitbox;
 import org.lwjgl.util.vector.Vector3f;
 import templates.serverSide.communication.ServerPacketSendEvents;
 
@@ -23,12 +24,14 @@ public class NetworkBroadcaster {
     private final List<VirtualLight> addedVirtualLights = new ArrayList<>();
     private final List<VirtualDirectionalLight> addedVirtualDirectionalLights = new ArrayList<>();
     private final List<AABBHitbox> addedAABBHitboxes = new ArrayList<>();
+    private final List<SphereHitbox> addedSphereHitboxes = new ArrayList<>();
     private SkyboxDetails newSkyboxDetails = null;
 
     private final List<PhysicalObject> removedPhysicalObjects = new ArrayList<>();
     private final List<VirtualLight> removedVirtualLights = new ArrayList<>();
     private final List<VirtualDirectionalLight> removedVirtualDirectionalLights = new ArrayList<>();
     private final List<AABBHitbox> removedAABBHitboxes = new ArrayList<>();
+    private final List<SphereHitbox> removedSphereHitboxes = new ArrayList<>();
 
     private final ServerPacketSendEvents events;
 
@@ -97,6 +100,10 @@ public class NetworkBroadcaster {
         addedAABBHitboxes.add(hitbox);
     }
 
+    public void sphereHitboxQueueAdditionBroadcast(SphereHitbox hitbox) {
+        addedSphereHitboxes.add(hitbox);
+    }
+
     public void newSkyboxDetailsBroadcast(String name, boolean unmoving) {
         this.newSkyboxDetails = new SkyboxDetails(name, unmoving);
     }
@@ -121,12 +128,16 @@ public class NetworkBroadcaster {
     }
 
     public void stopTrackingVirtualDirectionalLightAndQueueRemovalBroadcast(VirtualDirectionalLight light) {
-        VirtualDirectionalLightState previousValue = virtualDirectionalLightStates.remove(light); // if present
+        virtualDirectionalLightStates.remove(light); // if present
         removedVirtualDirectionalLights.add(light);
     }
 
     public void aabbHitboxQueueRemovalBroadcast(AABBHitbox hitbox) {
         removedAABBHitboxes.add(hitbox);
+    }
+
+    public void sphereHitboxQueueRemovalBroadcast(SphereHitbox hitbox) {
+        removedSphereHitboxes.add(hitbox);
     }
 
     public void broadcastAllChanges() {
@@ -161,6 +172,11 @@ public class NetworkBroadcaster {
         }
         addedAABBHitboxes.clear();
 
+        for (SphereHitbox hitbox : addedSphereHitboxes) {
+            events.sendSphereHitboxAdded(((PhysicalObject) hitbox.object).id, hitbox.radius);
+        }
+        addedSphereHitboxes.clear();
+
         if (newSkyboxDetails != null) {
             events.sendSkyboxChanged(newSkyboxDetails.name, newSkyboxDetails.unmoving);
             newSkyboxDetails = null;
@@ -187,6 +203,11 @@ public class NetworkBroadcaster {
             events.sendAABBHitboxRemoved(((PhysicalObject) hitbox.object).id, hitbox.meshPath, hitbox.subMeshIdentifier);
         }
         removedAABBHitboxes.clear();
+
+        for (SphereHitbox hitbox : removedSphereHitboxes) {
+            events.sendSphereHitboxRemoved(((PhysicalObject) hitbox.object).id, hitbox.radius);
+        }
+        removedSphereHitboxes.clear();
     }
 
     private void broadcastPhysicalObjectChanges() {

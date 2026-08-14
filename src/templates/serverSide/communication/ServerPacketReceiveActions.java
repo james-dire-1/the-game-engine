@@ -2,6 +2,7 @@ package templates.serverSide.communication;
 
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import com.james.serverSide.simulation.objects.VirtualLight;
+import newStuff.SphereHitbox;
 import templates.serverSide.PlayerInfo;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
@@ -53,6 +54,9 @@ public class ServerPacketReceiveActions {
         }
         for (AABBHitbox aabbHitbox : startLevel.getAABBHitboxes()) {
             startLevel.events.sendAABBHitboxAdded(((PhysicalObject) aabbHitbox.object).id, aabbHitbox.meshPath, aabbHitbox.subMeshIdentifier, playerInfo);
+        }
+        for (SphereHitbox sphereHitbox : startLevel.getSphereHitboxes()) {
+            startLevel.events.sendSphereHitboxAdded(((PhysicalObject) sphereHitbox.object).id, sphereHitbox.radius, playerInfo);
         }
         for (VirtualLight virtualLight : startLevel.getVirtualLights()) {
             startLevel.events.sendVirtualLightAddedToLevel(virtualLight.id, virtualLight.getPosition(), virtualLight.getColor(), virtualLight.getAttenuation(), playerInfo);
