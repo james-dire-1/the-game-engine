@@ -2,9 +2,11 @@ package templates.gameplay;
 
 import com.james.audio.objects.AudioListener;
 import com.james.common.tools.Mth;
+import com.james.input.ClickInput;
 import com.james.input.KeyInput;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
+import com.james.renderEngine.models.Model;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;
@@ -15,14 +17,11 @@ import com.james.simulation.ClientLevel;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
-import com.james.tools.BatchedGameObjectsList;
-import com.james.tools.Time;
-import com.james.tools.Vector3fInterpolator;
+import com.james.tools.*;
 import game.ui.screens.PauseScreen;
 import com.james.renderEngine.visuals.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
 import game.ui.screens.DebugScreen;
-import com.james.tools.LightHandler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
@@ -53,6 +52,7 @@ public abstract class GameLoader {
     private static final Vector3f facingDirection = new Vector3f();
 
 //    private final float referenceTime;
+    private final MousePicker mousePicker = new MousePicker(focusCamera);
 
     public GameLoader(ClientPacketSendEvents events, Vector3f spawnPoint) {
         batchedGameObjectsList = new BatchedGameObjectsList();

@@ -18,7 +18,7 @@ public abstract class AbstractAABBHitbox {
     public final AbstractPhysicalObject object;
     public final String meshPath;
     public final int subMeshIdentifier;
-    private final ModelMesh mesh;
+    public final ModelMesh mesh;
 
     public float lowerX, upperX, lowerY, upperY, lowerZ, upperZ;
 

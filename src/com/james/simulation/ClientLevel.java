@@ -1,19 +1,21 @@
 package com.james.simulation;
 
 import com.james.common.simulation.LevelProperties;
+import com.james.input.ClickInput;
+import com.james.renderEngine.gameObjects.GameObject;
 import com.james.simulation.collisionEngine.ClientCollisionHandler;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import newStuff.CachedSphereHitbox;
-import newStuff.RSTClientCollisionHandler;
+import com.james.tools.MousePicker;
+import newStuff.*;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
+import templates.gameplay.GameLoader;
+import templates.rendering.ModelBank;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Client version of the Level class. Holds information about cached objects, as well as the Player. Also,
@@ -43,6 +45,7 @@ public class ClientLevel extends LevelProperties {
         instance = this;
     }
 
+    private final MousePicker mousePicker = new MousePicker(GameLoader.focusCamera);
     /**
      * Method that only gets called once the server is ready, i.e. the isReady property is set to true. Gets
      * called every game tick. Collisions are updated here. Called from the PlayerHandler.
@@ -55,6 +58,19 @@ public class ClientLevel extends LevelProperties {
         }
 
         clientCollisionHandler.update();
+
+        if (ClickInput.isLeftClickPressed()) {
+            mousePicker.update();
+
+            Ray ray = new Ray(GameLoader.focusCamera.getPosition(), mousePicker.getCurrentRay());
+            RayTriangleInfo rayTriangleInfo = new RayTriangleInfo();
+            RSTCommonCollisionProcedure.findClosestRayIntersectionWithTriangle(ray, -1, 1000, clientCollisionHandler.cachedAABBHitboxes.values(), rayTriangleInfo);
+
+            if (rayTriangleInfo.closestIntersectionPoint != null) {
+                // GameLoader.batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getColorAbstractArt(), rayTriangleInfo.closestIntersectionPoint));
+                player.setPosition(rayTriangleInfo.closestIntersectionPoint.x, rayTriangleInfo.closestIntersectionPoint.y, rayTriangleInfo.closestIntersectionPoint.z);
+            }
+        }
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {

@@ -1,74 +1,164 @@
 package newStuff;
 
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
+import com.james.common.simulation.collisionEngine.math.CollisionMath;
 import com.james.common.simulation.collisionEngine.math.Plane;
+import com.james.common.simulation.collisionEngine.math.PointOperations;
+import com.james.common.simulation.collisionEngine.math.Triangle;
+import com.james.common.simulation.collisionEngine.prep.ModelMesh;
 import com.james.common.tools.Mth;
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class RSTCommonCollisionProcedure {
 
-    // The algorithm and code were obtained from these videos by Jorge Rodriguez:
-    // https://www.youtube.com/watch?v=USjbg5QXk3g
-    // https://www.youtube.com/watch?v=3vONlLYtHUE
-    public static Vector3f rayAndAABBIntersection(Ray ray, float rayLength, AbstractAABBHitbox aabb) {
+    public static void findClosestRayIntersectionWithSphere(Ray ray, float detectionRadius, Collection<? extends AbstractSphereHitbox> sphereHitboxes, RaySphereInfo raySphereInfo) {
+        boolean interestedInIntersectionPoint = raySphereInfo.interestedInIntersectionPoint;
+        boolean interestedInCollidedHitbox = raySphereInfo.interestedInCollidedHitbox;
+        List<Vector3f> intersectionPoints = new ArrayList<>();
+        List<AbstractSphereHitbox> collidedHitboxes = null;
+
+        if (interestedInCollidedHitbox) {
+            collidedHitboxes = new ArrayList<>();
+        }
+
+        findAllRayIntersectionsWithSpheres(ray, detectionRadius, sphereHitboxes, intersectionPoints, collidedHitboxes);
+
+        Vector3f closestIntersectionPoint = null;
+        AbstractSphereHitbox closestCollidedHitbox = null;
+        float smallestDistanceSquared = Float.MAX_VALUE;
+
+        for (int i = 0; i < intersectionPoints.size(); i++) {
+            Vector3f intersectionPoint = intersectionPoints.get(i);
+            float distanceSquared = Mth.squaredDistance(ray.origin, intersectionPoint);
+
+            if (distanceSquared < smallestDistanceSquared) {
+                closestIntersectionPoint = intersectionPoint;
+                smallestDistanceSquared = distanceSquared;
+
+                if (interestedInCollidedHitbox) {
+                    closestCollidedHitbox = collidedHitboxes.get(i);
+                }
+            }
+        }
+
+        if (interestedInIntersectionPoint) {
+            raySphereInfo.closestIntersectionPoint = closestIntersectionPoint;
+        }
+        if (interestedInCollidedHitbox) {
+            raySphereInfo.closestCollidedHitbox = closestCollidedHitbox;
+        }
+    }
+
+    public static void findAllRayIntersectionsWithSpheres(Ray ray, float detectionRadius, Collection<? extends AbstractSphereHitbox> sphereHitboxes, List<Vector3f> intersectionPoints, List<AbstractSphereHitbox> collidedHitboxes) {
+        boolean interestedInIntersectionPoints = intersectionPoints != null;
+        boolean interestedInCollidedHitboxes = collidedHitboxes != null;
+        float detectionRadiusSquared = detectionRadius * detectionRadius;
+
+        for (AbstractSphereHitbox sphereHitbox : sphereHitboxes) {
+            if (Mth.squaredDistance(ray.origin, sphereHitbox.object.getPosition()) > detectionRadiusSquared  && detectionRadius > 0)
+                continue;
+
+            Vector3f intersectionPoint = null;
+            if (interestedInIntersectionPoints) {
+                intersectionPoint = new Vector3f();
+            }
+
+            boolean inSphere = RSTCollisionMath.rayAndSphereIntersection(ray, sphereHitbox, intersectionPoint);
+
+            if (inSphere) {
+                if (interestedInIntersectionPoints) {
+                    intersectionPoints.add(intersectionPoint);
+                }
+
+                if (interestedInCollidedHitboxes) {
+                    collidedHitboxes.add(sphereHitbox);
+                }
+            }
+        }
+    }
+
+    public static void findClosestRayIntersectionWithTriangle(Ray ray, float detectionRadius, float rayLength, Collection<? extends AbstractAABBHitbox> aabbHitboxes, RayTriangleInfo rayTriangleInfo) {
+        boolean interestedInIntersectionPoint = rayTriangleInfo.interestedInIntersectionPoint;
+        boolean interestedInCollidedHitbox = rayTriangleInfo.interestedInCollidedHitbox;
+        List<Vector3f> intersectionPoints = new ArrayList<>();
+        List<AbstractAABBHitbox> collidedHitboxes = null;
+
+        if (interestedInCollidedHitbox) {
+            collidedHitboxes = new ArrayList<>();
+        }
+
+        findAllRayIntersectionsWithTriangles(ray, detectionRadius, rayLength, aabbHitboxes, intersectionPoints, collidedHitboxes);
+
+        Vector3f closestIntersectionPoint = null;
+        AbstractAABBHitbox closestCollidedHitbox = null;
+        float smallestDistanceSquared = Float.MAX_VALUE;
+
+        for (int i = 0; i < intersectionPoints.size(); i++) {
+            Vector3f intersectionPoint = intersectionPoints.get(i);
+            float distanceSquared = Mth.squaredDistance(ray.origin, intersectionPoint);
+
+            if (distanceSquared < smallestDistanceSquared) {
+                closestIntersectionPoint = intersectionPoint;
+                smallestDistanceSquared = distanceSquared;
+
+                if (interestedInCollidedHitbox) {
+                    closestCollidedHitbox = collidedHitboxes.get(i);
+                }
+            }
+        }
+
+        if (interestedInIntersectionPoint) {
+            rayTriangleInfo.closestIntersectionPoint = closestIntersectionPoint;
+        }
+        if (interestedInCollidedHitbox) {
+            rayTriangleInfo.closestCollidedHitbox = closestCollidedHitbox;
+        }
+    }
+
+    public static void findAllRayIntersectionsWithTriangles(Ray ray, float detectionRadius, float rayLength, Collection<? extends AbstractAABBHitbox> aabbHitboxes, List<Vector3f> intersectionPoints, List<AbstractAABBHitbox> collidedHitboxes) {
+        boolean interestedInIntersectionPoints = intersectionPoints != null;
+        boolean interestedInCollidedHitboxes = collidedHitboxes != null;
+        float detectionRadiusSquared = detectionRadius * detectionRadius;
+
         Vector3f rayStart = ray.origin;
         Vector3f rayEnd = Vector3f.add(ray.origin, Mth.multiply(ray.direction, rayLength), null);
-        ClipLineInfo clipLineInfo = new ClipLineInfo();
 
-        boolean possiblyInAABB = clipLine(rayStart.x, rayEnd.x, aabb.lowerX, aabb.upperX, clipLineInfo);
-        if (!possiblyInAABB) return null;
+        for (AbstractAABBHitbox aabbHitbox : aabbHitboxes) {
+            Vector3f objectPosition = aabbHitbox.object.getPosition();
 
-        boolean stillPossiblyInAABB = clipLine(rayStart.y, rayEnd.y, aabb.lowerY, aabb.upperY, clipLineInfo);
-        if (!stillPossiblyInAABB) return null;
+            if (Mth.squaredDistance(ray.origin, objectPosition) > detectionRadiusSquared && detectionRadius > 0)
+                continue;
 
-        boolean definitelyInAABB = clipLine(rayStart.z, rayEnd.z, aabb.lowerZ, aabb.upperZ, clipLineInfo);
-        if (!definitelyInAABB) return null;
+            boolean inAABB = RSTCollisionMath.rayAndAABBIntersection(rayStart, rayEnd, aabbHitbox);
 
-        Vector3f b = Vector3f.sub(rayEnd, rayStart, null);
-        return Vector3f.add(rayStart, Mth.multiply(b, clipLineInfo.fLower), null);
-    }
+            if (true) {
+                Triangle[] trianglesInLocalSpace = aabbHitbox.mesh.triangles;
+                Triangle[] trianglesInWorldSpace = ModelMesh.performOperationOnAllTriangles(trianglesInLocalSpace, PointOperations::addObjectPositionToPoint, objectPosition);
 
-    // The algorithm and code were obtained from these videos by Jorge Rodriguez:
-    // https://www.youtube.com/watch?v=USjbg5QXk3g
-    // https://www.youtube.com/watch?v=3vONlLYtHUE
-    private static boolean clipLine(float rayStartDim, float rayEndDim, float aabbLowerDim, float aabbUpperDim, ClipLineInfo clipLineInfo) {
-        float fLowerDim = (aabbLowerDim - rayStartDim) / (rayEndDim - rayStartDim);
-        float fUpperDim = (aabbUpperDim - rayStartDim) / (rayEndDim - rayStartDim);
+                for (Triangle triangle : trianglesInWorldSpace) {
+                    Vector3f p1 = triangle.points[0];
+                    Vector3f p2 = triangle.points[1];
+                    Vector3f p3 = triangle.points[2];
 
-        if (fLowerDim > fUpperDim) {
-            float temporary = fLowerDim;
-            fLowerDim = fUpperDim;
-            fUpperDim = temporary;
+                    Plane trianglePlane = new Plane(p1, p2, p3);
+                    Vector3f possibleIntersectionPoint = RSTCollisionMath.rayAndPlaneIntersection(ray, trianglePlane);
+                    boolean inTriangle = CollisionMath.pointInTriangle(possibleIntersectionPoint, p1, p2, p3);
+
+                    if (inTriangle) {
+                        if (interestedInIntersectionPoints) {
+                            intersectionPoints.add(possibleIntersectionPoint);
+                        }
+                        if (interestedInCollidedHitboxes) {
+                            collidedHitboxes.add(aabbHitbox);
+                        }
+                    }
+                }
+            }
         }
-
-        if (fUpperDim < clipLineInfo.fLower || fLowerDim > clipLineInfo.fUpper) {
-            return false;
-        }
-
-        clipLineInfo.fLower = Math.max(clipLineInfo.fLower, fLowerDim);
-        clipLineInfo.fUpper = Math.min(clipLineInfo.fUpper, fUpperDim);
-
-        return clipLineInfo.fLower <= clipLineInfo.fUpper;
-    }
-
-    // The algorithm was obtained from this video by Jorge Rodriguez:
-    // https://www.youtube.com/watch?v=fIu_8b2n8ZM
-    private static Vector3f rayAndPlaneIntersection(Ray ray, Plane plane) {
-        Vector3f x0 = ray.origin;
-        Vector3f v = ray.direction;
-        Vector3f n = plane.normal;
-        Vector3f w = Vector3f.sub(plane.origin, ray.origin, null);
-
-        float numerator = Vector3f.dot(w, n);
-        float denominator = Vector3f.dot(v, n);
-        Vector3f term = Mth.multiply(v, numerator / denominator);
-
-        return Vector3f.add(x0, term, null);
-    }
-
-    private static class ClipLineInfo {
-        private float fLower;
-        private float fUpper;
     }
 
 }

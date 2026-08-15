@@ -50,7 +50,7 @@ public class Scenes {
                 private CoolObject(LevelProperties levelProperties, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
                     super(levelProperties, type, position, rotation, scale);
                     startTime = Time.getCurrentTime();
-                    isAffectedByGravity = false;
+                    isAffectedByGravity = true;
                     setVelocity(6, 0, 0);
                 }
 
