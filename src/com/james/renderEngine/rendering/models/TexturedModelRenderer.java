@@ -68,6 +68,8 @@ public class TexturedModelRenderer extends AbstractRenderer {
                 LightSettings.loadGameObjectSettings(shader, gameObject);
                 FogSettings.loadGameObjectSettings(shader, gameObject);
 
+                shader.loadHighlightFactor(gameObject.highlightFactor);
+
                 if (rawModel.usesIndexBuffer) {
                     glDrawElements(GL_TRIANGLES, rawModel.vertexCount, GL_UNSIGNED_INT, 0);
                 } else {

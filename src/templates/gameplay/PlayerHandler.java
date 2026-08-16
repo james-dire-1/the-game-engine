@@ -14,6 +14,7 @@ import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector2f;
 
+import static com.james.input.KeyInput.isKeyDown;
 import static org.lwjgl.glfw.GLFW.*;
 import static com.james.input.KeyInput.isKeyPressed;
 
@@ -103,6 +104,10 @@ public class PlayerHandler {
         Vector3fInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), player.lastTime, Time.getCurrentTime());
 
         camController.update();
+
+        if (isKeyDown(GLFW_KEY_G)) {
+            player.isAffectedByGravity = !player.isAffectedByGravity;
+        }
     }
 
     /**

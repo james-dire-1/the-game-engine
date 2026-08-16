@@ -16,6 +16,7 @@ public class ColorModelShader extends Shader implements IModelShader, ILightShad
     private final ModelShaderFeature modelShaderFeature = new ModelShaderFeature(this);
     private final LightShaderFeature lightShaderFeature = new LightShaderFeature(this);
     private final FogShaderFeature fogShaderFeature = new FogShaderFeature(this);
+    private int location_highlightFactor;
 
     @Override public ModelShaderFeature model() { return modelShaderFeature; }
     @Override public LightShaderFeature light() { return lightShaderFeature; }
@@ -38,6 +39,11 @@ public class ColorModelShader extends Shader implements IModelShader, ILightShad
         modelShaderFeature.getUniformLocations();
         lightShaderFeature.getUniformLocations();
         fogShaderFeature.getUniformLocations();
+        location_highlightFactor = super.getUniformLocation("highlightFactor");
+    }
+
+    public void loadHighlightFactor(float highlightFactor) {
+        super.loadFloatToUniform(location_highlightFactor, highlightFactor);
     }
 
 }

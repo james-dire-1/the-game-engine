@@ -138,9 +138,7 @@ public class CommonCollisionProcedure {
         return collisionDetectionAndResponse(trianglesInEllipsoidWorldSpace, position, newVelocityVector, recursionCount);
     }
 
-    private static boolean foundCollision;
-    private static Vector3f intersectionPoint;
-    private static double t;
+    private static final ThreadLocal<TempCollisionInfo> temp = ThreadLocal.withInitial(TempCollisionInfo::new);
 
     /**
      * Checks for collision against a single Triangle. First, we see if a collision with the triangle plane is
@@ -180,21 +178,21 @@ public class CommonCollisionProcedure {
             if (t0 < 0.0) t0 = 0.0;
         }
 
-        foundCollision = false;
-        t = 1.0;
-        intersectionPoint = null;
+        temp.get().foundCollision = false;
+        temp.get().t = 1.0;
+        temp.get().intersectionPoint = null;
 
         if (!embeddedInPlane) {
             Vector3f planeIntersectionPoint = Vector3f.add(Vector3f.sub(basePoint, trianglePlane.normal, null), Mth.multiply(velocity, (float)t0), null);
 
             if (CollisionMath.pointInTriangle(planeIntersectionPoint, p1, p2, p3)) {
-                foundCollision = true;
-                t = t0;
-                intersectionPoint = planeIntersectionPoint;
+                temp.get().foundCollision = true;
+                temp.get().t = t0;
+                temp.get().intersectionPoint = planeIntersectionPoint;
             }
         }
 
-        if (!foundCollision) {
+        if (!temp.get().foundCollision) {
             float velocityLengthSquared = velocity.lengthSquared();
 
             testAgainstVertex(velocityLengthSquared, basePoint, velocity, p1);
@@ -206,13 +204,13 @@ public class CommonCollisionProcedure {
             testAgainstEdge(velocityLengthSquared, basePoint, velocity, p1, p3);
         }
 
-        if (foundCollision) {
-            float intersectionDistance = (float)t * velocity.length();
+        if (temp.get().foundCollision) {
+            float intersectionDistance = (float)temp.get().t * velocity.length();
 
             if (!collisionInfo.foundCollision || intersectionDistance < collisionInfo.intersectionDistance) {
                 collisionInfo.foundCollision = true;
                 collisionInfo.intersectionDistance = intersectionDistance;
-                collisionInfo.intersectionPoint = intersectionPoint;
+                collisionInfo.intersectionPoint = temp.get().intersectionPoint;
             }
         }
     }
@@ -223,11 +221,11 @@ public class CommonCollisionProcedure {
     private static void testAgainstVertex(float a, Vector3f basePoint, Vector3f velocity, Vector3f vertex) {
         float b = 2.0f * Vector3f.dot(velocity, Vector3f.sub(basePoint, vertex, null));
         float c = Vector3f.sub(vertex, basePoint, null).lengthSquared() - 1.0f;
-        Float x1 = CollisionMath.getLowestRootUnderThreshold(a, b, c, (float)t);
+        Float x1 = CollisionMath.getLowestRootUnderThreshold(a, b, c, (float)temp.get().t);
         if (x1 != null) {
-            foundCollision = true;
-            t = x1;
-            intersectionPoint = vertex;
+            temp.get().foundCollision = true;
+            temp.get().t = x1;
+            temp.get().intersectionPoint = vertex;
         }
     }
 
@@ -247,13 +245,13 @@ public class CommonCollisionProcedure {
         float a = edgeLengthSquared*-velocityLengthSquared + edgeDotVelocity*edgeDotVelocity;
         float b = edgeLengthSquared*(2.0f*Vector3f.dot(velocity, basePointToVertex)) - 2.0f*edgeDotVelocity*edgeDotBaseToVertex;
         float c = edgeLengthSquared*(1.0f - basePointToVertex.lengthSquared()) + edgeDotBaseToVertex*edgeDotBaseToVertex;
-        Float x1 = CollisionMath.getLowestRootUnderThreshold(a, b, c, (float)t);
+        Float x1 = CollisionMath.getLowestRootUnderThreshold(a, b, c, (float)temp.get().t);
         if (x1 != null) {
             float f = (edgeDotVelocity*x1 - edgeDotBaseToVertex) / edgeLengthSquared;
             if (f >= 0.0f && f <= 1.0f) {
-                foundCollision = true;
-                t = x1;
-                intersectionPoint = Vector3f.add(right, Mth.multiply(edge, f), null);
+                temp.get().foundCollision = true;
+                temp.get().t = x1;
+                temp.get().intersectionPoint = Vector3f.add(right, Mth.multiply(edge, f), null);
             }
         }
     }
@@ -271,6 +269,12 @@ public class CommonCollisionProcedure {
     public static class DebugAccumulator {
         public int collisions;
         private int accumulator;
+    }
+
+    private static class TempCollisionInfo {
+        private boolean foundCollision;
+        private Vector3f intersectionPoint;
+        private double t;
     }
 
 }

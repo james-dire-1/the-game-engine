@@ -135,7 +135,7 @@ public class RSTCommonCollisionProcedure {
 
             boolean inAABB = RSTCollisionMath.rayAndAABBIntersection(rayStart, rayEnd, aabbHitbox);
 
-            if (true) {
+            if (inAABB) {
                 Triangle[] trianglesInLocalSpace = aabbHitbox.mesh.triangles;
                 Triangle[] trianglesInWorldSpace = ModelMesh.performOperationOnAllTriangles(trianglesInLocalSpace, PointOperations::addObjectPositionToPoint, objectPosition);
 
@@ -146,6 +146,10 @@ public class RSTCommonCollisionProcedure {
 
                     Plane trianglePlane = new Plane(p1, p2, p3);
                     Vector3f possibleIntersectionPoint = RSTCollisionMath.rayAndPlaneIntersection(ray, trianglePlane);
+
+                    if (possibleIntersectionPoint == null)
+                        continue;
+
                     boolean inTriangle = CollisionMath.pointInTriangle(possibleIntersectionPoint, p1, p2, p3);
 
                     if (inTriangle) {

@@ -8,6 +8,7 @@ import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import com.james.tools.Time;
 import com.james.serverSide.simulation.objects.Updatable;
+import newStuff.SphereHitbox;
 import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;
@@ -15,6 +16,8 @@ import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;
 import com.james.serverSide.simulation.objects.PhysicalObject;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.util.Random;
 
 public class Scenes {
 
@@ -136,6 +139,7 @@ public class Scenes {
         }
     };
 
+    private static int counter;
     public static final Scene beachScene = new Scene() {
         @Override
         public void onStartup(Level level) {
@@ -153,6 +157,46 @@ public class Scenes {
             level.addVirtualDirectionalLight(sun, false);
 
             level.setSkyboxDetails("sky gradient", false);
+
+            Random r = new Random();
+
+            for (int i = 0; i < 30; i++) {
+                Vector3f position = new Vector3f(r.nextFloat() * 20 - 10, 50, r.nextFloat() * 20 - 10);
+                MovableObject item = new MovableObject(level, PhysicalObjectType.Other, position, new Vector3f(), 0.5f);
+                level.add(item);
+                EllipsoidHitbox ellipsoid = new EllipsoidHitbox(item, EllipsoidDimensions.get(1, 1, 1));
+                level.addEllipsoidHitbox(ellipsoid);
+                SphereHitbox sphere = new SphereHitbox(item, 0.85f);
+                level.addSphereHitbox(sphere);
+            }
+
+            for (int i = 0; i < 30; i++) {
+                Vector3f position = new Vector3f(r.nextFloat() * 20 - 10, 20, r.nextFloat() * 20 - 10 + 110);
+                MovableObject item = new MovableObject(level, PhysicalObjectType.Other, position, new Vector3f(), 0.5f);
+                level.add(item);
+                EllipsoidHitbox ellipsoid = new EllipsoidHitbox(item, EllipsoidDimensions.get(1, 1, 1));
+                level.addEllipsoidHitbox(ellipsoid);
+                SphereHitbox sphere = new SphereHitbox(item, 1.0f);
+                level.addSphereHitbox(sphere);
+            }
+
+            level.addUpdatable(() -> {
+                counter++;
+
+                if (counter == 10) {
+                    counter = 0;
+//                    Vector3f position = new Vector3f(0, 20, 110);
+                    Vector3f position = new Vector3f(0 + r.nextFloat() * 0.01f, 20 + r.nextFloat() * 0.01f, 110 + r.nextFloat() * 0.01f);
+                    MovableObject item = new MovableObject(level, PhysicalObjectType.Other, position, new Vector3f(), 0.5f);
+                    level.add(item);
+                    EllipsoidHitbox ellipsoid = new EllipsoidHitbox(item, EllipsoidDimensions.get(1, 1, 1));
+                    level.addEllipsoidHitbox(ellipsoid);
+                    SphereHitbox sphere = new SphereHitbox(item, 0.85f);
+                    level.addSphereHitbox(sphere);
+                }
+
+                return false;
+            }, null);
         }
 
         @Override

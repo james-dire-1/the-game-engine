@@ -30,6 +30,7 @@ public class GameObject {
 
     public boolean isVisible = true;
     public boolean isAffectedByFog = true;
+    public float highlightFactor = 0.0f;
 
     public boolean deleted = false;
 

@@ -91,14 +91,24 @@ public class RSTCollisionMath {
 
         float numerator = Vector3f.dot(w, n);
         float denominator = Vector3f.dot(v, n);
-        Vector3f term = Mth.multiply(v, numerator / denominator);
 
+        if (Math.abs(denominator) < 0.000001f) {
+            return null;
+        }
+
+        float parameter = numerator / denominator;
+
+        if (parameter < 0) {
+            return null;
+        }
+
+        Vector3f term = Mth.multiply(v, parameter);
         return Vector3f.add(x0, term, null);
     }
 
     private static class ClipLineInfo {
-        private float fLower;
-        private float fUpper;
+        private float fLower = 0;
+        private float fUpper = 1;
     }
 
 }

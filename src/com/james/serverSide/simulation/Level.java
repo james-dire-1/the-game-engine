@@ -86,6 +86,7 @@ public class Level extends LevelProperties {
             }
 
             collisionHandler.update();
+            rstCollisionHandler.updateSphereHitboxes();
 
             Iterator<Updatable> updatableIterator = updatables.iterator();
             while (updatableIterator.hasNext()) {

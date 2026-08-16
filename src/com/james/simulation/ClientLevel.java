@@ -46,6 +46,8 @@ public class ClientLevel extends LevelProperties {
     }
 
     private final MousePicker mousePicker = new MousePicker(GameLoader.focusCamera);
+    private GameObject lastGameObject;
+//    private final List<GameObject> lastGameObjects = new ArrayList<>();
     /**
      * Method that only gets called once the server is ready, i.e. the isReady property is set to true. Gets
      * called every game tick. Collisions are updated here. Called from the PlayerHandler.
@@ -59,18 +61,41 @@ public class ClientLevel extends LevelProperties {
 
         clientCollisionHandler.update();
 
-        if (ClickInput.isLeftClickPressed()) {
-            mousePicker.update();
+        mousePicker.update();
+        Ray ray = new Ray(GameLoader.focusCamera.getPosition(), mousePicker.getCurrentRay());
 
-            Ray ray = new Ray(GameLoader.focusCamera.getPosition(), mousePicker.getCurrentRay());
+        if (ClickInput.isLeftClickPressed()) {
             RayTriangleInfo rayTriangleInfo = new RayTriangleInfo();
             RSTCommonCollisionProcedure.findClosestRayIntersectionWithTriangle(ray, -1, 1000, clientCollisionHandler.cachedAABBHitboxes.values(), rayTriangleInfo);
 
             if (rayTriangleInfo.closestIntersectionPoint != null) {
-                // GameLoader.batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getColorAbstractArt(), rayTriangleInfo.closestIntersectionPoint));
-                player.setPosition(rayTriangleInfo.closestIntersectionPoint.x, rayTriangleInfo.closestIntersectionPoint.y, rayTriangleInfo.closestIntersectionPoint.z);
+                 GameLoader.batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getColorAbstractArt(), rayTriangleInfo.closestIntersectionPoint, new Vector3f(), 0.5f));
+//                player.setPosition(rayTriangleInfo.closestIntersectionPoint.x, rayTriangleInfo.closestIntersectionPoint.y, rayTriangleInfo.closestIntersectionPoint.z);
             }
         }
+
+        RaySphereInfo raySphereInfo = new RaySphereInfo();
+        RSTCommonCollisionProcedure.findClosestRayIntersectionWithSphere(ray, -1, rstClientCollisionHandler.cachedSphereHitboxes.values(), raySphereInfo);
+//        List<AbstractSphereHitbox> sphereHitboxes = new ArrayList<>();
+//        RSTCommonCollisionProcedure.findAllRayIntersectionsWithSpheres(ray, -1, rstClientCollisionHandler.cachedSphereHitboxes.values(), null, sphereHitboxes);
+
+        if (lastGameObject != null) {
+            lastGameObject.highlightFactor = 0.0f;
+        }
+//        for (GameObject lastGameObject : lastGameObjects) {
+//            lastGameObject.highlightFactor = 0.0f;
+//        }
+//        lastGameObjects.clear();
+
+        if (raySphereInfo.closestCollidedHitbox != null) {
+            lastGameObject = ((CachedPhysicalObject) raySphereInfo.closestCollidedHitbox.object).getGameObject();
+            lastGameObject.highlightFactor = 0.2f;
+        }
+//        for (AbstractSphereHitbox sphereHitbox : sphereHitboxes) {
+//            GameObject gameObject = ((CachedPhysicalObject) sphereHitbox.object).getGameObject();
+//            gameObject.highlightFactor = 0.3f;
+//            lastGameObjects.add(gameObject);
+//        }
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {
