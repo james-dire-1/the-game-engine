@@ -9,8 +9,8 @@ import com.james.serverSide.simulation.objects.*;
 import com.james.serverSide.communication.NetworkBroadcaster;
 import com.james.serverSide.simulation.objects.Updatable;
 import com.james.serverSide.simulation.objects.MoveUpdatable;
-import newStuff.RSTCollisionHandler;
-import newStuff.SphereHitbox;
+import com.james.serverSide.simulation.collisionEngine.RSTCollisionHandler;
+import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
 import org.lwjgl.util.vector.Vector3f;
 import templates.serverSide.communication.ServerPacketSendEvents;
 import templates.serverSide.PlayerInfo;
@@ -78,7 +78,7 @@ public class Level extends LevelProperties {
                     if (moveUpdatable instanceof MovableObject) {
                         MovableObject movableObject = (MovableObject) moveUpdatable;
 
-                        if (!movableObject.isAffectedByAABBCollisions) {
+                        if (!movableObject.canCollideWithTriangles) {
                             movableObject.setPositionBasedOnVelocity();
                         }
                     }

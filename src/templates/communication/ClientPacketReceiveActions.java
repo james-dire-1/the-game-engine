@@ -5,7 +5,7 @@ import com.james.renderEngine.gameObjects.Light;
 import com.james.renderEngine.visuals.Skybox;
 import com.james.audio.PositionalAudioMaster;
 import com.james.tools.LightHandler;
-import newStuff.CachedSphereHitbox;
+import com.james.simulation.collisionEngine.hitboxes.CachedSphereHitbox;
 import templates.audio.SoundToPathConverter;
 import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;

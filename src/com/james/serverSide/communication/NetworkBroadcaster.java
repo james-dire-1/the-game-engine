@@ -3,7 +3,7 @@ package com.james.serverSide.communication;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.objects.*;
 import com.james.serverSide.simulation.objects.MoveUpdatable;
-import newStuff.SphereHitbox;
+import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
 import org.lwjgl.util.vector.Vector3f;
 import templates.serverSide.communication.ServerPacketSendEvents;
 

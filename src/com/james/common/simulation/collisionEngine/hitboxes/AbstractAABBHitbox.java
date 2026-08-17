@@ -22,6 +22,9 @@ public abstract class AbstractAABBHitbox {
 
     public float lowerX, upperX, lowerY, upperY, lowerZ, upperZ;
 
+    public boolean activeToEllipsoids = true;
+    public boolean activeToRays = true;
+
     /**
      * Creates a new AABB hitbox for a specific object (AbstractPhysicalObject), which uses a specific
      * ModelMesh, denoted by its file path and sub mesh identifier. Also, calls updatePosition() to set the

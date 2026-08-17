@@ -1,7 +1,9 @@
-package newStuff;
+package com.james.common.simulation.collisionEngine.math;
 
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
-import com.james.common.simulation.collisionEngine.math.Plane;
+import com.james.common.simulation.collisionEngine.hitboxes.AbstractSphereHitbox;
+import com.james.common.simulation.collisionEngine.hitboxes.Ray;
+import com.james.common.simulation.collisionEngine.math.objects.Plane;
 import com.james.common.tools.Mth;
 import org.lwjgl.util.vector.Vector3f;
 

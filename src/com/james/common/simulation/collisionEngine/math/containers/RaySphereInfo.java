@@ -1,5 +1,6 @@
-package newStuff;
+package com.james.common.simulation.collisionEngine.math.containers;
 
+import com.james.common.simulation.collisionEngine.hitboxes.AbstractSphereHitbox;
 import org.lwjgl.util.vector.Vector3f;
 
 public class RaySphereInfo {

@@ -2,7 +2,7 @@ package templates.serverSide.communication;
 
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import com.james.serverSide.simulation.objects.VirtualLight;
-import newStuff.SphereHitbox;
+import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
 import templates.serverSide.PlayerInfo;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;

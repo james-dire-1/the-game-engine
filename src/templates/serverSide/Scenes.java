@@ -8,7 +8,7 @@ import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
 import com.james.tools.Time;
 import com.james.serverSide.simulation.objects.Updatable;
-import newStuff.SphereHitbox;
+import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
 import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.serverSide.simulation.Level;

@@ -1,6 +1,8 @@
 package com.james.common.simulation.collisionEngine.math;
 
 import com.james.common.simulation.LevelProperties;
+import com.james.common.simulation.collisionEngine.math.objects.Plane;
+import com.james.common.simulation.collisionEngine.math.objects.Triangle;
 import com.james.common.simulation.collisionEngine.prep.ModelMesh;
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractEllipsoidHitbox;
@@ -33,6 +35,9 @@ public class CommonCollisionProcedure {
         List<Triangle> allTrianglesInEllipsoidWorldSpaceList = new ArrayList<>();
 
         for (AbstractAABBHitbox aabbHitbox : aabbHitboxes) {
+            if (!aabbHitbox.activeToEllipsoids)
+                continue;
+
             Vector3f ellipsoidPosition = ellipsoidHitbox.movableObject.getPosition();
             Vector3f ellipsoidRadius = ellipsoidHitbox.dimensions.radius;
             float ellipsoidLowerX = ellipsoidPosition.x - ellipsoidRadius.x;
@@ -71,7 +76,7 @@ public class CommonCollisionProcedure {
         Vector3f basePoint = movableObject.getPosition();
         PointOperations.dividePointByEllipsoidRadiusDest(basePoint, ellipsoidHitboxRadius);
 
-        Vector3f displacementThisTick = Mth.multiply(movableObject.getVelocity(), levelProperties.secondsPerGameTick);
+        Vector3f displacementThisTick = Mth.multiply(movableObject.getCombinedVelocity(), levelProperties.secondsPerGameTick);
         PointOperations.dividePointByEllipsoidRadiusDest(displacementThisTick, ellipsoidHitboxRadius);
 
         Vector3f finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, basePoint, displacementThisTick, 0);

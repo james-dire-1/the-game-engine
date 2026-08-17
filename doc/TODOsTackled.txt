@@ -133,3 +133,6 @@ the TextMeshCreator [GuiText]
 
 // TO DO: 2026-08-12 How will AABB hitboxes be handled? [NetworkBroadcaster]
 -> Only need to worry about broadcasting additions and removals
+
+// TO DO: 2026-08-16 Consider removing this class [PlayerHitbox]
+-> Did it right away

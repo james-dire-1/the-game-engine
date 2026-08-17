@@ -1,5 +1,6 @@
-package com.james.common.simulation.collisionEngine.math;
+package com.james.common.simulation.collisionEngine.math.objects;
 
+import com.james.common.simulation.collisionEngine.math.CommonCollisionProcedure;
 import org.lwjgl.util.vector.Vector3f;
 
 // TODO: 2026-08-14 outdated documentation?

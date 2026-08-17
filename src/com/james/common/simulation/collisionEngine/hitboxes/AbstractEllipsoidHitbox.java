@@ -35,7 +35,7 @@ public abstract class AbstractEllipsoidHitbox {
      * @see CollisionHandler
      */
     public void enable() {
-        this.movableObject.isAffectedByAABBCollisions = true;
+        this.movableObject.canCollideWithTriangles = true;
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class AbstractEllipsoidHitbox {
      * @see CollisionHandler
      */
     public void disable() {
-        this.movableObject.isAffectedByAABBCollisions = false;
+        this.movableObject.canCollideWithTriangles = false;
     }
 
 }

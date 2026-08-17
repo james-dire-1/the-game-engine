@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.common.simulation.collisionEngine.math.containers;
 
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
 import org.lwjgl.util.vector.Vector3f;

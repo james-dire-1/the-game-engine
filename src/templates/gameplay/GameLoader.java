@@ -2,11 +2,9 @@ package templates.gameplay;
 
 import com.james.audio.objects.AudioListener;
 import com.james.common.tools.Mth;
-import com.james.input.ClickInput;
 import com.james.input.KeyInput;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
-import com.james.renderEngine.models.Model;
 import com.james.renderEngine.particles.ParticleHandler;
 import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.rendering.ParticleRenderer;

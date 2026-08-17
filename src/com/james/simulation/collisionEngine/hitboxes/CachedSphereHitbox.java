@@ -1,5 +1,6 @@
-package newStuff;
+package com.james.simulation.collisionEngine.hitboxes;
 
+import com.james.common.simulation.collisionEngine.hitboxes.AbstractSphereHitbox;
 import com.james.simulation.ClientLevel;
 
 import java.util.Objects;

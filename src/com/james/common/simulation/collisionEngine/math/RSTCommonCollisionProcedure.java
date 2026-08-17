@@ -1,19 +1,64 @@
-package newStuff;
+package com.james.common.simulation.collisionEngine.math;
 
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
-import com.james.common.simulation.collisionEngine.math.CollisionMath;
-import com.james.common.simulation.collisionEngine.math.Plane;
-import com.james.common.simulation.collisionEngine.math.PointOperations;
-import com.james.common.simulation.collisionEngine.math.Triangle;
+import com.james.common.simulation.collisionEngine.hitboxes.AbstractSphereHitbox;
+import com.james.common.simulation.collisionEngine.hitboxes.Ray;
+import com.james.common.simulation.collisionEngine.math.objects.Plane;
+import com.james.common.simulation.collisionEngine.math.objects.Triangle;
 import com.james.common.simulation.collisionEngine.prep.ModelMesh;
+import com.james.common.simulation.objects.AbstractPhysicalObject;
 import com.james.common.tools.Mth;
+import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
+import com.james.serverSide.simulation.objects.MovableObject;
+import com.james.common.simulation.collisionEngine.math.containers.RaySphereInfo;
+import com.james.common.simulation.collisionEngine.math.containers.RayTriangleInfo;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public class RSTCommonCollisionProcedure {
+
+    private static final Vector3f ZERO_VECTOR = new Vector3f(0.0f, 0.0f, 0.0f);
+    private static final Random r = new Random();
+
+    public static void beRepelledByOtherSpheresForThisSphere(AbstractSphereHitbox currentSphereHitbox, Collection<? extends AbstractSphereHitbox> sphereHitboxes) {
+        if (!currentSphereHitbox.affectedByOtherSpheres)
+            return;
+
+        Vector3f netVelocity = new Vector3f();
+        AbstractPhysicalObject currentPhysicalObject = currentSphereHitbox.object;
+
+        for (AbstractSphereHitbox otherSphereHitbox : sphereHitboxes) {
+            if (!otherSphereHitbox.affectOtherSpheres || currentSphereHitbox.equals(otherSphereHitbox))
+                continue;
+
+            AbstractPhysicalObject otherPhysicalObject = otherSphereHitbox.object;
+            Vector3f position1 = currentPhysicalObject.getPosition();
+            Vector3f position2 = otherPhysicalObject.getPosition();
+            Vector3f sphere2ToSphere1 = Vector3f.sub(position1, position2, null);
+
+            float distanceGoal = currentSphereHitbox.radius + otherSphereHitbox.radius;
+            float actualDistance = sphere2ToSphere1.length();
+            float normalizedDistance = actualDistance / distanceGoal;
+
+            if (normalizedDistance >= 1)
+                continue;
+
+            if (sphere2ToSphere1.equals(ZERO_VECTOR)) {
+                sphere2ToSphere1.set(r.nextFloat() * 2.0f - 1.0f, 0, r.nextFloat() * 2.0f - 1.0f);
+            }
+
+            Vector3f normalizedSphere2ToSphere1 = sphere2ToSphere1.normalise(null);
+            float normalizedPushingStrength = (normalizedDistance - 1.0f) * (normalizedDistance - 1.0f);
+            Vector3f constituentVelocity = Mth.multiply(normalizedSphere2ToSphere1, normalizedPushingStrength * SphereHitbox.MAX_SPEED);
+            Vector3f.add(netVelocity, constituentVelocity, netVelocity);
+        }
+
+        ((MovableObject) currentPhysicalObject).setSecondaryVelocity(netVelocity.x, netVelocity.y, netVelocity.z);
+    }
 
     public static void findClosestRayIntersectionWithSphere(Ray ray, float detectionRadius, Collection<? extends AbstractSphereHitbox> sphereHitboxes, RaySphereInfo raySphereInfo) {
         boolean interestedInIntersectionPoint = raySphereInfo.interestedInIntersectionPoint;
@@ -59,6 +104,9 @@ public class RSTCommonCollisionProcedure {
         float detectionRadiusSquared = detectionRadius * detectionRadius;
 
         for (AbstractSphereHitbox sphereHitbox : sphereHitboxes) {
+            if (!sphereHitbox.activeToRays)
+                continue;
+
             if (Mth.squaredDistance(ray.origin, sphereHitbox.object.getPosition()) > detectionRadiusSquared  && detectionRadius > 0)
                 continue;
 
@@ -128,6 +176,9 @@ public class RSTCommonCollisionProcedure {
         Vector3f rayEnd = Vector3f.add(ray.origin, Mth.multiply(ray.direction, rayLength), null);
 
         for (AbstractAABBHitbox aabbHitbox : aabbHitboxes) {
+            if (!aabbHitbox.activeToRays)
+                continue;
+
             Vector3f objectPosition = aabbHitbox.object.getPosition();
 
             if (Mth.squaredDistance(ray.origin, objectPosition) > detectionRadiusSquared && detectionRadius > 0)

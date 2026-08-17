@@ -1,15 +1,20 @@
 package com.james.simulation;
 
 import com.james.common.simulation.LevelProperties;
+import com.james.common.simulation.collisionEngine.hitboxes.Ray;
+import com.james.common.simulation.collisionEngine.math.RSTCommonCollisionProcedure;
+import com.james.common.simulation.collisionEngine.math.containers.RaySphereInfo;
+import com.james.common.simulation.collisionEngine.math.containers.RayTriangleInfo;
 import com.james.input.ClickInput;
 import com.james.renderEngine.gameObjects.GameObject;
 import com.james.simulation.collisionEngine.ClientCollisionHandler;
+import com.james.simulation.collisionEngine.RSTClientCollisionHandler;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
+import com.james.simulation.collisionEngine.hitboxes.CachedSphereHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.tools.MousePicker;
-import newStuff.*;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 import templates.gameplay.GameLoader;
@@ -40,7 +45,7 @@ public class ClientLevel extends LevelProperties {
 
         this.player = new Player(this, playerPosition);
         this.clientCollisionHandler = new ClientCollisionHandler(this, this.player, playerHitboxRadius);
-        this.rstClientCollisionHandler = new RSTClientCollisionHandler();
+        this.rstClientCollisionHandler = new RSTClientCollisionHandler(this.player);
 
         instance = this;
     }
@@ -55,11 +60,12 @@ public class ClientLevel extends LevelProperties {
     public void update() {
         player.moveUpdate();
 
-        if (!player.isAffectedByAABBCollisions) {
+        if (!player.canCollideWithTriangles) {
             player.setPositionBasedOnVelocity();
         }
 
         clientCollisionHandler.update();
+        rstClientCollisionHandler.updateSphereHitboxes();
 
         mousePicker.update();
         Ray ray = new Ray(GameLoader.focusCamera.getPosition(), mousePicker.getCurrentRay());
