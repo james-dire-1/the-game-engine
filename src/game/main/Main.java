@@ -1,42 +1,25 @@
 package game.main;
 
 import com.james.audio.AudioSourcePool;
-import com.james.audio.utilities.ALCUtilities;
-import com.james.audio.utilities.ALUtilities;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
-import com.james.renderEngine.rendering.models.*;
-import com.james.tools.Time;
-import com.james.renderEngine.particles.ParticleHandler;
-import com.james.renderEngine.rendering.*;
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.utilities.GLFWUtilities;
-import com.james.renderEngine.utilities.GLUtilities;
-import com.james.tools.*;
+import com.james.wrapper.EngineUtils;
 import game.ui.screens.TitleScreen;
 import com.james.renderEngine.texturing.CubeMapTexture;
-import com.james.renderEngine.rendering.SkyboxRenderer;
 import com.james.common.tools.modelLoading.ModelLoader;
 import templates.rendering.Skyboxes;
 import templates.settings.GLFWWindowTitles;
-import templates.gameplay.GameLoader;
-import com.james.renderEngine.ui.TypingInputNotifier;
 import templates.rendering.Renderers;
-import com.james.simulation.ClientLevel;
 
 public class Main {
-
-    public static GameLoader gameLoader;
 
     public static final FontInfo arial = new FontInfo("/arial.fnt", "/arial.png");
     public static final FontInfo rowdies = new FontInfo("/rowdies.fnt", "/rowdies.png");
     public static final FontInfo dustismo = new FontInfo("/dustismo.fnt", "/dustismo.png");
-
-    public static int fps;
-    private static long lastTime = System.nanoTime() / 1000000;
-    private static int fpsAccumulator;
 
     public static void main(String[] args) {
         ImageBank.init("/textures/misc/red-explosive.png", "/textures/objects/stall.png", "/fonts/rowdies.png", "/fonts/arial.png",
@@ -57,11 +40,7 @@ public class Main {
         ModelMeshBankInR3.init("/objects/one-sided-wall.dae", "/scenes/test-scene.dae", "/scenes/desert-scene.dae", "/scenes/beach-scene.dae", "/scenes/plains-scene.dae");
         EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 2, 2, 2 }, { 0.5f, 3, 0.5f } } );
 
-        GLFWUtilities.init(GLFWWindowTitles.MAIN);
-        ParticleHandler.init();
-        TypingInputNotifier.init();
-        ALCUtilities.init();
-        AudioSourcePool.init();
+        EngineUtils.init(GLFWWindowTitles.MAIN);
 
         CubeMapTexture.create("sky with clouds", "/textures/skyboxes/skyWithClouds", new String[] {"right", "left", "top", "bottom", "back", "front"});
         CubeMapTexture.create("sky gradient", "/textures/skyboxes/skyGradient", new String[] {"side", "side", "top", "bottom", "side", "side"});
@@ -69,49 +48,18 @@ public class Main {
         Renderers.init();
         Skyboxes.init();
 
-        MasterRenderer.prepare(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer, Renderers.textureBlendModelRenderer);
-        ParticleRenderer.prepare();
-        SkyboxRenderer.prepare();
-        GuiRenderer.prepare();
+        EngineUtils.initRenderers(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer, Renderers.textureBlendModelRenderer);
 
         UiHandler.screens.add(new TitleScreen());
 
         while (!GLFWUtilities.shouldClose) {
-            Time.updateDeltaTime();
-
-            // important stuff
-            GLFWUtilities.pollEvents();
-            UiHandler.update();
-            if (gameLoader != null && ClientLevel.get().isReady) gameLoader.update();
-
-            ThreadManager.updateMain();
-
-            // rendering
-            MasterRenderer.preRender();
-            if (gameLoader != null && ClientLevel.get().isReady) gameLoader.render();
-            GuiRenderer.render(UiHandler.guisToRender);
-            GLFWUtilities.render();
-
+            EngineUtils.tick();
+            EngineUtils.render();
             AudioSourcePool.update();
-
-            // fps timer
-            fpsAccumulator++;
-            if (System.nanoTime() / 1000000 - lastTime > 1000) {
-                lastTime = System.nanoTime() / 1000000;
-                System.out.println("FPS: " + fpsAccumulator);
-                fps = fpsAccumulator;
-                fpsAccumulator = 0;
-            }
+            EngineUtils.updateFpsInfo();
         }
 
-        ALUtilities.cleanUp();
-        ALCUtilities.cleanUp();
-        MasterRenderer.cleanUp();
-        ParticleRenderer.cleanUp();
-        SkyboxRenderer.cleanUp();
-        GuiRenderer.cleanUp();
-        GLUtilities.cleanUp();
-        GLFWUtilities.cleanUp();
+        EngineUtils.cleanUp();
     }
 
 }

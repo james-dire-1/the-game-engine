@@ -8,13 +8,13 @@ import com.james.serverSide.LevelInitializer;
 import com.james.serverSide.ServerThreadManager;
 import com.james.serverSide.simulation.Level;
 import com.james.simulation.ClientLevel;
+import com.james.wrapper.EngineUtils;
 import game.ui.uiElements.PersistentTitleHeader;
 import templates.common.GlobalConstants;
-import templates.gameplay.LocalGameLoader;
-import game.main.Main;
+import com.james.gameplay.LocalGameLoader;
 import game.ui.uiElements.TitleButton;
-import templates.gameplay.GameLoader;
-import templates.gameplay.OnlineGameLoader;
+import com.james.gameplay.GameLoader;
+import com.james.gameplay.OnlineGameLoader;
 
 public class PauseScreen extends Screen {
 
@@ -54,7 +54,7 @@ public class PauseScreen extends Screen {
                 super.markForDeletion();
                 isOpen = false;
 
-                GameLoader loader = Main.gameLoader;
+                GameLoader loader = EngineUtils.gameLoader;
 
                 if (GlobalConstants.IS_QUICK_START || loader instanceof OnlineGameLoader) {
                     queueScreenForAddition(new TitleScreen());
@@ -77,7 +77,7 @@ public class PauseScreen extends Screen {
                 }
 
                 ClientLevel.delete();
-                Main.gameLoader = null;
+                EngineUtils.gameLoader = null;
             }
         });
         super.addGuis(quitButton.getAllGuis());

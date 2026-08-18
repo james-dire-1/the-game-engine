@@ -40,7 +40,6 @@ public class ServerPacketReceiveActions {
         startLevel.events.notifyUsernameSuccess(playerInfo, playerInfo.username, playerInfo.color, startLevel.primarySpawnPoint);
     }
 
-    // TODO: 2024-06-27 Make the server decide where the player should be placed initially
     public static void playerJoinedReceived(PlayerInfo playerInfo, float x, float y, float z, float rotY) {
         if (IS_NETWORK_DEBUG) println("ServerPacketReceiveActions.playerJoinedReceived");
 

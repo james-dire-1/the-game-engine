@@ -4,6 +4,7 @@ import com.james.common.simulation.LevelProperties;
 import com.james.common.simulation.collisionEngine.math.CommonCollisionProcedure;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
+import com.james.simulation.ClientLevel;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.Player;
 import game.ui.screens.DebugScreen;
@@ -21,11 +22,9 @@ public class ClientCollisionHandler {
     public final EllipsoidHitbox playerEllipsoidHitbox;
     public final Map<CachedAABBHitbox.Identifier, CachedAABBHitbox> cachedAABBHitboxes = new HashMap<>();
 
-    private final LevelProperties levelProperties;
     private final Player player;
 
-    public ClientCollisionHandler(LevelProperties levelProperties, Player player, Vector3f radius) {
-        this.levelProperties = levelProperties;
+    public ClientCollisionHandler(Player player, Vector3f radius) {
         this.player = player;
         this.playerEllipsoidHitbox = new EllipsoidHitbox(player, EllipsoidDimensions.get(radius.x, radius.y, radius.z));
     }
@@ -38,7 +37,7 @@ public class ClientCollisionHandler {
      */
     public void update() {
         if (player.canCollideWithTriangles) {
-            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerEllipsoidHitbox, cachedAABBHitboxes.values(), levelProperties, DebugScreen.collisionsAccumulator);
+            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerEllipsoidHitbox, cachedAABBHitboxes.values(), ClientLevel.get(), DebugScreen.collisionsAccumulator);
             if (!algorithmPerformed) {
                 player.setPositionBasedOnVelocity();
             }

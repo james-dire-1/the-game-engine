@@ -13,6 +13,7 @@ import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
 import com.james.simulation.ClientLevel;
 import com.james.tools.Time;
+import com.james.wrapper.EngineUtils;
 import game.main.Main;
 import com.james.renderEngine.visuals.FogSettings;
 import org.lwjgl.opengl.GL11;
@@ -300,8 +301,8 @@ public class DebugScreen extends Screen {
             displayNewValues = true;
         }
 
-        if (lastFps != Main.fps) {
-            lastFps = Main.fps;
+        if (lastFps != EngineUtils.fps) {
+            lastFps = EngineUtils.fps;
             fpsDisplay.setText("FPS: " + lastFps);
             fpsDisplay.setPriority(2);
             fpsDisplay.setVisibility(mode == Mode.Everything || mode == Mode.FPS);

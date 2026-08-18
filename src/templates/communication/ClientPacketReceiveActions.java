@@ -6,6 +6,7 @@ import com.james.renderEngine.visuals.Skybox;
 import com.james.audio.PositionalAudioMaster;
 import com.james.tools.LightHandler;
 import com.james.simulation.collisionEngine.hitboxes.CachedSphereHitbox;
+import com.james.wrapper.EngineUtils;
 import templates.audio.SoundToPathConverter;
 import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
@@ -18,18 +19,17 @@ import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.tools.ColorUtils;
 import com.james.tools.Time;
-import game.main.Main;
 import game.ui.screens.ChatScreen;
 import game.ui.screens.UsernamePromptScreen;
 import templates.rendering.PhysicalToVisualConverter;
-import templates.gameplay.GameLoader;
-import templates.gameplay.LocalGameLoader;
-import templates.gameplay.OnlineGameLoader;
-import templates.gameplay.PlayerHandler;
+import com.james.gameplay.LocalGameLoader;
+import com.james.gameplay.OnlineGameLoader;
+import com.james.gameplay.PlayerHandler;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector3f;
 import templates.rendering.Skyboxes;
+import templates.settings.GLFWWindowTitles;
 
 import static templates.common.GlobalConstants.IS_DETAILED_NETWORK_DEBUG;
 import static templates.common.GlobalConstants.IS_NETWORK_DEBUG;
@@ -167,9 +167,9 @@ public class ClientPacketReceiveActions {
         PlayerHandler.localColor = ColorUtils.asNormalizedRGBArray(color);
 
         if (LevelInitializer.isOnlineGame) {
-            Main.gameLoader = new OnlineGameLoader(spawnPoint);
+            EngineUtils.gameLoader = new OnlineGameLoader(spawnPoint, GLFWWindowTitles.MULTIPLAYER);
         } else {
-            Main.gameLoader = new LocalGameLoader(spawnPoint);
+            EngineUtils.gameLoader = new LocalGameLoader(spawnPoint, GLFWWindowTitles.DEBUG_MODE);
         }
     }
 
@@ -193,7 +193,7 @@ public class ClientPacketReceiveActions {
 
                 for (Model model : modelList) {
                     GameObject gameObject = new GameObject(model, new Vector3f(object.getPosition()), new Vector3f(object.getRotation()), scale);
-                    GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+                    EngineUtils.gameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
                     object.setGameObject(gameObject);
                 }
@@ -215,7 +215,7 @@ public class ClientPacketReceiveActions {
             boolean success = level.removeCachedPhysicalObject(id);
 
             if (success) {
-                GameLoader.batchedGameObjectsList.removeGameObject(object.getGameObject());
+                EngineUtils.gameLoader.batchedGameObjectsList.removeGameObject(object.getGameObject());
             } else {
                 warn(String.format(PHYS_REM_DNE, id));
             }
@@ -397,7 +397,7 @@ public class ClientPacketReceiveActions {
             if (success) {
                 Model model = ModelBank.getAbstractArt();
                 GameObject gameObject = new GameObject(model, new Vector3f(cachedConnectedPlayer.getPosition()), new Vector3f(cachedConnectedPlayer.getRotation()), 1);
-                GameLoader.batchedGameObjectsList.addGameObject(gameObject);
+                EngineUtils.gameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
                 cachedConnectedPlayer.setGameObject(gameObject);
             } else {
@@ -441,7 +441,7 @@ public class ClientPacketReceiveActions {
             boolean success = level.removeCachedConnectedPlayer(id);
 
             if (success) {
-                GameLoader.batchedGameObjectsList.removeGameObject(cachedConnectedPlayer.getGameObject());
+                EngineUtils.gameLoader.batchedGameObjectsList.removeGameObject(cachedConnectedPlayer.getGameObject());
             } else {
                 warn(String.format(PLR_REM_DNE_PLR, id));
             }
@@ -525,14 +525,18 @@ public class ClientPacketReceiveActions {
     public static void virtualLightAddedReceived(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightAddedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            Light light = new Light(new Vector3f(position), new Vector3f(color), new Vector3f(attenuation));
-            boolean success = lightHandler.addLight(id, light);
+            if (lightHandler != null) {
+                Light light = new Light(new Vector3f(position), new Vector3f(color), new Vector3f(attenuation));
+                boolean success = lightHandler.addLight(id, light);
 
-            if (!success) {
-                warn(String.format(LGT_ADD_EXISTS, id));
+                if (!success) {
+                    warn(String.format(LGT_ADD_EXISTS, id));
+                }
+            } else {
+                warn(String.format(LGT_ADD_HAND, id));
             }
         } else {
             warn(String.format(LGT_ADD_HAND, id));
@@ -542,13 +546,17 @@ public class ClientPacketReceiveActions {
     public static void virtualLightRemovedReceived(int id) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightRemovedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            boolean success = lightHandler.removeLight(id);
+            if (lightHandler != null) {
+                boolean success = lightHandler.removeLight(id);
 
-            if (!success) {
-                warn(String.format(LGT_REM_DNE, id));
+                if (!success) {
+                    warn(String.format(LGT_REM_DNE, id));
+                }
+            } else {
+                warn(String.format(LGT_REM_HAND, id));
             }
         } else {
             warn(String.format(LGT_REM_HAND, id));
@@ -558,15 +566,19 @@ public class ClientPacketReceiveActions {
     public static void virtualLightMovedReceived(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightMovedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            Light light = lightHandler.getLight(id);
+            if (lightHandler != null) {
+                Light light = lightHandler.getLight(id);
 
-            if (light != null) {
-                light.setPosition(x, y, z);
+                if (light != null) {
+                    light.setPosition(x, y, z);
+                } else {
+                    warn(String.format(LGT_MOV_DNE, id));
+                }
             } else {
-                warn(String.format(LGT_MOV_DNE, id));
+                warn(String.format(LGT_MOV_HAND, id));
             }
         } else {
             warn(String.format(LGT_MOV_HAND, id));
@@ -576,15 +588,19 @@ public class ClientPacketReceiveActions {
     public static void virtualLightColorChangedReceived(int id, float r, float g, float b) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightColorChangedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            Light light = lightHandler.getLight(id);
+            if (lightHandler != null) {
+                Light light = lightHandler.getLight(id);
 
-            if (light != null) {
-                light.setColor(r, g, b);
+                if (light != null) {
+                    light.setColor(r, g, b);
+                } else {
+                    warn(String.format(LGT_COL_DNE, id));
+                }
             } else {
-                warn(String.format(LGT_COL_DNE, id));
+                warn(String.format(LGT_COL_HAND, id));
             }
         } else {
             warn(String.format(LGT_COL_HAND, id));
@@ -594,15 +610,19 @@ public class ClientPacketReceiveActions {
     public static void virtualLightAttenuationChangedReceived(int id, float att1, float att2, float att3) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightAttenuationChangedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            Light light = lightHandler.getLight(id);
+            if (lightHandler != null) {
+                Light light = lightHandler.getLight(id);
 
-            if (light != null) {
-                light.setAttenuation(att1, att2, att3);
+                if (light != null) {
+                    light.setAttenuation(att1, att2, att3);
+                } else {
+                    warn(String.format(LGT_ATT_DNE, id));
+                }
             } else {
-                warn(String.format(LGT_ATT_DNE, id));
+                warn(String.format(LGT_ATT_HAND, id));
             }
         } else {
             warn(String.format(LGT_ATT_HAND, id));
@@ -612,17 +632,21 @@ public class ClientPacketReceiveActions {
     public static void virtualLightPropertiesChangedReceived(int id, Vector3f position, Vector3f color, Vector3f attenuation) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualLightPropertiesChangedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            Light light = lightHandler.getLight(id);
+            if (lightHandler != null) {
+                Light light = lightHandler.getLight(id);
 
-            if (light != null) {
-                light.setPosition(position.x, position.y, position.z);
-                light.setColor(color.x, color.y, color.z);
-                light.setAttenuation(attenuation.x, attenuation.y, attenuation.z);
+                if (light != null) {
+                    light.setPosition(position.x, position.y, position.z);
+                    light.setColor(color.x, color.y, color.z);
+                    light.setAttenuation(attenuation.x, attenuation.y, attenuation.z);
+                } else {
+                    warn(String.format(LGT_PRO_DNE, id));
+                }
             } else {
-                warn(String.format(LGT_PRO_DNE, id));
+                warn(String.format(LGT_PRO_HAND, id));
             }
         } else {
             warn(String.format(LGT_PRO_HAND, id));
@@ -632,14 +656,18 @@ public class ClientPacketReceiveActions {
     public static void virtualDirectionalLightAddedReceived(int id, Vector3f toLightDirection, Vector3f color) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightAddedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            DirectionalLight directionalLight = new DirectionalLight(new Vector3f(toLightDirection), new Vector3f(color));
-            boolean success = lightHandler.addDirectionalLight(id, directionalLight);
+            if (lightHandler != null) {
+                DirectionalLight directionalLight = new DirectionalLight(new Vector3f(toLightDirection), new Vector3f(color));
+                boolean success = lightHandler.addDirectionalLight(id, directionalLight);
 
-            if (!success) {
-                warn(String.format(DIR_LGT_ADD_EXISTS, id));
+                if (!success) {
+                    warn(String.format(DIR_LGT_ADD_EXISTS, id));
+                }
+            } else {
+                warn(String.format(DIR_LGT_ADD_HAND, id));
             }
         } else {
             warn(String.format(DIR_LGT_ADD_HAND, id));
@@ -649,13 +677,17 @@ public class ClientPacketReceiveActions {
     public static void virtualDirectionalLightRemovedReceived(int id) {
         if (IS_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightRemovedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            boolean success = lightHandler.removeDirectionalLight(id);
+            if (lightHandler != null) {
+                boolean success = lightHandler.removeDirectionalLight(id);
 
-            if (!success) {
-                warn(String.format(DIR_LGT_REM_EXISTS, id));
+                if (!success) {
+                    warn(String.format(DIR_LGT_REM_EXISTS, id));
+                }
+            } else {
+                warn(String.format(DIR_LGT_REM_HAND, id));
             }
         } else {
             warn(String.format(DIR_LGT_REM_HAND, id));
@@ -665,15 +697,19 @@ public class ClientPacketReceiveActions {
     public static void virtualDirectionalLightToLightDirectionChangedReceived(int id, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightToLightDirectionChangedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
+            if (lightHandler != null) {
+                DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
 
-            if (directionalLight != null) {
-                directionalLight.setToLightDirection(x, y, z);
+                if (directionalLight != null) {
+                    directionalLight.setToLightDirection(x, y, z);
+                } else {
+                    warn(String.format(DIR_LGT_DIR_DNE, id));
+                }
             } else {
-                warn(String.format(DIR_LGT_DIR_DNE, id));
+                warn(String.format(DIR_LGT_DIR_HAND, id));
             }
         } else {
             warn(String.format(DIR_LGT_DIR_HAND, id));
@@ -683,15 +719,19 @@ public class ClientPacketReceiveActions {
     public static void virtualDirectionalLightColorChangedReceived(int id, float r, float g, float b) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightColorChangedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
+            if (lightHandler != null) {
+                DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
 
-            if (directionalLight != null) {
-                directionalLight.setColor(r, g, b);
+                if (directionalLight != null) {
+                    directionalLight.setColor(r, g, b);
+                } else {
+                    warn(String.format(DIR_LGT_COL_DNE, id));
+                }
             } else {
-                warn(String.format(DIR_LGT_COL_DNE, id));
+                warn(String.format(DIR_LGT_COL_HAND, id));
             }
         } else {
             warn(String.format(DIR_LGT_COL_HAND, id));
@@ -701,16 +741,20 @@ public class ClientPacketReceiveActions {
     public static void virtualDirectionalLightPropertiesChangedReceived(int id, Vector3f toLightDirection, Vector3f color) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.virtualDirectionalLightPropertiesChangedReceived");
 
-        LightHandler lightHandler = GameLoader.lightHandler;
+        if (EngineUtils.gameLoader != null) {
+            LightHandler lightHandler = EngineUtils.gameLoader.lightHandler;
 
-        if (lightHandler != null) {
-            DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
+            if (lightHandler != null) {
+                DirectionalLight directionalLight = lightHandler.getDirectionalLight(id);
 
-            if (directionalLight != null) {
-                directionalLight.setToLightDirection(toLightDirection.x, toLightDirection.y, toLightDirection.z);
-                directionalLight.setColor(color.x, color.y, color.z);
+                if (directionalLight != null) {
+                    directionalLight.setToLightDirection(toLightDirection.x, toLightDirection.y, toLightDirection.z);
+                    directionalLight.setColor(color.x, color.y, color.z);
+                } else {
+                    warn(String.format(DIR_LGT_PRO_DNE, id));
+                }
             } else {
-                warn(String.format(DIR_LGT_PRO_DNE, id));
+                warn(String.format(DIR_LGT_PRO_HAND, id));
             }
         } else {
             warn(String.format(DIR_LGT_PRO_HAND, id));

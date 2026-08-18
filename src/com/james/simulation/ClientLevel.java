@@ -1,12 +1,6 @@
 package com.james.simulation;
 
 import com.james.common.simulation.LevelProperties;
-import com.james.common.simulation.collisionEngine.hitboxes.Ray;
-import com.james.common.simulation.collisionEngine.math.RSTCommonCollisionProcedure;
-import com.james.common.simulation.collisionEngine.math.containers.RaySphereInfo;
-import com.james.common.simulation.collisionEngine.math.containers.RayTriangleInfo;
-import com.james.input.ClickInput;
-import com.james.renderEngine.gameObjects.GameObject;
 import com.james.simulation.collisionEngine.ClientCollisionHandler;
 import com.james.simulation.collisionEngine.RSTClientCollisionHandler;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
@@ -14,11 +8,9 @@ import com.james.simulation.collisionEngine.hitboxes.CachedSphereHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import com.james.tools.MousePicker;
+import templates.gameplay.ClientSideUpdaters;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
-import templates.gameplay.GameLoader;
-import templates.rendering.ModelBank;
 
 import java.util.*;
 
@@ -40,19 +32,16 @@ public class ClientLevel extends LevelProperties {
     private final ClientCollisionHandler clientCollisionHandler;
     private final RSTClientCollisionHandler rstClientCollisionHandler;
 
-    public ClientLevel(ClientPacketSendEvents events, Vector3f playerPosition, Vector3f playerHitboxRadius) {
+    public ClientLevel(ClientPacketSendEvents events, Vector3f playerPosition, Vector3f playerEllipsoidHitboxRadius, float playerSphereHitboxRadius) {
         this.events = events;
 
         this.player = new Player(this, playerPosition);
-        this.clientCollisionHandler = new ClientCollisionHandler(this, this.player, playerHitboxRadius);
-        this.rstClientCollisionHandler = new RSTClientCollisionHandler(this.player);
+        this.clientCollisionHandler = new ClientCollisionHandler(this.player, playerEllipsoidHitboxRadius);
+        this.rstClientCollisionHandler = new RSTClientCollisionHandler(this.player, playerSphereHitboxRadius);
 
         instance = this;
     }
 
-    private final MousePicker mousePicker = new MousePicker(GameLoader.focusCamera);
-    private GameObject lastGameObject;
-//    private final List<GameObject> lastGameObjects = new ArrayList<>();
     /**
      * Method that only gets called once the server is ready, i.e. the isReady property is set to true. Gets
      * called every game tick. Collisions are updated here. Called from the PlayerHandler.
@@ -67,41 +56,7 @@ public class ClientLevel extends LevelProperties {
         clientCollisionHandler.update();
         rstClientCollisionHandler.updateSphereHitboxes();
 
-        mousePicker.update();
-        Ray ray = new Ray(GameLoader.focusCamera.getPosition(), mousePicker.getCurrentRay());
-
-        if (ClickInput.isLeftClickPressed()) {
-            RayTriangleInfo rayTriangleInfo = new RayTriangleInfo();
-            RSTCommonCollisionProcedure.findClosestRayIntersectionWithTriangle(ray, -1, 1000, clientCollisionHandler.cachedAABBHitboxes.values(), rayTriangleInfo);
-
-            if (rayTriangleInfo.closestIntersectionPoint != null) {
-                 GameLoader.batchedGameObjectsList.addGameObject(new GameObject(ModelBank.getColorAbstractArt(), rayTriangleInfo.closestIntersectionPoint, new Vector3f(), 0.5f));
-//                player.setPosition(rayTriangleInfo.closestIntersectionPoint.x, rayTriangleInfo.closestIntersectionPoint.y, rayTriangleInfo.closestIntersectionPoint.z);
-            }
-        }
-
-        RaySphereInfo raySphereInfo = new RaySphereInfo();
-        RSTCommonCollisionProcedure.findClosestRayIntersectionWithSphere(ray, -1, rstClientCollisionHandler.cachedSphereHitboxes.values(), raySphereInfo);
-//        List<AbstractSphereHitbox> sphereHitboxes = new ArrayList<>();
-//        RSTCommonCollisionProcedure.findAllRayIntersectionsWithSpheres(ray, -1, rstClientCollisionHandler.cachedSphereHitboxes.values(), null, sphereHitboxes);
-
-        if (lastGameObject != null) {
-            lastGameObject.highlightFactor = 0.0f;
-        }
-//        for (GameObject lastGameObject : lastGameObjects) {
-//            lastGameObject.highlightFactor = 0.0f;
-//        }
-//        lastGameObjects.clear();
-
-        if (raySphereInfo.closestCollidedHitbox != null) {
-            lastGameObject = ((CachedPhysicalObject) raySphereInfo.closestCollidedHitbox.object).getGameObject();
-            lastGameObject.highlightFactor = 0.2f;
-        }
-//        for (AbstractSphereHitbox sphereHitbox : sphereHitboxes) {
-//            GameObject gameObject = ((CachedPhysicalObject) sphereHitbox.object).getGameObject();
-//            gameObject.highlightFactor = 0.3f;
-//            lastGameObjects.add(gameObject);
-//        }
+        ClientSideUpdaters.clientLevelUpdate(clientCollisionHandler, rstClientCollisionHandler);
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {

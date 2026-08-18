@@ -1,24 +1,25 @@
-package templates.gameplay;
+package com.james.gameplay;
 
+import com.james.wrapper.EngineUtils;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.networking.Client;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
-import game.main.Main;
 import game.ui.screens.DisconnectedScreen;
-import templates.settings.GLFWWindowTitles;
 import templates.communication.OnlineClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketReceiveActions;
 
 public class OnlineGameLoader extends GameLoader {
 
-    public OnlineGameLoader(Vector3f spawnPoint) {
+    public OnlineGameLoader(Vector3f spawnPoint, String newWindowTitle) {
         super(OnlineClientPacketSendEvents.get(), spawnPoint);
 
-        GLFWUtilities.setWindowTitle(GLFWWindowTitles.MULTIPLAYER);
+        if (newWindowTitle != null) {
+            GLFWUtilities.setWindowTitle(newWindowTitle);
+        }
     }
 
     @Override
@@ -193,7 +194,7 @@ public class OnlineGameLoader extends GameLoader {
                 UiHandler.screens.add(new DisconnectedScreen(e));
 
                 ClientLevel.delete();
-                Main.gameLoader = null;
+                EngineUtils.gameLoader = null;
 
                 GLFWUtilities.lockCursor(false);
              }

@@ -13,8 +13,8 @@ public class RSTClientCollisionHandler {
     public final SphereHitbox playerSphereHitbox;
     public final Map<CachedSphereHitbox.Identifier, CachedSphereHitbox> cachedSphereHitboxes = new HashMap<>();
 
-    public RSTClientCollisionHandler(Player player) {
-        this.playerSphereHitbox = new SphereHitbox(player, 1.0f);
+    public RSTClientCollisionHandler(Player player, float playerSphereHitboxRadius) {
+        this.playerSphereHitbox = new SphereHitbox(player, playerSphereHitboxRadius);
     }
 
     public void updateSphereHitboxes() {

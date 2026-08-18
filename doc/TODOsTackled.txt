@@ -11,7 +11,7 @@
 
 // TO DO: 2024-06-18 Is a new instance of Vector3f necessary here? [CommonCollisionProcedure]
 
-// TO DO: 2024-06-20 Counter intuitive. Models are being loaded twice with ModelLoaders. Once client-side, once
+// TO DO: 2024-06-20 Counterintuitive. Models are being loaded twice with ModelLoaders. Once client-side, once
 server-side [ModelMeshBankInR3]
 
 // TO DO: 2024-06-16 I'm not really a huge fan of this encapsulation thing. Consider alternatives? [ModelMeshBankInR3]
@@ -136,3 +136,6 @@ the TextMeshCreator [GuiText]
 
 // TO DO: 2026-08-16 Consider removing this class [PlayerHitbox]
 -> Did it right away
+
+// TO DO: 2024-06-27 Make the server decide where the player should be placed initially [ServerPacketReceiveActions]
+-> This was actually done a long time ago

@@ -18,7 +18,7 @@ import com.james.simulation.objects.Player;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.tools.MousePicker;
 import com.james.tools.Time;
-import templates.gameplay.PlayerHandler;
+import com.james.gameplay.PlayerHandler;
 import game.ui.screens.PauseScreen;
 import com.james.tools.Vector3fInterpolator;
 import org.lwjgl.glfw.GLFW;

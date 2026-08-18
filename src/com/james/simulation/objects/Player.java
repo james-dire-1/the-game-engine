@@ -8,8 +8,6 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Player extends MovableObject {
 
-    public float lastTime = Time.getCurrentTime();
-
     private final Vector3f prevPosition;
     public Vector3f getPrevPosition() { return prevPosition; }
 

@@ -12,7 +12,7 @@ import com.james.simulation.ClientLevel;
 import com.james.tools.ThreadManager;
 import game.main.Main;
 import game.ui.uiElements.SolidBackground;
-import templates.gameplay.OnlineGameLoader;
+import com.james.gameplay.OnlineGameLoader;
 import com.james.renderEngine.textRendering.TextAlignment;
 import templates.common.networking.PacketType;
 

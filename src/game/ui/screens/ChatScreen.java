@@ -18,7 +18,7 @@ import com.james.input.ScrollInput;
 import com.james.renderEngine.uiElements.tools.CaratBlinker;
 import templates.communication.LocalClientPacketSendEvents;
 import templates.communication.OnlineClientPacketSendEvents;
-import templates.gameplay.PlayerHandler;
+import com.james.gameplay.PlayerHandler;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;

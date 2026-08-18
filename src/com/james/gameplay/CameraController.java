@@ -1,4 +1,4 @@
-package templates.gameplay;
+package com.james.gameplay;
 
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.input.MouseMoveInput;
