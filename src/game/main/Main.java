@@ -38,7 +38,7 @@ public class Main {
                 "/scenes/desert-scene.dae", "/scenes/beach-scene.dae", "/scenes/plains-scene.dae");
 
         ModelMeshBankInR3.init("/objects/one-sided-wall.dae", "/scenes/test-scene.dae", "/scenes/desert-scene.dae", "/scenes/beach-scene.dae", "/scenes/plains-scene.dae");
-        EllipsoidDimensions.init( new float[][]{ { 1, 1, 1 }, { 2, 2, 2 }, { 0.5f, 3, 0.5f } } );
+        EllipsoidDimensions.init( new float[][]{ { 1.0f, 1.0f, 1.0f }, { 2.0f, 2.0f, 2.0f }, { 0.5f, 3.0f, 0.5f } } );
 
         EngineUtils.init(GLFWWindowTitles.MAIN);
 

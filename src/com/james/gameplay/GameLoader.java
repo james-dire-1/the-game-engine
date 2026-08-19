@@ -27,18 +27,22 @@ public abstract class GameLoader {
 
     private static final float SECONDS_PER_SEND = 0.1f;
 
-    public Vector3f prop_playerEllipsoidHitboxRadius = new Vector3f(1.0f, 1.0f, 1.0f);
-    public float prop_playerSphereHitboxRadius = 1.0f;
-    public Camera prop_camera = Camera.defaultCamera;
+    public static Vector3f prop_playerEllipsoidHitboxRadius = new Vector3f(1.0f, 1.0f, 1.0f);
+    public static float prop_playerSphereHitboxRadius = 1.0f;
+    public static Camera prop_camera = Camera.defaultCamera;
 
     public final BatchedGameObjectsList batchedGameObjectsList;
     public final PlayerHandler playerHandler;
     public final LightHandler lightHandler;
 
     public boolean isPaused = false;
+    public Camera camera;
 
     public GameLoader(ClientPacketSendEvents events, Vector3f spawnPoint) {
         this.batchedGameObjectsList = new BatchedGameObjectsList();
+
+        MasterRenderer.currentCamera = prop_camera;
+        this.camera = prop_camera;
 
         ClientLevel clientLevel = new ClientLevel(events, spawnPoint, prop_playerEllipsoidHitboxRadius, prop_playerSphereHitboxRadius);
         this.playerHandler = new PlayerHandler(this);
@@ -50,8 +54,6 @@ public abstract class GameLoader {
 
         this.lightHandler = new LightHandler();
         LightSettings.setLightHandler(lightHandler);
-
-        MasterRenderer.currentCamera = prop_camera;
 
         ClientSideUpdaters.gameLoaderInit();
     }
@@ -90,8 +92,8 @@ public abstract class GameLoader {
                 clientLevel.events.sendPlayerTransformChanged(playerPosition.x, playerPosition.y, playerPosition.z, playerRotY);
             }
 
-            Vector3f cameraPosition = prop_camera.getPosition();
-            Mth.pitchAndYawToGLCartesianCoordinates(1, prop_camera.getPitch(), prop_camera.getYaw(), reusableFacingDirection);
+            Vector3f cameraPosition = camera.getPosition();
+            Mth.pitchAndYawToGLCartesianCoordinates(1, camera.getPitch(), camera.getYaw(), reusableFacingDirection);
             AudioListener.setPosition(cameraPosition.x, cameraPosition.y, cameraPosition.z);
             AudioListener.setOrientation(reusableFacingDirection.x, reusableFacingDirection.y, reusableFacingDirection.z);
         }

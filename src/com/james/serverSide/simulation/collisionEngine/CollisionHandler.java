@@ -35,7 +35,7 @@ public class CollisionHandler {
             MovableObject movableObject = ellipsoidHitbox.movableObject;
 
             if (movableObject.canCollideWithTriangles) {
-                boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, level, null);
+                boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, level, null, null);
                 if (!algorithmPerformed) {
                     movableObject.setPositionBasedOnVelocity();
                 }

@@ -1,6 +1,5 @@
 package com.james.simulation.collisionEngine;
 
-import com.james.common.simulation.LevelProperties;
 import com.james.common.simulation.collisionEngine.math.CommonCollisionProcedure;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
@@ -8,6 +7,7 @@ import com.james.simulation.ClientLevel;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.Player;
 import game.ui.screens.DebugScreen;
+import com.james.common.simulation.collisionEngine.math.containers.CollisionDetails;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.HashMap;
@@ -37,9 +37,15 @@ public class ClientCollisionHandler {
      */
     public void update() {
         if (player.canCollideWithTriangles) {
-            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerEllipsoidHitbox, cachedAABBHitboxes.values(), ClientLevel.get(), DebugScreen.collisionsAccumulator);
+            CollisionDetails collisionDetails = new CollisionDetails();
+
+            boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerEllipsoidHitbox, cachedAABBHitboxes.values(), ClientLevel.get(), DebugScreen.collisionsAccumulator, collisionDetails);
             if (!algorithmPerformed) {
                 player.setPositionBasedOnVelocity();
+            }
+
+            if (collisionDetails.onGround) {
+                System.out.println("angle " + collisionDetails.inclinationAngle);
             }
         }
     }

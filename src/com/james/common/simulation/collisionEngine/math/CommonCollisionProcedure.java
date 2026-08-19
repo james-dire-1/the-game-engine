@@ -8,6 +8,7 @@ import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractEllipsoidHitbox;
 import com.james.common.tools.Mth;
 import com.james.serverSide.simulation.objects.MovableObject;
+import com.james.common.simulation.collisionEngine.math.containers.CollisionDetails;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class CommonCollisionProcedure {
     private static final float VERY_CLOSE_DISTANCE = 0.005f;
     private static final float VERY_CLOSE_DISTANCE_SQUARED = VERY_CLOSE_DISTANCE * VERY_CLOSE_DISTANCE;
     private static final int MAX_RECURSION_COUNT = 5;
+    private static final Vector3f UNIT_UP_VECTOR = new Vector3f(0.0f, 1.0f, 0.0f);
 
     /**
      * Does broadphase collision test between AbstractEllipsoidHitbox and all AbstractAABBHitboxes. Determines
@@ -31,7 +33,7 @@ public class CommonCollisionProcedure {
      *
      * @return whether the narrow phase test was performed
      */
-    public static boolean performEntireCollisionDetectionAlgorithm(AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes, LevelProperties levelProperties, DebugAccumulator debugAccumulator) {
+    public static boolean performEntireCollisionDetectionAlgorithm(AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes, LevelProperties levelProperties, DebugAccumulator debugAccumulator, CollisionDetails collisionDetails) {
         List<Triangle> allTrianglesInEllipsoidWorldSpaceList = new ArrayList<>();
 
         for (AbstractAABBHitbox aabbHitbox : aabbHitboxes) {
@@ -79,14 +81,14 @@ public class CommonCollisionProcedure {
         Vector3f displacementThisTick = Mth.multiply(movableObject.getCombinedVelocity(), levelProperties.secondsPerGameTick);
         PointOperations.dividePointByEllipsoidRadiusDest(displacementThisTick, ellipsoidHitboxRadius);
 
-        Vector3f finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, basePoint, displacementThisTick, 0);
+        Vector3f finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, basePoint, displacementThisTick, 0, null);
 
         // Velocity (AKA displacementThisTick) vector is the gravity vector
         if (movableObject.isAffectedByGravity) {
             displacementThisTick = Mth.multiply(levelProperties.gravity, levelProperties.secondsPerGameTick);
             PointOperations.dividePointByEllipsoidRadiusDest(displacementThisTick, ellipsoidHitboxRadius);
 
-            finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, finalPosition, displacementThisTick, 0);
+            finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, finalPosition, displacementThisTick, 0, collisionDetails);
         }
 
         // Convert result back into R3
@@ -101,23 +103,31 @@ public class CommonCollisionProcedure {
      * and velocity vectors. In the collision step, checks for collision against all the Triangles that were
      * passed in, and finds the closest one. Important data from the collision step are stored in CollisionInfo.
      */
-    private static Vector3f collisionDetectionAndResponse(Triangle[] trianglesInEllipsoidWorldSpace, Vector3f position, Vector3f velocity, int recursionCount) {
+    private static Vector3f collisionDetectionAndResponse(Triangle[] trianglesInEllipsoidWorldSpace, Vector3f position, Vector3f velocity, int recursionCount, CollisionDetails collisionDetails) {
         if (recursionCount > MAX_RECURSION_COUNT)
             return position;
 
         CollisionInfo collisionInfo = new CollisionInfo();
         for (Triangle triangle : trianglesInEllipsoidWorldSpace) {
-            // Update: Apparently I don't have to change the triangle order, for some reason..
-            Vector3f p1 = triangle.points[0];
-            Vector3f p2 = triangle.points[1];
-            Vector3f p3 = triangle.points[2];
-
-            performCollisionDetectionWithTriangle(position, velocity, p1, p2, p3, collisionInfo);
+            performCollisionDetectionWithTriangle(position, velocity, triangle, collisionInfo);
         }
 
         Vector3f destinationPoint = Vector3f.add(position, velocity, null);
         if (!collisionInfo.foundCollision)
             return destinationPoint;
+
+        if (collisionDetails != null) {
+            Triangle triangle = collisionInfo.collisionTriangle;
+            Vector3f triangleEdge1 = Vector3f.sub(triangle.points[1], triangle.points[0], null);
+            Vector3f triangleEdge2 = Vector3f.sub(triangle.points[2], triangle.points[0], null);
+
+            Vector3f triangleDirection = Vector3f.cross(triangleEdge1, triangleEdge2, null);
+            triangleDirection.normalise(triangleDirection);
+            double angle = Math.toDegrees(Math.acos(Vector3f.dot(triangleDirection, UNIT_UP_VECTOR)));
+
+            collisionDetails.onGround = true;
+            collisionDetails.inclinationAngle = (float) angle;
+        }
 
         if (collisionInfo.intersectionDistance >= VERY_CLOSE_DISTANCE) {
             velocity.normalise(velocity);
@@ -140,7 +150,7 @@ public class CommonCollisionProcedure {
 
         recursionCount++;
 
-        return collisionDetectionAndResponse(trianglesInEllipsoidWorldSpace, position, newVelocityVector, recursionCount);
+        return collisionDetectionAndResponse(trianglesInEllipsoidWorldSpace, position, newVelocityVector, recursionCount, collisionDetails);
     }
 
     private static final ThreadLocal<TempCollisionInfo> temp = ThreadLocal.withInitial(TempCollisionInfo::new);
@@ -151,7 +161,12 @@ public class CommonCollisionProcedure {
      * tests if a collision with the triangle's vertices or edges has occurred. If this is the closest triangle
      * thus far, then its collision data overwrite old data in CollisionInfo.
      */
-    private static void performCollisionDetectionWithTriangle(Vector3f basePoint, Vector3f velocity, Vector3f p1, Vector3f p2, Vector3f p3, CollisionInfo collisionInfo) {
+    private static void performCollisionDetectionWithTriangle(Vector3f basePoint, Vector3f velocity, Triangle triangle, CollisionInfo collisionInfo) {
+        // Update: Apparently I don't have to change the triangle order, for some reason..
+        Vector3f p1 = triangle.points[0];
+        Vector3f p2 = triangle.points[1];
+        Vector3f p3 = triangle.points[2];
+
         Vector3f normalizedVelocity = velocity.normalise(null);
         Plane trianglePlane = new Plane(p1, p2, p3);
 
@@ -216,6 +231,7 @@ public class CommonCollisionProcedure {
                 collisionInfo.foundCollision = true;
                 collisionInfo.intersectionDistance = intersectionDistance;
                 collisionInfo.intersectionPoint = temp.get().intersectionPoint;
+                collisionInfo.collisionTriangle = triangle;
             }
         }
     }
@@ -269,6 +285,7 @@ public class CommonCollisionProcedure {
         private boolean foundCollision;
         private float intersectionDistance;
         private Vector3f intersectionPoint;
+        private Triangle collisionTriangle;
     }
 
     public static class DebugAccumulator {

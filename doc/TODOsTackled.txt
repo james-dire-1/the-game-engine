@@ -139,3 +139,6 @@ the TextMeshCreator [GuiText]
 
 // TO DO: 2024-06-27 Make the server decide where the player should be placed initially [ServerPacketReceiveActions]
 -> This was actually done a long time ago
+
+// TO DO: 2026-08-18 I think this is being accessed incorrectly in some places [LevelProperties]
+-> Nevermind, I was wrong (referring to gravity vector)

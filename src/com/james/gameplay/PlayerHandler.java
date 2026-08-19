@@ -43,7 +43,7 @@ public class PlayerHandler {
         gameObject.isVisible = false;
         gameLoader.batchedGameObjectsList.addGameObject(gameObject);
 
-        this.camController = new CameraController(gameLoader.prop_camera, gameObject.getPosition(), prop_cameraDistanceFromPlayer);
+        this.camController = new CameraController(gameLoader.camera, gameObject.getPosition(), prop_cameraDistanceFromPlayer);
         camController.setFirstPersonOffset(prop_camFirstPersonOffset.x, prop_camFirstPersonOffset.y, prop_camFirstPersonOffset.z);
 
         Vector3fInterpolator.secondsPerGameTick = clientLevel.secondsPerGameTick;

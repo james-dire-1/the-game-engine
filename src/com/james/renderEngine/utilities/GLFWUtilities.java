@@ -8,7 +8,9 @@ import com.james.input.TypingInput;
 import com.james.input.ScrollInput;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.system.MemoryStack;
 
+import java.nio.IntBuffer;
 import java.util.Objects;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -77,8 +79,19 @@ public class GLFWUtilities {
 
     public static void lockCursor(boolean shouldCursorLock) {
         int cursorAction = shouldCursorLock ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL;
-        cursorLocked = shouldCursorLock;
         glfwSetInputMode(window, GLFW_CURSOR, cursorAction);
+
+        if (!shouldCursorLock && cursorLocked) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                IntBuffer width = stack.mallocInt(1);
+                IntBuffer height = stack.mallocInt(1);
+
+                glfwGetWindowSize(window, width, height);
+                glfwSetCursorPos(window, width.get(0) / 2.0, height.get(0) / 2.0);
+            }
+        }
+
+        cursorLocked = shouldCursorLock;
     }
 
     public static boolean isCursorLocked() {
