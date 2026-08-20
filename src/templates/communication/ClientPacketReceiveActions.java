@@ -468,7 +468,7 @@ public class ClientPacketReceiveActions {
         ClientLevel level = ClientLevel.get();
 
         if (level != null) {
-            level.gravity.set(x, y, z);
+            level.constantGravityVelocity.set(x, y, z);
         } else {
             warn(String.format(GRAV_LVL, x, y, z));
         }

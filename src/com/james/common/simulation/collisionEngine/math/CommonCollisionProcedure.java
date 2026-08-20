@@ -33,7 +33,7 @@ public class CommonCollisionProcedure {
      *
      * @return whether the narrow phase test was performed
      */
-    public static boolean performEntireCollisionDetectionAlgorithm(AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes, LevelProperties levelProperties, DebugAccumulator debugAccumulator, CollisionDetails collisionDetails) {
+    public static boolean performEntireCollisionDetectionAlgorithm(AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes, Vector3f gravityVelocity, LevelProperties levelProperties, DebugAccumulator debugAccumulator, CollisionDetails collisionDetails) {
         List<Triangle> allTrianglesInEllipsoidWorldSpaceList = new ArrayList<>();
 
         for (AbstractAABBHitbox aabbHitbox : aabbHitboxes) {
@@ -85,7 +85,7 @@ public class CommonCollisionProcedure {
 
         // Velocity (AKA displacementThisTick) vector is the gravity vector
         if (movableObject.isAffectedByGravity) {
-            displacementThisTick = Mth.multiply(levelProperties.gravity, levelProperties.secondsPerGameTick);
+            displacementThisTick = Mth.multiply(gravityVelocity, levelProperties.secondsPerGameTick);
             PointOperations.dividePointByEllipsoidRadiusDest(displacementThisTick, ellipsoidHitboxRadius);
 
             finalPosition = collisionDetectionAndResponse(allTrianglesInEllipsoidWorldSpace, finalPosition, displacementThisTick, 0, collisionDetails);

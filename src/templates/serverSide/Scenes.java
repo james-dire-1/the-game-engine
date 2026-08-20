@@ -140,6 +140,7 @@ public class Scenes {
     };
 
     private static int counter;
+    private static int itemsAdded;
     public static final Scene beachScene = new Scene() {
         @Override
         public void onStartup(Level level) {
@@ -185,6 +186,7 @@ public class Scenes {
 
                 if (counter == 10) {
                     counter = 0;
+                    itemsAdded++;
 //                    Vector3f position = new Vector3f(0, 20, 110);
                     Vector3f position = new Vector3f(0 + r.nextFloat() * 0.01f, 20 + r.nextFloat() * 0.01f, 110 + r.nextFloat() * 0.01f);
                     MovableObject item = new MovableObject(level, PhysicalObjectType.Other, position, new Vector3f(), 0.5f);
@@ -195,7 +197,7 @@ public class Scenes {
                     level.addSphereHitbox(sphere);
                 }
 
-                return false;
+                return itemsAdded >= 15;
             }, null);
         }
 

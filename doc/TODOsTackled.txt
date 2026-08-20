@@ -141,4 +141,7 @@ the TextMeshCreator [GuiText]
 -> This was actually done a long time ago
 
 // TO DO: 2026-08-18 I think this is being accessed incorrectly in some places [LevelProperties]
--> Nevermind, I was wrong (referring to gravity vector)
+-> Never mind, I was wrong (referring to gravity vector)
+
+// TO DO: 2026-08-14 isAffectedByGravity is not taken into account in collision logic [MovableObject]
+-> It now is taken into account; I forgot to remove this comment

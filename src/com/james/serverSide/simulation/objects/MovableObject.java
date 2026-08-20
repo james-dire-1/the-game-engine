@@ -1,7 +1,10 @@
 package com.james.serverSide.simulation.objects;
 
 import com.james.common.simulation.LevelProperties;
+import com.james.common.simulation.collisionEngine.math.containers.CollisionDetails;
 import com.james.common.tools.Mth;
+import newStuff.FallingAndGravityProperties;
+import newStuff.FallingAndGravityState;
 import templates.common.simulation.objects.PhysicalObjectType;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -29,11 +32,16 @@ public class MovableObject extends PhysicalObject implements MoveUpdatable {
         return tempCombinedVelocity;
     }
 
-    // TODO: 2026-08-14 isAffectedByGravity is not taken into account in collision logic
     public boolean isAffectedByGravity = true;
     // TODO: 2026-08-14 make more restricted to signify that this should not be modified directly
     public boolean canCollideWithTriangles = false;
     private boolean usesAcceleration = false;
+
+    private CollisionDetails collisionDetails;
+    private FallingAndGravityState fgState;
+
+    public CollisionDetails getCollisionDetails() { return collisionDetails; }
+    public FallingAndGravityState getFallingAndGravityState() { return fgState; }
 
     public MovableObject(LevelProperties levelProperties, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
         super(type, position, rotation, scale);
@@ -60,23 +68,42 @@ public class MovableObject extends PhysicalObject implements MoveUpdatable {
         this.acceleration.z = z;
     }
 
+    public void addFallingAndGravityStateWithDefaultProperties() {
+        addFallingAndGravityStateWithGivenProperties(defaultFgProperties);
+    }
+
+    public void addFallingAndGravityStateWithGivenProperties(FallingAndGravityProperties fgProperties) {
+        if (this.collisionDetails == null) {
+            this.collisionDetails = new CollisionDetails();
+        }
+
+        this.fgState = new FallingAndGravityState(fgProperties);
+    }
+
     @Override
     public void moveUpdate() {
         if (usesAcceleration) {
             Vector3f.add(velocity, Mth.multiply(this.acceleration, levelProperties.secondsPerGameTick), velocity);
         }
-
-        if (isAffectedByGravity) {
-            Vector3f.add(velocity, levelProperties.gravity, tempNetVelocity);
-        } else {
-            tempNetVelocity.set(velocity);
-        }
-
-        Vector3f.add(tempNetVelocity, secondaryVelocity, tempNetVelocity);
     }
 
     public void setPositionBasedOnVelocity() {
+        tempNetVelocity.set(velocity);
+        Vector3f.add(tempNetVelocity, secondaryVelocity, tempNetVelocity);
+
+        if (isAffectedByGravity) {
+            Vector3f gravityToUse;
+            if (fgState != null)
+                gravityToUse = fgState.getVelocityDueToGravity();
+            else
+                gravityToUse = levelProperties.constantGravityVelocity;
+
+            Vector3f.add(tempNetVelocity, gravityToUse, tempNetVelocity);
+        }
+
         Vector3f.add(position, Mth.multiply(tempNetVelocity, levelProperties.secondsPerGameTick), position);
     }
+
+    private static final FallingAndGravityProperties defaultFgProperties = new FallingAndGravityProperties();
 
 }
