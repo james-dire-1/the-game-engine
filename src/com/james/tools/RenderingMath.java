@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class RenderingMath {
 
-    private static final float FAR_PLANE = 1000;
+    private static final float FAR_PLANE = 1000.0f;
     private static final float NEAR_PLANE = 0.1f;
 
     public static Matrix4f createTransformationMatrix(Vector3f position, Vector3f rotation, float scale) {

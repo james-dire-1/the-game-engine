@@ -14,9 +14,7 @@ public class RSTCollisionHandler {
 
     public void updateSphereHitboxes() {
         for (SphereHitbox currentSphereHitbox : sphereHitboxes) {
-            AbstractPhysicalObject firstPhysicalObject = currentSphereHitbox.object;
-
-            if (!(firstPhysicalObject instanceof MovableObject))
+            if (!(currentSphereHitbox.object instanceof MovableObject))
                 continue;
 
             RSTCommonCollisionProcedure.beRepelledByOtherSpheresForThisSphere(currentSphereHitbox, sphereHitboxes);

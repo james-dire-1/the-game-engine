@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class RSTClientCollisionHandler {
 
-    public final SphereHitbox playerSphereHitbox;
+    private final SphereHitbox playerSphereHitbox;
     public final Map<CachedSphereHitbox.Identifier, CachedSphereHitbox> cachedSphereHitboxes = new HashMap<>();
 
     public RSTClientCollisionHandler(Player player, float playerSphereHitboxRadius) {

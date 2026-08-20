@@ -1,10 +1,12 @@
 package com.james.serverSide.simulation.collisionEngine;
 
 import com.james.common.simulation.collisionEngine.math.CommonCollisionProcedure;
+import com.james.common.simulation.collisionEngine.math.containers.CollisionDetails;
 import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;
+import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +37,16 @@ public class CollisionHandler {
             MovableObject movableObject = ellipsoidHitbox.movableObject;
 
             if (movableObject.canCollideWithTriangles) {
-                boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, level.constantGravityVelocity, level, null, null);
+                Vector3f gravityToUse;
+                if (movableObject.getFallingAndGravityState() != null)
+                    gravityToUse = movableObject.getFallingAndGravityState().getVelocityDueToGravity();
+                else
+                    gravityToUse = level.constantGravityVelocity;
+
+                CollisionDetails collisionDetails = movableObject.getCollisionDetails();
+                if (collisionDetails != null) collisionDetails.reset();
+
+                boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, gravityToUse, level, null, collisionDetails);
                 if (!algorithmPerformed) {
                     movableObject.setPositionBasedOnVelocity();
                 }

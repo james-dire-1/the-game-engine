@@ -3,6 +3,7 @@ package com.james.common.simulation.collisionEngine.hitboxes;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.serverSide.simulation.collisionEngine.CollisionHandler;
 import com.james.serverSide.simulation.objects.MovableObject;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  * An ellipsoid hitbox used by players and moving entities to navigate world geometry that is represented

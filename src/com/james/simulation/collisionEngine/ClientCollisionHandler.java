@@ -8,6 +8,7 @@ import com.james.simulation.ClientLevel;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.Player;
 import game.ui.screens.DebugScreen;
+import newStuff.RayCollisionDefense;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.HashMap;
@@ -19,13 +20,10 @@ import java.util.Map;
  */
 public class ClientCollisionHandler {
 
-    public final EllipsoidHitbox playerEllipsoidHitbox;
+    private final EllipsoidHitbox playerEllipsoidHitbox;
     public final Map<CachedAABBHitbox.Identifier, CachedAABBHitbox> cachedAABBHitboxes = new HashMap<>();
 
-    private final Player player;
-
     public ClientCollisionHandler(Player player, Vector3f radius) {
-        this.player = player;
         this.playerEllipsoidHitbox = new EllipsoidHitbox(player, EllipsoidDimensions.get(radius.x, radius.y, radius.z));
     }
 
@@ -36,6 +34,8 @@ public class ClientCollisionHandler {
      * with any AABBs), then the regular update() method of the Player is called.
      */
     public void update() {
+        Player player = (Player) playerEllipsoidHitbox.movableObject;
+
         if (player.canCollideWithTriangles) {
             Vector3f gravityToUse;
             if (player.getFallingAndGravityState() != null)
@@ -43,7 +43,9 @@ public class ClientCollisionHandler {
             else
                 gravityToUse = ClientLevel.get().constantGravityVelocity;
 
-            CollisionDetails collisionDetails = playerEllipsoidHitbox.movableObject.getCollisionDetails();
+            RayCollisionDefense.changeMovableObjectVelocityIfNecessary(playerEllipsoidHitbox, cachedAABBHitboxes.values(), gravityToUse, ClientLevel.get().secondsPerGameTick);
+
+            CollisionDetails collisionDetails = player.getCollisionDetails();
             if (collisionDetails != null) collisionDetails.reset();
 
             boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerEllipsoidHitbox, cachedAABBHitboxes.values(), gravityToUse, ClientLevel.get(), DebugScreen.collisionsAccumulator, collisionDetails);

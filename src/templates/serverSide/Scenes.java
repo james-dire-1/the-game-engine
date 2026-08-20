@@ -164,6 +164,7 @@ public class Scenes {
             for (int i = 0; i < 30; i++) {
                 Vector3f position = new Vector3f(r.nextFloat() * 20 - 10, 50, r.nextFloat() * 20 - 10);
                 MovableObject item = new MovableObject(level, PhysicalObjectType.Other, position, new Vector3f(), 0.5f);
+//                item.addFallingAndGravityStateWithDefaultProperties();
                 level.add(item);
                 EllipsoidHitbox ellipsoid = new EllipsoidHitbox(item, EllipsoidDimensions.get(1, 1, 1));
                 level.addEllipsoidHitbox(ellipsoid);
