@@ -1,4 +1,4 @@
-package newStuff;
+package com.james.common.simulation.details;
 
 import com.james.common.simulation.LevelProperties;
 import com.james.common.simulation.collisionEngine.math.containers.CollisionDetails;
@@ -10,17 +10,29 @@ public class FallingAndGravityState {
     private static final float EPSILON = 0.005f;
 
     private final FallingAndGravityProperties fgProperties;
+    private final MovableObject movableObject;
     private final Vector3f velocityDueToGravity = new Vector3f();
     public Vector3f getVelocityDueToGravity() { return velocityDueToGravity; }
 
     private State state = State.FALLING;
     private int ticksElapsed;
+    private float yWhenBeganJump;
 
-    public FallingAndGravityState(FallingAndGravityProperties fgProperties) {
+    public FallingAndGravityState(FallingAndGravityProperties fgProperties, MovableObject movableObject) {
         this.fgProperties = fgProperties;
+        this.movableObject = movableObject;
     }
 
-    public void update(MovableObject movableObject, LevelProperties levelProperties) {
+    public void attemptToJump() {
+        if (state == State.ON_GROUND_FIRMLY) {
+            state = State.BEGAN_JUMP;
+            ticksElapsed = 0;
+            velocityDueToGravity.y = fgProperties.jumpSpeed;
+            yWhenBeganJump = movableObject.getPosition().y;
+        }
+    }
+
+    public void update(LevelProperties levelProperties) {
         CollisionDetails collisionDetails = movableObject.getCollisionDetails();
         Vector3f velocity = movableObject.getVelocity();
         boolean moving = Math.abs(velocity.x) > EPSILON || Math.abs(velocity.y) > EPSILON || Math.abs(velocity.z) > EPSILON;
@@ -37,7 +49,7 @@ public class FallingAndGravityState {
                     state = State.ON_GROUND_FIRMLY;
                 }
             } else {
-                velocityDueToGravity.y += levelProperties.gravityAcceleration;
+                velocityDueToGravity.y += levelProperties.gravityAcceleration * levelProperties.secondsPerGameTick;
 
                 if (velocityDueToGravity.y < levelProperties.terminalVelocity) {
                     velocityDueToGravity.y = levelProperties.terminalVelocity;
@@ -58,7 +70,7 @@ public class FallingAndGravityState {
                     velocityDueToGravity.y = targetGravityVelocity;
                     state = State.ON_GROUND_FIRMLY;
                 } else {
-                    velocityDueToGravity.y -= levelProperties.gravityAcceleration;
+                    velocityDueToGravity.y -= levelProperties.gravityAcceleration * levelProperties.secondsPerGameTick;
 
                     if (velocityDueToGravity.y > targetGravityVelocity) {
                         velocityDueToGravity.y = targetGravityVelocity;
@@ -75,12 +87,41 @@ public class FallingAndGravityState {
                 ticksElapsed = 0;
             }
         }
+
+        else if (state == State.BEGAN_JUMP) {
+            ticksElapsed++;
+
+            if (ticksElapsed >= 3) {
+                state = State.FALLING_FROM_JUMP;
+            }
+        }
+
+        else if (state == State.FALLING_FROM_JUMP) {
+            if (collisionDetails.onGround) {
+                float jumpDisplacement = movableObject.getPosition().y - yWhenBeganJump;
+
+                if (jumpDisplacement < fgProperties.minJumpDisplacementBeforeRecovery) {
+                    state = State.ON_GROUND_RECOVERING;
+                    ticksElapsed = 0;
+                } else {
+                    state = State.ON_GROUND_FIRMLY;
+                }
+            } else {
+                velocityDueToGravity.y += levelProperties.gravityAcceleration * levelProperties.secondsPerGameTick;
+
+                if (velocityDueToGravity.y < levelProperties.terminalVelocity) {
+                    velocityDueToGravity.y = levelProperties.terminalVelocity;
+                }
+            }
+        }
     }
 
     private enum State {
         FALLING,
         ON_GROUND_RECOVERING,
-        ON_GROUND_FIRMLY
+        ON_GROUND_FIRMLY,
+        BEGAN_JUMP,
+        FALLING_FROM_JUMP
     }
 
 }

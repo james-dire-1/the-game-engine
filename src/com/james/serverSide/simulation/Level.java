@@ -11,7 +11,7 @@ import com.james.serverSide.simulation.objects.Updatable;
 import com.james.serverSide.simulation.objects.MoveUpdatable;
 import com.james.serverSide.simulation.collisionEngine.RSTCollisionHandler;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
-import newStuff.FallingAndGravityState;
+import com.james.common.simulation.details.FallingAndGravityState;
 import org.lwjgl.util.vector.Vector3f;
 import templates.serverSide.communication.ServerPacketSendEvents;
 import templates.serverSide.PlayerInfo;
@@ -85,7 +85,7 @@ public class Level extends LevelProperties {
 
                         FallingAndGravityState fgState = movableObject.getFallingAndGravityState();
                         if (fgState != null) {
-                            fgState.update(movableObject, this);
+                            fgState.update(this);
                         }
                     }
                 }

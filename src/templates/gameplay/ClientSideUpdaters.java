@@ -120,9 +120,13 @@ public class ClientSideUpdaters {
         Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), reusableVelocity);
         player.setVelocity(reusableVelocity.x, 0, -reusableVelocity.y);
 
-        if (isKeyPressed(GLFW_KEY_SPACE)) {
+        if (isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
             Vector3f playerPosition = player.getPosition();
             player.setPosition(playerPosition.x, playerPosition.y + 5, playerPosition.z);
+        }
+
+        if (isKeyPressed(GLFW_KEY_SPACE)) {
+            player.getFallingAndGravityState().attemptToJump();
         }
     }
 

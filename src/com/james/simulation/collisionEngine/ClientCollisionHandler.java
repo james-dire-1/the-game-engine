@@ -8,7 +8,7 @@ import com.james.simulation.ClientLevel;
 import com.james.simulation.collisionEngine.hitboxes.CachedAABBHitbox;
 import com.james.simulation.objects.Player;
 import game.ui.screens.DebugScreen;
-import newStuff.RayCollisionDefense;
+import com.james.common.simulation.collisionEngine.math.RayCollisionDefense;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.HashMap;
@@ -25,6 +25,7 @@ public class ClientCollisionHandler {
 
     public ClientCollisionHandler(Player player, Vector3f radius) {
         this.playerEllipsoidHitbox = new EllipsoidHitbox(player, EllipsoidDimensions.get(radius.x, radius.y, radius.z));
+        this.playerEllipsoidHitbox.doBacktracking = true;
     }
 
     /**
@@ -52,7 +53,9 @@ public class ClientCollisionHandler {
                 player.setPositionBasedOnVelocity();
             }
 
-            RayCollisionDefense.backtrackMovableObjectIfNecessary(prevPosition, playerEllipsoidHitbox, cachedAABBHitboxes.values());
+            if (playerEllipsoidHitbox.doBacktracking) {
+                RayCollisionDefense.backtrackMovableObjectIfNecessary(prevPosition, playerEllipsoidHitbox, cachedAABBHitboxes.values());
+            }
         }
     }
 

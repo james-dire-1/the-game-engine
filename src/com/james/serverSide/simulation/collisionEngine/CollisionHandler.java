@@ -6,7 +6,7 @@ import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;
-import newStuff.RayCollisionDefense;
+import com.james.common.simulation.collisionEngine.math.RayCollisionDefense;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
@@ -53,7 +53,9 @@ public class CollisionHandler {
                     movableObject.setPositionBasedOnVelocity();
                 }
 
-                RayCollisionDefense.backtrackMovableObjectIfNecessary(prevPosition, ellipsoidHitbox, aabbHitboxes);
+                if (ellipsoidHitbox.doBacktracking) {
+                    RayCollisionDefense.backtrackMovableObjectIfNecessary(prevPosition, ellipsoidHitbox, aabbHitboxes);
+                }
             }
         }
     }

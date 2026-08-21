@@ -1,18 +1,21 @@
-package newStuff;
+package com.james.common.simulation.details;
 
 public class FallingAndGravityProperties {
 
     public float inclinationForLowGravityThresholdNotMoving = 40.0f;
     public float inclinationForHighGravityThresholdNotMoving = 60.0f;
     public float lowGravityNotMoving = -0.05f;
-    public float highGravityNotMoving = -9.8f;
+    public float highGravityNotMoving = -9.5f;
 
     public float inclinationForLowGravityThresholdWhileMoving = 30.0f;
     public float inclinationForHighGravityThresholdWhileMoving = 60.0f;
     public float lowGravityWhileMoving = -3.0f;
-    public float highGravityWhileMoving = -9.8f;
+    public float highGravityWhileMoving = -9.5f;
 
     public float maxSecondsNeededToRecoverFromFall = 4.0f;
+
+    public float jumpSpeed = 30.0f;
+    public float minJumpDisplacementBeforeRecovery = -12.0f;
 
     public float getTargetGravityVelocityForInclinationAndMoving(float inclination, boolean moving) {
         if (!moving) {

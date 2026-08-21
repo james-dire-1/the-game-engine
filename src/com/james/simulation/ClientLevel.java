@@ -8,7 +8,7 @@ import com.james.simulation.collisionEngine.hitboxes.CachedSphereHitbox;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
-import newStuff.FallingAndGravityState;
+import com.james.common.simulation.details.FallingAndGravityState;
 import templates.gameplay.ClientSideUpdaters;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
@@ -56,7 +56,7 @@ public class ClientLevel extends LevelProperties {
 
         FallingAndGravityState fgState = player.getFallingAndGravityState();
         if (fgState != null) {
-            fgState.update(player, this);
+            fgState.update(this);
         }
 
         clientCollisionHandler.update();

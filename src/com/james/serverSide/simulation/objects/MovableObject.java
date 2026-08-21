@@ -3,8 +3,8 @@ package com.james.serverSide.simulation.objects;
 import com.james.common.simulation.LevelProperties;
 import com.james.common.simulation.collisionEngine.math.containers.CollisionDetails;
 import com.james.common.tools.Mth;
-import newStuff.FallingAndGravityProperties;
-import newStuff.FallingAndGravityState;
+import com.james.common.simulation.details.FallingAndGravityProperties;
+import com.james.common.simulation.details.FallingAndGravityState;
 import templates.common.simulation.objects.PhysicalObjectType;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -77,7 +77,7 @@ public class MovableObject extends PhysicalObject implements MoveUpdatable {
             this.collisionDetails = new CollisionDetails();
         }
 
-        this.fgState = new FallingAndGravityState(fgProperties);
+        this.fgState = new FallingAndGravityState(fgProperties, this);
     }
 
     @Override

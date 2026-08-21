@@ -16,6 +16,8 @@ public abstract class AbstractEllipsoidHitbox {
     public final MovableObject movableObject;
     public final EllipsoidDimensions dimensions;
 
+    public boolean doBacktracking = false;
+
     /**
      * Creates a new ellipsoid hitbox of a given dimensions for a specific object. Note that the object
      * being passed in has to be a MovableObject, instead of an AbstractPhysicalObject. This is because
