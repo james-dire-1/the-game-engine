@@ -6,6 +6,7 @@ import com.james.serverSide.simulation.Level;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.AABBHitbox;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;
+import newStuff.RayCollisionDefense;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
@@ -45,11 +46,14 @@ public class CollisionHandler {
 
                 CollisionDetails collisionDetails = movableObject.getCollisionDetails();
                 if (collisionDetails != null) collisionDetails.reset();
+                Vector3f prevPosition = new Vector3f(movableObject.getPosition());
 
                 boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(ellipsoidHitbox, aabbHitboxes, gravityToUse, level, null, collisionDetails);
                 if (!algorithmPerformed) {
                     movableObject.setPositionBasedOnVelocity();
                 }
+
+                RayCollisionDefense.backtrackMovableObjectIfNecessary(prevPosition, ellipsoidHitbox, aabbHitboxes);
             }
         }
     }

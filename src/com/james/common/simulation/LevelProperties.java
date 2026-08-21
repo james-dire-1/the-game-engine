@@ -11,7 +11,7 @@ public class LevelProperties {
     public float secondsPerGameTick = 0.05f;
     public Vector3f constantGravityVelocity = new Vector3f(0.0f, -4.0f, 0.0f);
     public float gravityAcceleration = -9.81f;
-    public float terminalVelocity = -150.0f;
+    public float terminalVelocity = -200.0f;
 
     public void setTicksPerSecond(int ticksPerSecond) {
         secondsPerGameTick = 1.0f / ticksPerSecond;

@@ -107,7 +107,7 @@ public class RSTCommonCollisionProcedure {
             if (!sphereHitbox.activeToRays)
                 continue;
 
-            if (Mth.squaredDistance(ray.origin, sphereHitbox.object.getPosition()) > detectionRadiusSquared  && detectionRadius > 0)
+            if (Mth.squaredDistance(ray.origin, sphereHitbox.object.getPosition()) > detectionRadiusSquared && detectionRadius > 0)
                 continue;
 
             Vector3f intersectionPoint = null;
@@ -171,6 +171,7 @@ public class RSTCommonCollisionProcedure {
         boolean interestedInIntersectionPoints = intersectionPoints != null;
         boolean interestedInCollidedHitboxes = collidedHitboxes != null;
         float detectionRadiusSquared = detectionRadius * detectionRadius;
+        float rayLengthSquared = rayLength * rayLength;
 
         Vector3f rayStart = ray.origin;
         Vector3f rayEnd = Vector3f.add(ray.origin, Mth.multiply(ray.direction, rayLength), null);
@@ -199,6 +200,8 @@ public class RSTCommonCollisionProcedure {
                     Vector3f possibleIntersectionPoint = RSTCollisionMath.rayAndPlaneIntersection(ray, trianglePlane);
 
                     if (possibleIntersectionPoint == null)
+                        continue;
+                    if (Mth.squaredDistance(rayStart, possibleIntersectionPoint) > rayLengthSquared)
                         continue;
 
                     boolean inTriangle = CollisionMath.pointInTriangle(possibleIntersectionPoint, p1, p2, p3);

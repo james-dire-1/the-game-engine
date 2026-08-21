@@ -20,7 +20,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class PlayerHandler {
 
     public static Model prop_playerModel = ModelBank.getAbstractArt();
-    public static float prop_cameraDistanceFromPlayer = 15;
+    public static float prop_cameraDistanceFromPlayer = 15.0f;
     public static final Vector3f prop_camFirstPersonOffset = new Vector3f(0, 1.75f, 0);
 
     public static String localUsername;

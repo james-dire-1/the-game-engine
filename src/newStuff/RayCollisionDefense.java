@@ -1,6 +1,5 @@
 package newStuff;
 
-import com.james.common.simulation.LevelProperties;
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractAABBHitbox;
 import com.james.common.simulation.collisionEngine.hitboxes.AbstractEllipsoidHitbox;
 import com.james.common.simulation.collisionEngine.hitboxes.Ray;
@@ -14,36 +13,31 @@ import java.util.Collection;
 
 public class RayCollisionDefense {
 
-    private static final float EPSILON = 0.005f;
-
-    public static void changeMovableObjectVelocityIfNecessary(AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes, Vector3f velocity, float secondsPerGameTick) {
-        Vector3f ellipsoidRadius = ellipsoidHitbox.dimensions.radius;
-        Vector3f velocityInEllipsoidSpace = PointOperations.dividePointByEllipsoidRadius(velocity, ellipsoidRadius);
-        float distanceToTravelThisTick = velocityInEllipsoidSpace.length() * secondsPerGameTick;
-
-        if (distanceToTravelThisTick < 1.0f - EPSILON)
-            return;
-
-        Vector3f position = ellipsoidHitbox.movableObject.getPosition();
-        Ray ray = new Ray(position, velocity);
+    public static void backtrackMovableObjectIfNecessary(Vector3f prevPosition, AbstractEllipsoidHitbox ellipsoidHitbox, Collection<? extends AbstractAABBHitbox> aabbHitboxes) {
+        Vector3f currentPosition = ellipsoidHitbox.movableObject.getPosition();
+        Vector3f nonNormalizedDirection = Vector3f.sub(currentPosition, prevPosition, null);
+        float pathLength = nonNormalizedDirection.length();
+        Ray ray = new Ray(prevPosition, nonNormalizedDirection);
         RayTriangleInfo rayTriangleInfo = new RayTriangleInfo(true, false);
 
-        RSTCommonCollisionProcedure.findClosestRayIntersectionWithTriangle(ray, -1.0f, distanceToTravelThisTick + EPSILON, aabbHitboxes, rayTriangleInfo);
+        RSTCommonCollisionProcedure.findClosestRayIntersectionWithTriangle(ray, -1.0f, pathLength, aabbHitboxes, rayTriangleInfo);
 
         if (rayTriangleInfo.closestIntersectionPoint == null)
             return;
 
+        Vector3f ellipsoidRadius = ellipsoidHitbox.dimensions.radius;
         Vector3f intersectionPointInEllipsoidSpace = rayTriangleInfo.closestIntersectionPoint;
-        PointOperations.dividePointByEllipsoidRadius(intersectionPointInEllipsoidSpace, ellipsoidRadius);
-        Vector3f normalizedVelocityInEllipsoidSpace = velocityInEllipsoidSpace.normalise(null);
-        Vector3f positionInEllipsoidSpace = PointOperations.dividePointByEllipsoidRadius(position, ellipsoidRadius);
+        PointOperations.dividePointByEllipsoidRadiusDest(intersectionPointInEllipsoidSpace, ellipsoidRadius);
+        Vector3f normalizedDirectionInEllipsoidSpace = PointOperations.dividePointByEllipsoidRadius(ray.direction, ellipsoidRadius);
+        Vector3f prevPositionInEllipsoidSpace = PointOperations.dividePointByEllipsoidRadius(prevPosition, ellipsoidRadius);
 
-        float distance = Mth.distance(positionInEllipsoidSpace, intersectionPointInEllipsoidSpace);
-        float parameter = distance - 0.75f;
-        Vector3f correctedVelocityInEllipsoidSpace = Mth.multiply(normalizedVelocityInEllipsoidSpace, parameter / secondsPerGameTick);
-        PointOperations.multiplyPointByEllipsoidRadiusDest(correctedVelocityInEllipsoidSpace, ellipsoidRadius);
+        float distance = Mth.distance(prevPositionInEllipsoidSpace, intersectionPointInEllipsoidSpace);
+        float parameter = distance - 0.9f;
+        Vector3f correctedDisplacementInEllipsoidSpace = Mth.multiply(normalizedDirectionInEllipsoidSpace, parameter);
+        Vector3f correctedPositionInEllipsoidSpace = Vector3f.add(prevPosition, correctedDisplacementInEllipsoidSpace, null);
+        PointOperations.multiplyPointByEllipsoidRadiusDest(correctedPositionInEllipsoidSpace, ellipsoidRadius);
 
-        velocity.set(correctedVelocityInEllipsoidSpace);
+        currentPosition.set(correctedPositionInEllipsoidSpace);
     }
 
 }

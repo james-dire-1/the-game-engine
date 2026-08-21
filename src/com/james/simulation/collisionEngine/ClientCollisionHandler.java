@@ -43,15 +43,16 @@ public class ClientCollisionHandler {
             else
                 gravityToUse = ClientLevel.get().constantGravityVelocity;
 
-            RayCollisionDefense.changeMovableObjectVelocityIfNecessary(playerEllipsoidHitbox, cachedAABBHitboxes.values(), gravityToUse, ClientLevel.get().secondsPerGameTick);
-
             CollisionDetails collisionDetails = player.getCollisionDetails();
             if (collisionDetails != null) collisionDetails.reset();
+            Vector3f prevPosition = new Vector3f(player.getPosition());
 
             boolean algorithmPerformed = CommonCollisionProcedure.performEntireCollisionDetectionAlgorithm(playerEllipsoidHitbox, cachedAABBHitboxes.values(), gravityToUse, ClientLevel.get(), DebugScreen.collisionsAccumulator, collisionDetails);
             if (!algorithmPerformed) {
                 player.setPositionBasedOnVelocity();
             }
+
+            RayCollisionDefense.backtrackMovableObjectIfNecessary(prevPosition, playerEllipsoidHitbox, cachedAABBHitboxes.values());
         }
     }
 
