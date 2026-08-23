@@ -89,6 +89,7 @@ public class AudioSourcePool {
             source.setPosition(position.x, position.y, position.z);
             source.setRelative(false);
         } else {
+            source.setPosition(0.0f, 0.0f, 0.0f);
             source.setRelative(true);
         }
 

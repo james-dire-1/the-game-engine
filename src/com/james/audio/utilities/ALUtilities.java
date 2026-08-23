@@ -14,6 +14,10 @@ public class ALUtilities {
 
     private static final List<Integer> buffers = new ArrayList<>();
 
+    public static void init() {
+        alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
+    }
+
     /**
      * Creates a new OpenAL buffer to store sound data.
      * @param audioFilePath can in .wav or .ogg

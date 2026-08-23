@@ -31,6 +31,7 @@ public class EngineUtils {
         ParticleHandler.init();
         TypingInputNotifier.init();
         ALCUtilities.init();
+        ALUtilities.init();
         AudioSourcePool.init();
     }
 

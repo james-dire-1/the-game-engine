@@ -13,6 +13,10 @@ public class AudioSource {
 
     public AudioSource() {
         sourceId = alGenSources();
+
+        alSourcef(sourceId, AL_ROLLOFF_FACTOR, 1.0f);
+        alSourcef(sourceId, AL_REFERENCE_DISTANCE, 2.0f);
+        alSourcef(sourceId, AL_MAX_DISTANCE, 1000.0f);
     }
 
     public void play(int bufferId) {
