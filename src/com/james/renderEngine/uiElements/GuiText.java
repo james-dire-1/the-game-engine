@@ -8,7 +8,7 @@ import com.james.renderEngine.ui.GuiGroup;
 import com.james.renderEngine.ui.Screen;
 import com.james.renderEngine.ui.dataTypes.Position;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
-import com.james.renderEngine.uiElements.tools.CaratBlinker;
+import com.james.renderEngine.uiElements.tools.CaretBlinker;
 
 import java.util.List;
 
@@ -246,9 +246,9 @@ public class GuiText extends AbstractGuiText implements GuiGroup {
      * (i.e. if the text was previously invisible, it will now be reset to visible). Thus, use this method
      * sparingly. The field stateChangedThisFrame in CaratBlinker can be used to help with this.
      *
-     * @see CaratBlinker
+     * @see CaretBlinker
      */
-    public void displayCarat(boolean displayCarat) {
+    public void displayCaret(boolean displayCarat) {
         boolean full = currentText.toString().length() == maxCharCount;
         if (full) displayCarat = false;
 

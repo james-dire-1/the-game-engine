@@ -7,12 +7,11 @@ import com.james.renderEngine.ui.dataTypes.NormalizedSize;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
-import com.james.renderEngine.uiElements.tools.CaratBlinker;
+import com.james.renderEngine.uiElements.tools.CaretBlinker;
 import com.james.tools.ColorUtils;
 import game.main.Main;
 import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.TitleButton;
-import game.ui.uiElements.TitleHeader;
 import org.lwjgl.glfw.GLFW;
 import templates.communication.OnlineClientPacketSendEvents;
 
@@ -21,7 +20,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
 public class UsernamePromptScreen extends Screen {
 
     private final GuiText field;
-    private final CaratBlinker caratBlinker = new CaratBlinker();
+    private final CaretBlinker caretBlinker = new CaretBlinker();
 
     public UsernamePromptScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
@@ -71,8 +70,8 @@ public class UsernamePromptScreen extends Screen {
 
     @Override
     public void update() {
-        caratBlinker.update();
-        if (caratBlinker.stateChangedThisFrame) field.displayCarat(caratBlinker.blinkState);
+        caretBlinker.update();
+        if (caretBlinker.stateChangedThisFrame) field.displayCaret(caretBlinker.blinkState);
 
         super.update();
     }
@@ -85,7 +84,7 @@ public class UsernamePromptScreen extends Screen {
         }
 
         if (character != '\u0000' || key == GLFW_KEY_BACKSPACE) {
-            caratBlinker.reset();
+            caretBlinker.reset();
         }
     }
 

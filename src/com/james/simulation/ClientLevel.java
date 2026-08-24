@@ -9,7 +9,6 @@ import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.simulation.objects.CachedConnectedPlayer;
 import com.james.common.simulation.details.FallingAndGravityState;
-import templates.gameplay.ClientSideUpdaters;
 import templates.communication.ClientPacketSendEvents;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -21,6 +20,8 @@ import java.util.*;
  * which is why this class is implemented as a singleton.
  */
 public class ClientLevel extends LevelProperties {
+
+    public static Updater prop_updater;
 
     public final ClientPacketSendEvents events;
     public boolean isReady = false;
@@ -62,7 +63,8 @@ public class ClientLevel extends LevelProperties {
         clientCollisionHandler.update();
         rstClientCollisionHandler.updateSphereHitboxes();
 
-        ClientSideUpdaters.clientLevelUpdate(clientCollisionHandler, rstClientCollisionHandler);
+        if (prop_updater != null)
+            prop_updater.update(clientCollisionHandler, rstClientCollisionHandler);
     }
 
     public boolean addCachedPhysicalObject(int id, CachedPhysicalObject obj) {
@@ -146,5 +148,9 @@ public class ClientLevel extends LevelProperties {
     private static ClientLevel instance;
     public static ClientLevel get() { return instance; }
     public static void delete() { instance = null; }
+
+    public interface Updater {
+        void update(ClientCollisionHandler clientCollisionHandler, RSTClientCollisionHandler rstClientCollisionHandler);
+    }
 
 }

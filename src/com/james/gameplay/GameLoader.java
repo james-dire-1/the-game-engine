@@ -17,7 +17,6 @@ import com.james.renderEngine.visuals.Skybox;
 import com.james.renderEngine.rendering.SkyboxRenderer;
 import org.lwjgl.util.vector.Vector3f;
 import templates.communication.ClientPacketSendEvents;
-import templates.gameplay.ClientSideUpdaters;
 
 import java.util.Random;
 
@@ -30,6 +29,7 @@ public abstract class GameLoader {
     public static Vector3f prop_playerEllipsoidHitboxRadius = new Vector3f(1.0f, 1.0f, 1.0f);
     public static float prop_playerSphereHitboxRadius = 1.0f;
     public static Camera prop_camera = Camera.defaultCamera;
+    public static Updater prop_updater;
 
     public final BatchedGameObjectsList batchedGameObjectsList;
     public final PlayerHandler playerHandler;
@@ -55,13 +55,15 @@ public abstract class GameLoader {
         this.lightHandler = new LightHandler();
         LightSettings.setLightHandler(lightHandler);
 
-        ClientSideUpdaters.gameLoaderInit();
+        if (prop_updater != null)
+            prop_updater.init();
     }
 
     protected abstract void onGameClientClosing();
 
     public void update() {
-        ClientSideUpdaters.gameLoaderUpdate(this);
+        if (prop_updater != null)
+            prop_updater.update(this);
 
         if (GLFWUtilities.shouldClose) {
             onGameClientClosing();
@@ -115,5 +117,10 @@ public abstract class GameLoader {
     private final Random r = new Random();
 
     private static final Vector3f reusableFacingDirection = new Vector3f();
+
+    public interface Updater {
+        void init();
+        void update(GameLoader gameLoader);
+    }
 
 }

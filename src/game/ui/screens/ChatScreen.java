@@ -10,12 +10,12 @@ import com.james.renderEngine.ui.TypingInputNotifier;
 import com.james.renderEngine.ui.dataTypes.*;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
+import com.james.renderEngine.uiElements.tools.CaretBlinker;
 import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
 import com.james.tools.Time;
 import game.main.Main;
 import com.james.input.ScrollInput;
-import com.james.renderEngine.uiElements.tools.CaratBlinker;
 import templates.communication.LocalClientPacketSendEvents;
 import templates.communication.OnlineClientPacketSendEvents;
 import com.james.gameplay.PlayerHandler;
@@ -52,7 +52,7 @@ public class ChatScreen extends Screen {
 
     private final GuiText field;
     private final Gui fieldBackground;
-    private final CaratBlinker caratBlinker = new CaratBlinker();
+    private final CaretBlinker caretBlinker = new CaretBlinker();
 
     private int entryContentIndex;
     private boolean needsToBeUpdated = true;
@@ -142,9 +142,9 @@ public class ChatScreen extends Screen {
             super.markForDeletion();
         }
 
-        caratBlinker.focused = isOpen;
-        caratBlinker.update();
-        if (caratBlinker.stateChangedThisFrame) field.displayCarat(caratBlinker.blinkState);
+        caretBlinker.focused = isOpen;
+        caretBlinker.update();
+        if (caretBlinker.stateChangedThisFrame) field.displayCaret(caretBlinker.blinkState);
 
         Iterator<Map.Entry<Integer, Float>> iterator = instantiationTimeMap.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -279,7 +279,7 @@ public class ChatScreen extends Screen {
             }
 
             if (character != '\u0000' || key == GLFW_KEY_BACKSPACE) {
-                caratBlinker.reset();
+                caretBlinker.reset();
             }
         }
     }

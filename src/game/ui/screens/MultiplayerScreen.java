@@ -7,14 +7,13 @@ import com.james.renderEngine.ui.dataTypes.AnchoredPosition;
 import com.james.renderEngine.ui.dataTypes.ScreenSize;
 import com.james.renderEngine.uiElements.GuiText;
 import com.james.renderEngine.uiElements.PersistentGuiText;
+import com.james.renderEngine.uiElements.tools.CaretBlinker;
 import game.main.Main;
 import game.ui.uiElements.PersistentTitleHeader;
 import game.ui.uiElements.SolidBackground;
 import game.ui.uiElements.TitleButton;
-import game.ui.uiElements.TitleHeader;
 import com.james.renderEngine.textRendering.TextAlignment;
 import com.james.renderEngine.ui.TypingInputNotifier;
-import com.james.renderEngine.uiElements.tools.CaratBlinker;
 import org.lwjgl.glfw.GLFW;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
@@ -22,7 +21,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_BACKSPACE;
 public class MultiplayerScreen extends Screen {
 
     private GuiText field;
-    private final CaratBlinker caratBlinker = new CaratBlinker();
+    private final CaretBlinker caretBlinker = new CaretBlinker();
 
     public MultiplayerScreen() {
         TypingInputNotifier.addScreen(this, this::onTypingInput);
@@ -68,8 +67,8 @@ public class MultiplayerScreen extends Screen {
 
     @Override
     public void update() {
-        caratBlinker.update();
-        if (caratBlinker.stateChangedThisFrame) field.displayCarat(caratBlinker.blinkState);
+        caretBlinker.update();
+        if (caretBlinker.stateChangedThisFrame) field.displayCaret(caretBlinker.blinkState);
 
         super.update();
     }
@@ -82,7 +81,7 @@ public class MultiplayerScreen extends Screen {
         }
 
         if (character != '\u0000' || key == GLFW_KEY_BACKSPACE) {
-            caratBlinker.reset();
+            caretBlinker.reset();
         }
     }
 

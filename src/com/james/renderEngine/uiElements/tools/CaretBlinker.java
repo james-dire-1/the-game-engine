@@ -2,7 +2,7 @@ package com.james.renderEngine.uiElements.tools;
 
 import com.james.tools.Time;
 
-public class CaratBlinker {
+public class CaretBlinker {
 
     private static final float BLINK_TIME = 0.5f;
 

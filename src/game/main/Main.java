@@ -3,14 +3,18 @@ package game.main;
 import com.james.audio.AudioSourcePool;
 import com.james.common.simulation.collisionEngine.prep.EllipsoidDimensions;
 import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
+import com.james.gameplay.GameLoader;
+import com.james.gameplay.PlayerHandler;
 import com.james.renderEngine.textRendering.FontInfo;
 import com.james.renderEngine.texturing.ImageBank;
 import com.james.renderEngine.ui.UiHandler;
 import com.james.renderEngine.utilities.GLFWUtilities;
+import com.james.simulation.ClientLevel;
 import com.james.wrapper.EngineUtils;
 import game.ui.screens.TitleScreen;
 import com.james.renderEngine.texturing.CubeMapTexture;
 import com.james.common.tools.modelLoading.ModelLoader;
+import templates.gameplay.ClientSideUpdaters;
 import templates.rendering.Skyboxes;
 import templates.settings.GLFWWindowTitles;
 import templates.rendering.Renderers;
@@ -51,6 +55,10 @@ public class Main {
         EngineUtils.initRenderers(Renderers.basicRenderer, Renderers.flatRenderer, Renderers.texturedModelRenderer, Renderers.colorModelRenderer, Renderers.textureBlendModelRenderer);
 
         UiHandler.screens.add(new TitleScreen());
+
+        GameLoader.prop_updater = new ClientSideUpdaters.GameLoaderUpdater();
+        PlayerHandler.prop_updater = new ClientSideUpdaters.PlayerHandlerUpdater();
+        ClientLevel.prop_updater = new ClientSideUpdaters.ClientLevelUpdater();
 
         while (!GLFWUtilities.shouldClose) {
             EngineUtils.tick();

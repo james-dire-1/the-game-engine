@@ -7,7 +7,6 @@ import com.james.renderEngine.models.Model;
 import com.james.tools.Time;
 import com.james.tools.Vector3fInterpolator;
 import org.lwjgl.util.vector.Vector3f;
-import templates.gameplay.ClientSideUpdaters;
 import templates.rendering.ModelBank;
 import com.james.simulation.ClientLevel;
 import org.lwjgl.util.vector.Vector2f;
@@ -22,6 +21,7 @@ public class PlayerHandler {
     public static Model prop_playerModel = ModelBank.getAbstractArt();
     public static float prop_cameraDistanceFromPlayer = 15.0f;
     public static final Vector3f prop_camFirstPersonOffset = new Vector3f(0, 1.75f, 0);
+    public static Updater prop_updater;
 
     public static String localUsername;
     public static float[] localColor;
@@ -47,6 +47,9 @@ public class PlayerHandler {
         camController.setFirstPersonOffset(prop_camFirstPersonOffset.x, prop_camFirstPersonOffset.y, prop_camFirstPersonOffset.z);
 
         Vector3fInterpolator.secondsPerGameTick = clientLevel.secondsPerGameTick;
+
+        if (prop_updater != null)
+            prop_updater.init();
     }
 
     /**
@@ -59,7 +62,8 @@ public class PlayerHandler {
         ClientLevel clientLevel = ClientLevel.get();
         Player player = clientLevel.getPlayer();
 
-        ClientSideUpdaters.playerMoveFrame(player, gameObject, camController);
+        if (prop_updater != null)
+            prop_updater.moveFrame(player, gameObject, camController);
 
         if (Time.getCurrentTime() - lastTime >= clientLevel.secondsPerGameTick) {
             lastTime = Time.getCurrentTime();
@@ -67,7 +71,8 @@ public class PlayerHandler {
             player.updatePrevPosition();
             calculateDirectionVectors();
 
-            ClientSideUpdaters.playerMoveTick(player, forwardDirectionVector, rightDirectionVector);
+            if (prop_updater != null)
+                prop_updater.moveTick(player, forwardDirectionVector, rightDirectionVector);
 
             clientLevel.update();
         }
@@ -94,5 +99,11 @@ public class PlayerHandler {
     private float lastTime = Time.getCurrentTime();
     private final Vector2f forwardDirectionVector = new Vector2f();
     private final Vector2f rightDirectionVector = new Vector2f();
+
+    public interface Updater {
+        void init();
+        void moveFrame(Player player, GameObject playerGameObject, CameraController camController);
+        void moveTick(Player player, Vector2f forwardDirectionVector, Vector2f rightDirectionVector);
+    }
 
 }
