@@ -9,10 +9,12 @@ public class FallingAndGravityState {
 
     private static final float EPSILON = 0.005f;
 
+    public Vector3f getVelocityDueToGravity() { return velocityDueToGravity; }
+    public State getState() { return state; }
+
     private final FallingAndGravityProperties fgProperties;
     private final MovableObject movableObject;
     private final Vector3f velocityDueToGravity = new Vector3f();
-    public Vector3f getVelocityDueToGravity() { return velocityDueToGravity; }
 
     private State state = State.FALLING;
     private int ticksElapsed;
@@ -116,7 +118,7 @@ public class FallingAndGravityState {
         }
     }
 
-    private enum State {
+    public enum State {
         FALLING,
         ON_GROUND_RECOVERING,
         ON_GROUND_FIRMLY,

@@ -5,6 +5,7 @@ import com.james.input.WindowResizeInput;
 import com.james.renderEngine.visuals.LightSettings;
 import com.james.tools.BatchedGameObjectsList;
 import com.james.renderEngine.visuals.FogSettings;
+import templates.settings.UserSettings;
 
 import static org.lwjgl.opengl.GL30.*;
 
@@ -12,6 +13,7 @@ public class MasterRenderer {
 
     private static boolean newProjectionMatrix = false;
     public static boolean isNewProjectionMatrix() { return newProjectionMatrix; }
+    // TODO: 2026-08-26 All calls to this method seem to create a completely new projection matrix..
 
     public static Camera currentCamera = Camera.defaultCamera;
 
@@ -60,6 +62,11 @@ public class MasterRenderer {
         for (AbstractRenderer AbstractRenderer : renderers) {
             AbstractRenderer.cleanUp();
         }
+    }
+
+    public static void setFov(float fov) {
+        UserSettings.fov = fov;
+        newProjectionMatrix = true;
     }
 
     public static int drawCalls;

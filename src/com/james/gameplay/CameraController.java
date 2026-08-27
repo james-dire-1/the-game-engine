@@ -29,8 +29,8 @@ public class CameraController {
 
     public void update() {
         if (GLFWUtilities.isCursorLocked()) {
-            camera.increasePitch((float) MouseMoveInput.getDeltaY() * UserSettings.MOUSE_SENSITIVITY);
-            camera.increaseYaw((float) MouseMoveInput.getDeltaX() * UserSettings.MOUSE_SENSITIVITY);
+            camera.increasePitch((float) MouseMoveInput.getDeltaY() * UserSettings.mouseSensitivity);
+            camera.increaseYaw((float) MouseMoveInput.getDeltaX() * UserSettings.mouseSensitivity);
         }
 
         Vector3f cameraPosition;

@@ -63,7 +63,7 @@ public class PlayerHandler {
         Player player = clientLevel.getPlayer();
 
         if (prop_updater != null)
-            prop_updater.moveFrame(player, gameObject, camController);
+            prop_updater.updateFrame(player, gameObject, camController);
 
         if (Time.getCurrentTime() - lastTime >= clientLevel.secondsPerGameTick) {
             lastTime = Time.getCurrentTime();
@@ -72,13 +72,16 @@ public class PlayerHandler {
             calculateDirectionVectors();
 
             if (prop_updater != null)
-                prop_updater.moveTick(player, forwardDirectionVector, rightDirectionVector);
+                prop_updater.updateTick(player, forwardDirectionVector, rightDirectionVector);
 
             clientLevel.update();
         }
 
         Vector3fInterpolator.interpolate(player.getPrevPosition(), player.getPosition(), gameObject.getPosition(), lastTime, Time.getCurrentTime());
         camController.update();
+
+        if (prop_updater != null)
+            prop_updater.updateCameraFrame(camController.getCamera(), forwardDirectionVector, rightDirectionVector, player);
     }
 
     /**
@@ -102,8 +105,9 @@ public class PlayerHandler {
 
     public interface Updater {
         void init();
-        void moveFrame(Player player, GameObject playerGameObject, CameraController camController);
-        void moveTick(Player player, Vector2f forwardDirectionVector, Vector2f rightDirectionVector);
+        void updateFrame(Player player, GameObject playerGameObject, CameraController camController);
+        void updateTick(Player player, Vector2f forwardDirectionVector, Vector2f rightDirectionVector);
+        void updateCameraFrame(Camera camera, Vector2f forwardDirectionVector, Vector2f rightDirectionVector, Player player);
     }
 
 }

@@ -10,6 +10,7 @@ public class Camera {
     private float pitch;
     private float yaw;
     private float roll;
+    private float secondaryPitch;
     private Matrix4f viewMatrix;
     private boolean hasCameraMoved = false;
 
@@ -75,10 +76,15 @@ public class Camera {
         hasCameraMoved = true;
     }
 
+    public void setSecondaryPitch(float secondaryPitch) {
+        this.secondaryPitch = secondaryPitch;
+        hasCameraMoved = true;
+    }
+
     public Matrix4f getViewMatrix() {
         // if the camera moved, recalculate the view matrix
         if (hasCameraMoved) {
-            viewMatrix = RenderingMath.createViewMatrix(position, pitch, yaw, roll);
+            viewMatrix = RenderingMath.createViewMatrix(position, pitch + secondaryPitch, yaw, roll);
         }
         // ensures view matrix will not be recalculated next frame if the camera didn't move
         hasCameraMoved = false;

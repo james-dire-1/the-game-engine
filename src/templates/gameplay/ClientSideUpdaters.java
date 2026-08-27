@@ -4,6 +4,7 @@ import com.james.common.simulation.collisionEngine.hitboxes.Ray;
 import com.james.common.simulation.collisionEngine.math.RSTCommonCollisionProcedure;
 import com.james.common.simulation.collisionEngine.math.containers.RaySphereInfo;
 import com.james.common.simulation.collisionEngine.math.containers.RayTriangleInfo;
+import com.james.common.simulation.details.FallingAndGravityState;
 import com.james.common.tools.Mth;
 import com.james.gameplay.CameraController;
 import com.james.gameplay.GameLoader;
@@ -12,6 +13,7 @@ import com.james.input.ClickInput;
 import com.james.input.KeyInput;
 import com.james.renderEngine.gameObjects.Camera;
 import com.james.renderEngine.gameObjects.GameObject;
+import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.visuals.FogSettings;
 import com.james.renderEngine.visuals.Skybox;
@@ -21,6 +23,7 @@ import com.james.simulation.collisionEngine.RSTClientCollisionHandler;
 import com.james.simulation.objects.CachedPhysicalObject;
 import com.james.simulation.objects.Player;
 import com.james.tools.MousePicker;
+import com.james.tools.Time;
 import com.james.wrapper.EngineUtils;
 import game.ui.screens.DebugScreen;
 import game.ui.screens.PauseScreen;
@@ -30,6 +33,7 @@ import org.lwjgl.util.vector.Vector3f;
 import templates.common.GlobalConstants;
 import templates.rendering.ModelBank;
 import templates.rendering.Skyboxes;
+import templates.settings.UserSettings;
 
 import static com.james.input.KeyInput.isKeyDown;
 import static com.james.input.KeyInput.isKeyPressed;
@@ -88,31 +92,39 @@ public class ClientSideUpdaters {
 
     public static class PlayerHandlerUpdater implements PlayerHandler.Updater {
 
-        private static final float MAX_REGULAR_SPEED = 15.0f;
-        private static final float MAX_SPRINT_SPEED = 22.0f;
-        private static final float MAX_CROUCH_SPEED = 3.0f;
-        private static final float STANDARD_SPEED_INCREMENT = 5.0f;
-        private static final float IN_AIR_MULTIPLIER = 0.2f;
-
-        private float forwardSpeed;
-        private float rightSpeed;
-
-        private final Vector2f reusableDeltaLocalDirection = new Vector2f();
-        private final Vector2f reusableVelocity = new Vector2f();
-
         @Override
         public void init() {
+            sprinting = false;
+            crouching = false;
+
             forwardSpeed = 0.0f;
             rightSpeed = 0.0f;
         }
 
+        private static final float MAX_REGULAR_SPEED = 15.0f;
+        private static final float MAX_SPRINT_SPEED = 22.0f;
+        private static final float MAX_CROUCH_SPEED = 3.0f;
+        private static final float MAX_FALL_SPEED = 30.0f;
+        private static final float STANDARD_SPEED_INCREMENT = 5.0f;
+        private static final float IN_AIR_MULTIPLIER = 0.2f;
+
+        private boolean sprinting;
+        private boolean crouching;
+
+        private float forwardSpeed;
+        private float rightSpeed;
+
+        private final Vector2f reusableDeltaLocalVelocity = new Vector2f();
+        private final Vector2f reusableVelocity = new Vector2f();
+        private final Vector2f reusableDeltaVelocity = new Vector2f();
+
         @Override
-        public void moveTick(Player player, Vector2f forwardDirectionVector, Vector2f rightDirectionVector) {
+        public void updateTick(Player player, Vector2f forwardDirectionVector, Vector2f rightDirectionVector) {
             boolean wantsToMoveStraight = isKeyPressed(GLFW_KEY_W) ^ isKeyPressed(GLFW_KEY_S);
             boolean wantsToMoveSideways = isKeyPressed(GLFW_KEY_D) ^ isKeyPressed(GLFW_KEY_A);
             boolean onGround = player.getCollisionDetails().onGround;
-            boolean crouching = isKeyPressed(GLFW_KEY_C) && onGround;
-            boolean sprinting = isKeyPressed(GLFW_KEY_LEFT_SHIFT) && !crouching;
+            crouching = isKeyPressed(GLFW_KEY_C) && onGround;
+            sprinting = isKeyPressed(GLFW_KEY_LEFT_SHIFT) && !crouching;
 
             if (onGround) {
                 if (!wantsToMoveStraight) {
@@ -145,24 +157,38 @@ public class ClientSideUpdaters {
             float speedIncrementThisTick = STANDARD_SPEED_INCREMENT;
             if (!onGround) speedIncrementThisTick *= IN_AIR_MULTIPLIER;
 
-            reusableDeltaLocalDirection.set(deltaRightInput, deltaForwardInput);
-            if (reusableDeltaLocalDirection.length() != 0.0f) reusableDeltaLocalDirection.normalise();
-            reusableDeltaLocalDirection.scale(speedIncrementThisTick);
-
-            forwardSpeed += reusableDeltaLocalDirection.y;
-            rightSpeed += reusableDeltaLocalDirection.x;
+            reusableDeltaLocalVelocity.set(deltaRightInput, deltaForwardInput);
+            if (reusableDeltaLocalVelocity.length() != 0.0f) reusableDeltaLocalVelocity.normalise();
+            reusableDeltaLocalVelocity.scale(speedIncrementThisTick);
 
             float speedClamp;
-            if (sprinting) speedClamp = MAX_SPRINT_SPEED;
-            else if (crouching) speedClamp = MAX_CROUCH_SPEED;
-            else speedClamp = MAX_REGULAR_SPEED;
 
-            if (forwardSpeed > speedClamp) forwardSpeed = speedClamp;
-            else if (forwardSpeed < -speedClamp) forwardSpeed = -speedClamp;
-            if (rightSpeed > speedClamp) rightSpeed = speedClamp;
-            else if (rightSpeed < -speedClamp) rightSpeed = -speedClamp;
+            if (onGround) {
+                forwardSpeed += reusableDeltaLocalVelocity.y;
+                rightSpeed += reusableDeltaLocalVelocity.x;
 
-            Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), reusableVelocity);
+                if (sprinting) speedClamp = MAX_SPRINT_SPEED;
+                else if (crouching) speedClamp = MAX_CROUCH_SPEED;
+                else speedClamp = MAX_REGULAR_SPEED;
+
+                if (forwardSpeed > speedClamp) forwardSpeed = speedClamp;
+                else if (forwardSpeed < -speedClamp) forwardSpeed = -speedClamp;
+                if (rightSpeed > speedClamp) rightSpeed = speedClamp;
+                else if (rightSpeed < -speedClamp) rightSpeed = -speedClamp;
+
+                Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), reusableVelocity);
+            } else {
+                reusableDeltaVelocity.set(Vector2f.add(Mth.multiply(forwardDirectionVector, reusableDeltaLocalVelocity.y), Mth.multiply(rightDirectionVector, reusableDeltaLocalVelocity.x), null));
+                reusableVelocity.translate(reusableDeltaVelocity.x, reusableDeltaVelocity.y);
+
+                speedClamp = MAX_FALL_SPEED;
+            }
+
+            if (reusableVelocity.length() > speedClamp) {
+                reusableVelocity.normalise();
+                reusableVelocity.scale(speedClamp);
+            }
+
             player.setVelocity(reusableVelocity.x, 0, -reusableVelocity.y);
 
             if (isKeyPressed(GLFW_KEY_SPACE)) {
@@ -171,17 +197,13 @@ public class ClientSideUpdaters {
 
             if (GlobalConstants.IS_PLAYER_DEBUG && isKeyPressed(GLFW_KEY_RIGHT_SHIFT)) {
                 Vector3f playerPosition = player.getPosition();
-                player.setPosition(playerPosition.x, playerPosition.y + 5, playerPosition.z);
+                player.setPosition(playerPosition.x, playerPosition.y + 5.0f, playerPosition.z);
             }
         }
 
         @Override
-        public void moveFrame(Player player, GameObject playerGameObject, CameraController camController) {
+        public void updateFrame(Player player, GameObject playerGameObject, CameraController camController) {
             player.getRotation().y = -camController.getCamera().getYaw();
-
-            if (isKeyDown(GLFW_KEY_G)) {
-                player.isAffectedByGravity = !player.isAffectedByGravity;
-            }
 
             if (KeyInput.isKeyPressed(GLFW_KEY_F)) {
                 camController.firstPerson = false;
@@ -189,6 +211,105 @@ public class ClientSideUpdaters {
             } else {
                 camController.firstPerson = true;
                 playerGameObject.isVisible = false;
+            }
+
+            if (GlobalConstants.IS_PLAYER_DEBUG && isKeyDown(GLFW_KEY_G)) {
+                player.isAffectedByGravity = !player.isAffectedByGravity;
+            }
+        }
+
+        private static final float SECS_TO_SWITCH_FOV = 0.25f;
+        private FovType lastFovType = FovType.REGULAR;
+        private enum FovType { REGULAR, SPRINT, CROUCH }
+        private float startFov;
+        private float targetFov;
+        private float startTimeFovSwitch = -1.0f;
+
+        private static final float SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL = 0.5f;
+        private static final float SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL = 3.0f;
+        private static final float MAX_PITCH_CHANGE_DUE_TO_FALL = 15.0f;
+        private PitchType lastPitchType = PitchType.ON_GROUND;
+        private enum PitchType { ON_GROUND, FALLING }
+        private float startTimePitchChangeDueToFall = -1.0f;
+
+        @Override
+        public void updateCameraFrame(Camera camera, Vector2f forwardDirectionVector, Vector2f rightDirectionVector, Player player) {
+            float currentAngle = 30.0f * (float) Math.sin(2.0f * Math.PI * Time.getCurrentTime()) - 90.0f;
+            float cameraOffsetY = (float) Math.sin(Math.toRadians(currentAngle)) + 1.0f;
+
+            Vector3f rightDirectionVectorR3 = new Vector3f(rightDirectionVector.x, 0, -rightDirectionVector.y);
+            Vector3f forwardDirectionVectorR3 = new Vector3f(forwardDirectionVector.x, 0, -forwardDirectionVector.y);
+            Vector3f upDirectionVector = Vector3f.cross(rightDirectionVectorR3, forwardDirectionVectorR3, null);
+            Vector3f cameraOffset = Mth.multiply(upDirectionVector, cameraOffsetY);
+
+            camera.translate(cameraOffset);
+
+            if (sprinting) {
+                if (lastFovType != FovType.SPRINT) {
+                    lastFovType = FovType.SPRINT;
+                    startFov = UserSettings.fov;
+                    targetFov = UserSettings.DEFAULT_SPRINT_FOV;
+                    startTimeFovSwitch = Time.getCurrentTime();
+                }
+            } else if (crouching) {
+                if (lastFovType != FovType.CROUCH) {
+                    lastFovType = FovType.CROUCH;
+                    startFov = UserSettings.fov;
+                    targetFov = UserSettings.DEFAULT_CROUCH_FOV;
+                    startTimeFovSwitch = Time.getCurrentTime();
+                }
+            } else {
+                if (lastFovType != FovType.REGULAR) {
+                    lastFovType = FovType.REGULAR;
+                    startFov = UserSettings.fov;
+                    targetFov = UserSettings.DEFAULT_REGULAR_FOV;
+                    startTimeFovSwitch = Time.getCurrentTime();
+                }
+            }
+
+            if (startTimeFovSwitch > 0.0f) {
+                float timeSinceFovSwitchStart = Time.getCurrentTime() - startTimeFovSwitch;
+
+                if (timeSinceFovSwitchStart < SECS_TO_SWITCH_FOV) {
+                    float normalizedTimeProgress = timeSinceFovSwitchStart / SECS_TO_SWITCH_FOV;
+                    float fovDifference = targetFov - startFov;
+                    float fovThisFrame = startFov + normalizedTimeProgress * fovDifference;
+                    MasterRenderer.setFov(fovThisFrame);
+                } else {
+                    startTimeFovSwitch = -1.0f;
+                    MasterRenderer.setFov(targetFov);
+                }
+            }
+
+            FallingAndGravityState.State state = player.getFallingAndGravityState().getState();
+
+            if (state == FallingAndGravityState.State.FALLING || state == FallingAndGravityState.State.FALLING_FROM_JUMP) {
+                if (lastPitchType != PitchType.FALLING) {
+                    lastPitchType = PitchType.FALLING;
+                    startTimePitchChangeDueToFall = Time.getCurrentTime();
+                }
+            } else {
+                if (lastPitchType != PitchType.ON_GROUND) {
+                    lastPitchType = PitchType.ON_GROUND;
+                    camera.setSecondaryPitch(0.0f);
+                    startTimePitchChangeDueToFall = -1.0f;
+                }
+            }
+
+            if (startTimePitchChangeDueToFall > 0.0f) {
+                float timeSincePitchChangeStart = Time.getCurrentTime() - startTimePitchChangeDueToFall;
+
+                if (timeSincePitchChangeStart > SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL) {
+                    if (timeSincePitchChangeStart < SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL + SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL) {
+                        float normalizedTimeProgress = (timeSincePitchChangeStart - SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL) / SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL;
+                        float easingProgress = 0.5f - 0.5f * (float) Math.cos(Math.PI * normalizedTimeProgress);
+                        float secondaryPitchThisFrame = easingProgress * MAX_PITCH_CHANGE_DUE_TO_FALL;
+                        camera.setSecondaryPitch(secondaryPitchThisFrame);
+                    } else {
+                        startTimePitchChangeDueToFall = -1.0f;
+                        camera.setSecondaryPitch(MAX_PITCH_CHANGE_DUE_TO_FALL);
+                    }
+                }
             }
         }
 
