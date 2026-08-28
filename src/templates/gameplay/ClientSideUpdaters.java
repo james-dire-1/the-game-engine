@@ -69,7 +69,7 @@ public class ClientSideUpdaters {
                 DebugScreen.toggle();
             }
 
-            if (KeyInput.isKeyDown(GLFW_KEY_B)) {
+            if (GlobalConstants.IS_PLAYER_DEBUG && KeyInput.isKeyDown(GLFW_KEY_B)) {
                 Vector3f offset = Mth.pitchAndYawToGLCartesianCoordinates(20, Camera.defaultCamera.getPitch(), Camera.defaultCamera.getYaw(), null);
                 Vector3f finalPosition = Vector3f.add(offset, Camera.defaultCamera.getPosition(), null);
                 GameObject gameObject = new GameObject(ModelBank.getAbstractArt(), finalPosition);
@@ -108,6 +108,9 @@ public class ClientSideUpdaters {
         private static final float STANDARD_SPEED_INCREMENT = 5.0f;
         private static final float IN_AIR_MULTIPLIER = 0.2f;
 
+        private boolean wantsToMoveStraight;
+        private boolean wantsToMoveSideways;
+        private boolean onGround;
         private boolean sprinting;
         private boolean crouching;
 
@@ -120,9 +123,9 @@ public class ClientSideUpdaters {
 
         @Override
         public void updateTick(Player player, Vector2f forwardDirectionVector, Vector2f rightDirectionVector) {
-            boolean wantsToMoveStraight = isKeyPressed(GLFW_KEY_W) ^ isKeyPressed(GLFW_KEY_S);
-            boolean wantsToMoveSideways = isKeyPressed(GLFW_KEY_D) ^ isKeyPressed(GLFW_KEY_A);
-            boolean onGround = player.getCollisionDetails().onGround;
+            wantsToMoveStraight = isKeyPressed(GLFW_KEY_W) ^ isKeyPressed(GLFW_KEY_S);
+            wantsToMoveSideways = isKeyPressed(GLFW_KEY_D) ^ isKeyPressed(GLFW_KEY_A);
+            onGround = player.getCollisionDetails().onGround;
             crouching = isKeyPressed(GLFW_KEY_C) && onGround;
             sprinting = isKeyPressed(GLFW_KEY_LEFT_SHIFT) && !crouching;
 
@@ -218,6 +221,25 @@ public class ClientSideUpdaters {
             }
         }
 
+        private static final float MAX_BOBBING_AMPLITUDE = 30.0f;
+        private static final float SECS_TO_CHANGE_BOBBING_AMPLITUDE = 0.5f;
+        private BobbingAmplitudeType lastBobbingAmplitudeType = BobbingAmplitudeType.NONE;
+        private enum BobbingAmplitudeType { NONE, MOVING }
+        private float startBobbingAmplitude;
+        private float targetBobbingAmplitude;
+        private float currentBobbingAmplitude;
+        private float startTimeBobbingAmplitudeChange = -1.0f;
+
+        private static final float MAX_CAMERA_JOLT_START_JUMP = 1.75f;
+        private static final float MAX_CAMERA_JOLT_END_JUMP = 0.5f;
+        private static final float SECS_TO_DO_CAMERA_JOLT = 0.25f;
+        private static final float MIN_TIME_BETWEEN_END_JUMP_JOLTS = 0.5f;
+        private JumpJoltType lastJumpJoltType = JumpJoltType.NONE;
+        private enum JumpJoltType { NONE, START_JUMP, END_JUMP }
+        private float startTimeCameraJolt = -1.0f;
+        private FallingAndGravityState.State prevState;
+        private float lastOnGroundFirmlyTime;
+
         private static final float SECS_TO_SWITCH_FOV = 0.25f;
         private FovType lastFovType = FovType.REGULAR;
         private enum FovType { REGULAR, SPRINT, CROUCH }
@@ -225,24 +247,102 @@ public class ClientSideUpdaters {
         private float targetFov;
         private float startTimeFovSwitch = -1.0f;
 
+        private static final float MAX_PITCH_CHANGE_DUE_TO_FALL = 15.0f;
         private static final float SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL = 0.5f;
         private static final float SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL = 3.0f;
-        private static final float MAX_PITCH_CHANGE_DUE_TO_FALL = 15.0f;
+        private static final float SECS_TO_SWITCH_PITCH_AFTER_FALL = 0.5f;
         private PitchType lastPitchType = PitchType.ON_GROUND;
-        private enum PitchType { ON_GROUND, FALLING }
-        private float startTimePitchChangeDueToFall = -1.0f;
+        private enum PitchType { ON_GROUND, FALLING, RECOVERING }
+        private float startSecondaryPitch;
+        private float startTimePitchChange = -1.0f;
 
         @Override
         public void updateCameraFrame(Camera camera, Vector2f forwardDirectionVector, Vector2f rightDirectionVector, Player player) {
-            float currentAngle = 30.0f * (float) Math.sin(2.0f * Math.PI * Time.getCurrentTime()) - 90.0f;
-            float cameraOffsetY = (float) Math.sin(Math.toRadians(currentAngle)) + 1.0f;
+            if (onGround && (wantsToMoveStraight || wantsToMoveSideways)) {
+                if (lastBobbingAmplitudeType != BobbingAmplitudeType.MOVING) {
+                    lastBobbingAmplitudeType = BobbingAmplitudeType.MOVING;
+                    startBobbingAmplitude = currentBobbingAmplitude;
+                    targetBobbingAmplitude = MAX_BOBBING_AMPLITUDE;
+                    startTimeBobbingAmplitudeChange = Time.getCurrentTime();
+                }
+            } else {
+                if (lastBobbingAmplitudeType != BobbingAmplitudeType.NONE) {
+                    lastBobbingAmplitudeType = BobbingAmplitudeType.NONE;
+                    startBobbingAmplitude = currentBobbingAmplitude;
+                    targetBobbingAmplitude = 0.0f;
+                    startTimeBobbingAmplitudeChange = Time.getCurrentTime();
+                }
+            }
 
-            Vector3f rightDirectionVectorR3 = new Vector3f(rightDirectionVector.x, 0, -rightDirectionVector.y);
-            Vector3f forwardDirectionVectorR3 = new Vector3f(forwardDirectionVector.x, 0, -forwardDirectionVector.y);
-            Vector3f upDirectionVector = Vector3f.cross(rightDirectionVectorR3, forwardDirectionVectorR3, null);
-            Vector3f cameraOffset = Mth.multiply(upDirectionVector, cameraOffsetY);
+            if (startTimeBobbingAmplitudeChange > 0.0f) {
+                float timeSinceBobbingAmplitudeChangeStart = Time.getCurrentTime() - startTimeBobbingAmplitudeChange;
 
-            camera.translate(cameraOffset);
+                if (timeSinceBobbingAmplitudeChangeStart < SECS_TO_CHANGE_BOBBING_AMPLITUDE) {
+                    float normalizedTimeProgress = timeSinceBobbingAmplitudeChangeStart / SECS_TO_CHANGE_BOBBING_AMPLITUDE;
+                    float bobbingAmplitudeDifference = targetBobbingAmplitude - startBobbingAmplitude;
+                    currentBobbingAmplitude = startBobbingAmplitude + normalizedTimeProgress * bobbingAmplitudeDifference;
+                } else {
+                    startTimeBobbingAmplitudeChange = -1.0f;
+                    currentBobbingAmplitude = targetBobbingAmplitude;
+                }
+            }
+
+            if (currentBobbingAmplitude > 0.0f) {
+                float currentAngle = currentBobbingAmplitude * (float) Math.sin(2.0f * Math.PI * Time.getCurrentTime()) - 90.0f;
+                float cameraOffsetY = (float) Math.sin(Math.toRadians(currentAngle)) + 1.0f;
+
+                Vector3f rightDirectionVectorR3 = new Vector3f(rightDirectionVector.x, 0, -rightDirectionVector.y);
+                Vector3f forwardDirectionVectorR3 = new Vector3f(forwardDirectionVector.x, 0, -forwardDirectionVector.y);
+                Vector3f upDirectionVector = Vector3f.cross(rightDirectionVectorR3, forwardDirectionVectorR3, null);
+                Vector3f cameraOffset = Mth.multiply(upDirectionVector, cameraOffsetY);
+
+                camera.translate(cameraOffset);
+            }
+
+            FallingAndGravityState.State state = player.getFallingAndGravityState().getState();
+
+            if (prevState != state && !(prevState == FallingAndGravityState.State.ON_GROUND_RECOVERING && state == FallingAndGravityState.State.ON_GROUND_FIRMLY)) {
+//            if (prevState != state) {
+                prevState = state;
+
+                if (state == FallingAndGravityState.State.BEGAN_JUMP) {
+                    if (lastJumpJoltType != JumpJoltType.START_JUMP) {
+                        lastJumpJoltType = JumpJoltType.START_JUMP;
+                        startTimeCameraJolt = Time.getCurrentTime();
+                    }
+                } else if (state == FallingAndGravityState.State.ON_GROUND_RECOVERING || state == FallingAndGravityState.State.ON_GROUND_FIRMLY) {
+//                } else if (state == FallingAndGravityState.State.ON_GROUND_FIRMLY) {
+                    if (lastJumpJoltType != JumpJoltType.END_JUMP && Time.getCurrentTime() - lastOnGroundFirmlyTime > MIN_TIME_BETWEEN_END_JUMP_JOLTS) {
+                        lastJumpJoltType = JumpJoltType.END_JUMP;
+                        startTimeCameraJolt = Time.getCurrentTime();
+                    }
+                }
+            }
+
+            if (state == FallingAndGravityState.State.ON_GROUND_FIRMLY) {
+                lastOnGroundFirmlyTime = Time.getCurrentTime();
+            }
+
+            if (startTimeCameraJolt > 0.0f) {
+                float timeSinceJoltStart = Time.getCurrentTime() - startTimeCameraJolt;
+
+                if (lastJumpJoltType == JumpJoltType.START_JUMP || lastJumpJoltType == JumpJoltType.END_JUMP) {
+                    if (timeSinceJoltStart < SECS_TO_DO_CAMERA_JOLT) {
+                        float normalizedTimeProgress = timeSinceJoltStart / SECS_TO_DO_CAMERA_JOLT;
+                        float cameraJoltThisFrame;
+                        float easingProgress = cameraTranslateJoltCosFunction(Math.min(normalizedTimeProgress + 0.25f, 1.0f));
+                        if (lastJumpJoltType == JumpJoltType.START_JUMP) {
+                            cameraJoltThisFrame = easingProgress * MAX_CAMERA_JOLT_START_JUMP;
+                        } else {
+                            cameraJoltThisFrame = easingProgress * MAX_CAMERA_JOLT_END_JUMP;
+                        }
+                        camera.getPosition().y += cameraJoltThisFrame;
+                    } else {
+                        startTimeCameraJolt = -1.0f;
+                        lastJumpJoltType = JumpJoltType.NONE;
+                    }
+                }
+            }
 
             if (sprinting) {
                 if (lastFovType != FovType.SPRINT) {
@@ -281,36 +381,71 @@ public class ClientSideUpdaters {
                 }
             }
 
-            FallingAndGravityState.State state = player.getFallingAndGravityState().getState();
-
             if (state == FallingAndGravityState.State.FALLING || state == FallingAndGravityState.State.FALLING_FROM_JUMP) {
                 if (lastPitchType != PitchType.FALLING) {
                     lastPitchType = PitchType.FALLING;
-                    startTimePitchChangeDueToFall = Time.getCurrentTime();
+                    startSecondaryPitch = camera.getSecondaryPitch();
+                    startTimePitchChange = Time.getCurrentTime();
+                }
+            } else if (state == FallingAndGravityState.State.ON_GROUND_RECOVERING) {
+                if (lastPitchType != PitchType.RECOVERING) {
+                    lastPitchType = PitchType.RECOVERING;
+                    startSecondaryPitch = camera.getSecondaryPitch();
+                    startTimePitchChange = Time.getCurrentTime();
                 }
             } else {
                 if (lastPitchType != PitchType.ON_GROUND) {
                     lastPitchType = PitchType.ON_GROUND;
                     camera.setSecondaryPitch(0.0f);
-                    startTimePitchChangeDueToFall = -1.0f;
+                    startTimePitchChange = -1.0f;
                 }
             }
 
-            if (startTimePitchChangeDueToFall > 0.0f) {
-                float timeSincePitchChangeStart = Time.getCurrentTime() - startTimePitchChangeDueToFall;
+            if (startTimePitchChange > 0.0f) {
+                float timeSincePitchChangeStart = Time.getCurrentTime() - startTimePitchChange;
 
-                if (timeSincePitchChangeStart > SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL) {
-                    if (timeSincePitchChangeStart < SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL + SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL) {
-                        float normalizedTimeProgress = (timeSincePitchChangeStart - SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL) / SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL;
-                        float easingProgress = 0.5f - 0.5f * (float) Math.cos(Math.PI * normalizedTimeProgress);
-                        float secondaryPitchThisFrame = easingProgress * MAX_PITCH_CHANGE_DUE_TO_FALL;
+                if (lastPitchType == PitchType.FALLING) {
+                    if (timeSincePitchChangeStart > SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL) {
+                        if (timeSincePitchChangeStart < SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL + SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL) {
+                            float normalizedTimeProgress = (timeSincePitchChangeStart - SECS_TO_PITCH_CHANGE_START_DUE_TO_FALL) / SECS_TO_MAX_PITCH_CHANGE_DUE_TO_FALL;
+                            float easingProgress = pitchSmoothChangeEasingFunction(normalizedTimeProgress);
+                            float secondaryPitchDifference = MAX_PITCH_CHANGE_DUE_TO_FALL - startSecondaryPitch;
+                            float secondaryPitchThisFrame = startSecondaryPitch + easingProgress * secondaryPitchDifference;
+                            camera.setSecondaryPitch(secondaryPitchThisFrame);
+                        } else {
+                            startTimePitchChange = -1.0f;
+                            camera.setSecondaryPitch(MAX_PITCH_CHANGE_DUE_TO_FALL);
+                        }
+                    }
+                } else if (lastPitchType == PitchType.RECOVERING) {
+                    if (timeSincePitchChangeStart < SECS_TO_SWITCH_PITCH_AFTER_FALL) {
+                        float normalizedTimeProgress = timeSincePitchChangeStart / SECS_TO_SWITCH_PITCH_AFTER_FALL;
+                        float easingProgress = pitchJoltEasingFunction(normalizedTimeProgress);
+                        float secondaryPitchDifference = 0.0f - startSecondaryPitch;
+                        float secondaryPitchThisFrame = startSecondaryPitch + easingProgress * secondaryPitchDifference;
                         camera.setSecondaryPitch(secondaryPitchThisFrame);
                     } else {
-                        startTimePitchChangeDueToFall = -1.0f;
-                        camera.setSecondaryPitch(MAX_PITCH_CHANGE_DUE_TO_FALL);
+                        startTimePitchChange = -1.0f;
+                        camera.setSecondaryPitch(0.0f);
                     }
                 }
             }
+        }
+
+        private static float cameraTranslateJoltCosFunction(float input) {
+            return 0.5f * (float) Math.cos(2.0f * Math.PI * input) - 0.5f;
+        }
+
+        private static float pitchSmoothChangeEasingFunction(float input) {
+            return 0.5f - 0.5f * (float) Math.cos(Math.PI * input);
+        }
+
+        private static float pitchJoltEasingFunction(float input) {
+            float inputProcessed = 6.0f * (input - 0.3f);
+            float firstTerm = 1.0f / (1.0f + (float) Math.exp(-inputProcessed));
+            float secondTerm = 1.5f * (float) Math.exp(-inputProcessed * inputProcessed);
+
+            return firstTerm + secondTerm;
         }
 
     }
@@ -325,7 +460,7 @@ public class ClientSideUpdaters {
             mousePicker.update();
             Ray ray = new Ray(Camera.defaultCamera.getPosition(), mousePicker.getCurrentRay());
 
-            if (ClickInput.isLeftClickPressed()) {
+            if (GlobalConstants.IS_PLAYER_DEBUG && ClickInput.isLeftClickPressed()) {
                 RayTriangleInfo rayTriangleInfo = new RayTriangleInfo();
                 RSTCommonCollisionProcedure.findClosestRayIntersectionWithTriangle(ray, -1, 1000, clientCollisionHandler.cachedAABBHitboxes.values(), rayTriangleInfo);
 

@@ -18,6 +18,7 @@ public class Camera {
     public float getPitch() { return pitch; }
     public float getYaw() { return yaw; }
     public float getRoll() { return roll; }
+    public float getSecondaryPitch() { return secondaryPitch; }
 
     public Camera(Vector3f position, float pitch, float yaw, float roll) {
         this.position = position;
