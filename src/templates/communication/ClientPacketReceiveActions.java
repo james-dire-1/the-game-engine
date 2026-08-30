@@ -809,10 +809,10 @@ public class ClientPacketReceiveActions {
         }
     }
 
-    public static void createSoundEmitterReceived(int customIdentifier, Vector3f position) {
+    public static void createSoundEmitterReceived(int customIdentifier, float x, float y, float z) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("ClientPacketReceiveActions.createSoundEmitterReceived");
 
-        PositionalAudioMaster.createSoundEmitter(customIdentifier, position);
+        PositionalAudioMaster.createSoundEmitter(customIdentifier, new Vector3f(x, y, z));
     }
 
     public static void destroySoundEmitterReceived(int customIdentifier) {

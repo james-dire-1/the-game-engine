@@ -47,7 +47,7 @@ public interface ServerPacketSendEvents {
     void sendSkyboxChanged(String name, boolean unmoving, PlayerInfo... playerInfoArray);
     void sendPlaySoundAtPhysicalObject(Sound sound, int id);
     void sendPlaySoundAtPosition(Sound sound, Vector3f position);
-    void sendCreateSoundEmitter(int customIdentifier, Vector3f position, PlayerInfo... playerInfoArray);
+    void sendCreateSoundEmitter(int customIdentifier, float x, float y, float z, PlayerInfo... playerInfoArray);
     void sendDestroySoundEmitter(int customIdentifier);
     void sendPlaySoundAtSoundEmitter(Sound sound, int customIdentifier);
     void sendUpdatePositionOfSoundEmitter(int customIdentifier, float x, float y, float z);

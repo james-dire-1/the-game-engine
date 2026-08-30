@@ -1,6 +1,7 @@
 package com.james.gameplay;
 
 import com.james.wrapper.EngineUtils;
+import templates.common.audio.Sound;
 import templates.common.simulation.objects.PhysicalObjectType;
 import com.james.networking.Client;
 import com.james.renderEngine.ui.UiHandler;
@@ -57,6 +58,14 @@ public class OnlineGameLoader extends GameLoader {
         });
     }
 
+    public static void physicalObjectRemovedReceived(Object[] objects) {
+        int id = (int) objects[0];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.physicalObjectRemovedReceived(id);
+        });
+    }
+
     public static void physicalObjectMovedReceived(Object[] objects) {
         int id = (int) objects[0];
         float x = (float) objects[1];
@@ -106,6 +115,34 @@ public class OnlineGameLoader extends GameLoader {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.aabbHitboxAddedReceived(id, meshPath, subMeshIdentifier);
+        });
+    }
+
+    public static void aabbHitboxRemovedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        String meshPath = (String) objects[1];
+        int subMeshIdentifier = (int) objects[2];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.aabbHitboxRemovedReceived(id, meshPath, subMeshIdentifier);
+        });
+    }
+
+    public static void sphereHitboxAddedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float radius = (float) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.sphereHitboxAddedReceived(id, radius);
+        });
+    }
+
+    public static void sphereHitboxRemovedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float radius = (float) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.sphereHitboxRemovedReceived(id, radius);
         });
     }
 
@@ -183,6 +220,185 @@ public class OnlineGameLoader extends GameLoader {
 
         ThreadManager.executeOnMainThread(() -> {
             ClientPacketReceiveActions.systemMessageReceived(message);
+        });
+    }
+
+    public static void virtualLightAddedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        Vector3f position = (Vector3f) objects[1];
+        Vector3f color = (Vector3f) objects[2];
+        Vector3f attenuation = (Vector3f) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightAddedReceived(id, position, color, attenuation);
+        });
+    }
+
+    public static void virtualLightRemovedReceived(Object[] objects) {
+        int id = (int) objects[0];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightRemovedReceived(id);
+        });
+    }
+
+    public static void virtualLightMovedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float x = (float) objects[1];
+        float y = (float) objects[2];
+        float z = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightMovedReceived(id, x, y, z);
+        });
+    }
+
+    public static void virtualLightColorChangedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float r = (float) objects[1];
+        float g = (float) objects[2];
+        float b = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightColorChangedReceived(id, r, g, b);
+        });
+    }
+
+    public static void virtualLightAttenuationChangedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float att1 = (float) objects[1];
+        float att2 = (float) objects[2];
+        float att3 = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightAttenuationChangedReceived(id, att1, att2, att3);
+        });
+    }
+
+    public static void virtualLightPropertiesChangedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        Vector3f position = (Vector3f) objects[1];
+        Vector3f color = (Vector3f) objects[2];
+        Vector3f attenuation = (Vector3f) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualLightPropertiesChangedReceived(id, position, color, attenuation);
+        });
+    }
+
+    public static void virtualDirectionalLightAddedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        Vector3f toLightDirection = (Vector3f) objects[1];
+        Vector3f color = (Vector3f) objects[2];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightAddedReceived(id, toLightDirection, color);
+        });
+    }
+
+    public static void virtualDirectionalLightRemovedReceived(Object[] objects) {
+        int id = (int) objects[0];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightRemovedReceived(id);
+        });
+    }
+
+    public static void virtualDirectionalLightToLightDirectionChangedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float x = (float) objects[1];
+        float y = (float) objects[2];
+        float z = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightToLightDirectionChangedReceived(id, x, y, z);
+        });
+    }
+
+    public static void virtualDirectionalLightColorChangedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        float r = (float) objects[1];
+        float g = (float) objects[2];
+        float b = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightColorChangedReceived(id, r, g, b);
+        });
+    }
+
+    public static void virtualDirectionalLightPropertiesChangedReceived(Object[] objects) {
+        int id = (int) objects[0];
+        Vector3f toLightDirection = (Vector3f) objects[1];
+        Vector3f color = (Vector3f) objects[2];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.virtualDirectionalLightPropertiesChangedReceived(id, toLightDirection, color);
+        });
+    }
+
+    public static void skyboxChangedReceived(Object[] objects) {
+        String name = (String) objects[0];
+        boolean unmoving = (boolean) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.skyboxChangedReceived(name, unmoving);
+        });
+    }
+
+    public static void playSoundAtPhysicalObjectReceived(Object[] objects) {
+        Sound sound = (Sound) objects[0];
+        int id = (int) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.playSoundAtPhysicalObjectReceived(sound, id);
+        });
+    }
+
+    public static void playSoundAtPositionReceived(Object[] objects) {
+        Sound sound = (Sound) objects[0];
+        Vector3f position = (Vector3f) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.playSoundAtPositionReceived(sound, position);
+        });
+    }
+
+    public static void createSoundEmitterReceived(Object[] objects) {
+        int customIdentifier = (int) objects[0];
+        float x = (float) objects[1];
+        float y = (float) objects[2];
+        float z = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.createSoundEmitterReceived(customIdentifier, x, y, z);
+        });
+    }
+
+    public static void destroySoundEmitterReceived(Object[] objects) {
+        int customIdentifier = (int) objects[0];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.destroySoundEmitterReceived(customIdentifier);
+        });
+    }
+
+    public static void playSoundAtSoundEmitterReceived(Object[] objects) {
+        Sound sound = (Sound) objects[0];
+        int customIdentifier = (int) objects[1];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.playSoundAtSoundEmitterReceived(sound, customIdentifier);
+        });
+    }
+
+    public static void updatePositionOfSoundEmitterReceived(Object[] objects) {
+        int customIdentifier = (int) objects[0];
+        float x = (float) objects[1];
+        float y = (float) objects[2];
+        float z = (float) objects[3];
+
+        ThreadManager.executeOnMainThread(() -> {
+            ClientPacketReceiveActions.updatePositionOfSoundEmitterReceived(customIdentifier, x, y, z);
         });
     }
 

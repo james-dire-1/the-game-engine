@@ -1,5 +1,7 @@
 package templates.common.audio;
 
-public enum Sound {
+import java.io.Serializable;
+
+public enum Sound implements Serializable {
     CLICK
 }

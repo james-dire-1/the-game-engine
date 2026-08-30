@@ -1,6 +1,5 @@
 package com.james.serverSide.simulation.collisionEngine;
 
-import com.james.common.simulation.objects.AbstractPhysicalObject;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
 import com.james.serverSide.simulation.objects.MovableObject;
 import com.james.common.simulation.collisionEngine.math.RSTCommonCollisionProcedure;

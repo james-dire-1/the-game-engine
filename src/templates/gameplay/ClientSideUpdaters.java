@@ -17,6 +17,7 @@ import com.james.renderEngine.rendering.models.MasterRenderer;
 import com.james.renderEngine.utilities.GLFWUtilities;
 import com.james.renderEngine.visuals.FogSettings;
 import com.james.renderEngine.visuals.Skybox;
+import com.james.serverSide.LevelInitializer;
 import com.james.simulation.ClientLevel;
 import com.james.simulation.collisionEngine.ClientCollisionHandler;
 import com.james.simulation.collisionEngine.RSTClientCollisionHandler;
@@ -61,7 +62,7 @@ public class ClientSideUpdaters {
                 GLFWUtilities.lockCursor(!GLFWUtilities.isCursorLocked());
             }
 
-            if (KeyInput.isKeyDown(GLFW_KEY_TAB)) {
+            if (KeyInput.isKeyDown(GLFW_KEY_TAB) || KeyInput.isKeyDown(GLFW_KEY_ESCAPE)) {
                 PauseScreen.toggle();
             }
 
@@ -76,7 +77,7 @@ public class ClientSideUpdaters {
                 gameLoader.batchedGameObjectsList.addGameObject(gameObject);
             }
 
-            if (PauseScreen.isOpen != prevIsOpen) {
+            if (PauseScreen.isOpen != prevIsOpen && !LevelInitializer.isOnlineGame) {
                 prevIsOpen = PauseScreen.isOpen;
                 ClientLevel.get().events.sendChangePauseState(PauseScreen.isOpen);
                 EngineUtils.gameLoader.isPaused = PauseScreen.isOpen;
@@ -94,11 +95,36 @@ public class ClientSideUpdaters {
 
         @Override
         public void init() {
+            wantsToMoveStraight = false;
+            wantsToMoveSideways = false;
+            onGround = false;
             sprinting = false;
             crouching = false;
 
             forwardSpeed = 0.0f;
             rightSpeed = 0.0f;
+
+            velocity.set(0.0f, 0.0f);
+
+            lastBobbingAmplitudeType = BobbingAmplitudeType.NONE;
+            startBobbingAmplitude = 0.0f;
+            targetBobbingAmplitude = 0.0f;
+            currentBobbingAmplitude = 0.0f;
+            startTimeBobbingAmplitudeChange = -1.0f;
+
+            lastJumpJoltType = JumpJoltType.NONE;
+            startTimeCameraJolt = -1.0f;
+            prevState = null;
+            lastOnGroundFirmlyTime = 0.0f;
+
+            lastFovType = FovType.REGULAR;
+            startFov = 0.0f;
+            targetFov = 0.0f;
+            startTimeFovSwitch = -1.0f;
+
+            lastPitchType = PitchType.ON_GROUND;
+            startSecondaryPitch = 0.0f;
+            startTimePitchChange = -1.0f;
         }
 
         private static final float MAX_REGULAR_SPEED = 15.0f;
@@ -117,8 +143,8 @@ public class ClientSideUpdaters {
         private float forwardSpeed;
         private float rightSpeed;
 
+        private final Vector2f velocity = new Vector2f();
         private final Vector2f reusableDeltaLocalVelocity = new Vector2f();
-        private final Vector2f reusableVelocity = new Vector2f();
         private final Vector2f reusableDeltaVelocity = new Vector2f();
 
         @Override
@@ -179,20 +205,20 @@ public class ClientSideUpdaters {
                 if (rightSpeed > speedClamp) rightSpeed = speedClamp;
                 else if (rightSpeed < -speedClamp) rightSpeed = -speedClamp;
 
-                Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), reusableVelocity);
+                Vector2f.add(Mth.multiply(forwardDirectionVector, forwardSpeed), Mth.multiply(rightDirectionVector, rightSpeed), velocity);
             } else {
                 reusableDeltaVelocity.set(Vector2f.add(Mth.multiply(forwardDirectionVector, reusableDeltaLocalVelocity.y), Mth.multiply(rightDirectionVector, reusableDeltaLocalVelocity.x), null));
-                reusableVelocity.translate(reusableDeltaVelocity.x, reusableDeltaVelocity.y);
+                velocity.translate(reusableDeltaVelocity.x, reusableDeltaVelocity.y);
 
                 speedClamp = MAX_FALL_SPEED;
             }
 
-            if (reusableVelocity.length() > speedClamp) {
-                reusableVelocity.normalise();
-                reusableVelocity.scale(speedClamp);
+            if (velocity.length() > speedClamp) {
+                velocity.normalise();
+                velocity.scale(speedClamp);
             }
 
-            player.setVelocity(reusableVelocity.x, 0, -reusableVelocity.y);
+            player.setVelocity(velocity.x, 0, -velocity.y);
 
             if (isKeyPressed(GLFW_KEY_SPACE)) {
                 player.getFallingAndGravityState().attemptToJump();

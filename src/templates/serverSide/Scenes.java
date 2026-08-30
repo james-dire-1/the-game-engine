@@ -6,7 +6,6 @@ import com.james.common.simulation.collisionEngine.prep.ModelMeshBankInR3;
 import com.james.serverSide.Scene;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.EllipsoidHitbox;
 import com.james.serverSide.simulation.objects.VirtualDirectionalLight;
-import com.james.tools.Time;
 import com.james.serverSide.simulation.objects.Updatable;
 import com.james.serverSide.simulation.collisionEngine.hitboxes.SphereHitbox;
 import templates.common.audio.Sound;
@@ -48,11 +47,8 @@ public class Scenes {
             level.addAABBHitbox(aabbHitbox);
 
             class CoolObject extends MovableObject implements Updatable {
-                private final float startTime;
-
                 private CoolObject(LevelProperties levelProperties, PhysicalObjectType type, Vector3f position, Vector3f rotation, float scale) {
                     super(levelProperties, type, position, rotation, scale);
-                    startTime = Time.getCurrentTime();
                     isAffectedByGravity = true;
                     setVelocity(6, 0, 0);
                 }
@@ -72,13 +68,7 @@ public class Scenes {
 
                 @Override
                 public boolean update() {
-                    if (Time.getCurrentTime() - startTime > 20) {
-                        level.remove(this);
-                        return true;
-                    }
-
                     level.events.sendPlaySoundAtPhysicalObject(Sound.CLICK, id);
-
                     return false;
                 }
             }
@@ -175,7 +165,7 @@ public class Scenes {
             for (int i = 0; i < 30; i++) {
                 Vector3f position = new Vector3f(r.nextFloat() * 20 - 10, 100, r.nextFloat() * 20 - 10 + 110);
                 MovableObject item = new MovableObject(level, PhysicalObjectType.Other, position, new Vector3f(), 0.5f);
-                // item.addFallingAndGravityStateWithDefaultProperties();
+//                item.addFallingAndGravityStateWithDefaultProperties();
                 level.add(item);
                 EllipsoidHitbox ellipsoid = new EllipsoidHitbox(item, EllipsoidDimensions.get(1, 1, 1));
                 level.addEllipsoidHitbox(ellipsoid);
@@ -183,7 +173,7 @@ public class Scenes {
                 level.addSphereHitbox(sphere);
             }
 
-             itemsAdded = 0;
+            itemsAdded = 0;
             level.addUpdatable(() -> {
                 counter++;
 

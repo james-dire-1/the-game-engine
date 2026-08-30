@@ -330,11 +330,11 @@ public class LocalServerPacketSendEvents implements ServerPacketSendEvents {
     }
 
     @Override
-    public void sendCreateSoundEmitter(int customIdentifier, Vector3f position, PlayerInfo... playerInfoArray) {
+    public void sendCreateSoundEmitter(int customIdentifier, float x, float y, float z, PlayerInfo... playerInfoArray) {
         if (IS_DETAILED_NETWORK_DEBUG) System.out.println("LocalServerPacketSendEvents.sendCreateSoundEmitter");
 
         ThreadManager.executeOnMainThread(() -> {
-            ClientPacketReceiveActions.createSoundEmitterReceived(customIdentifier, position);
+            ClientPacketReceiveActions.createSoundEmitterReceived(customIdentifier, x, y, z);
         });
     }
 
