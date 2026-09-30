@@ -39,7 +39,6 @@ import templates.settings.UserSettings;
 import static com.james.input.KeyInput.isKeyDown;
 import static com.james.input.KeyInput.isKeyPressed;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_B;
 
 public class ClientSideUpdaters {
 

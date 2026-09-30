@@ -12,6 +12,7 @@ public class FontInfo {
 
     public static final int SPACE_ASCII = 32;
     public static final int NEW_LINE_ASCII = 10;
+    private static final int QUESTION_MARK_ASCII = 63;
 
     public final String textureAtlasPath;
     private final Map<Integer, Character> characters;
@@ -37,7 +38,7 @@ public class FontInfo {
      * Gets the instance of the Character class for this font corresponding to the character passed in.
      */
     public Character getCharacterInfo(int characterInAscii) {
-        return characters.get(characterInAscii);
+        return characters.getOrDefault(characterInAscii, characters.get(QUESTION_MARK_ASCII));
     }
 
 }
