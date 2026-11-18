@@ -2,9 +2,8 @@
 
 3D Java Game Engine is a simple game engine in development since summer 2022, written in Java using the low-level 
 technologies provided by LWJGL. The original intention was to begin making a game after making a small engine, which 
-was thought to take around a couple of weeks. Of course, this was a serious underestimate of the time it would take. 
-Today, the game engine is still being developed, features being added whenever time permits 
-(but still no game!).
+was thought to take around a couple of weeks (a serious underestimate). Today, the game engine is still being 
+developed, features being added whenever time permits.
 
 ## Overview and Features
 
@@ -12,7 +11,7 @@ The main technologies used from LWJGL are OpenGL, GLFW, Assimp, and OpenAL.
 
 ### Main features
 
-- Firstly, the game engine has multiplayer support via Java's TCP networking API. In fact, multiplayer is an integral 
+- First, the game engine has multiplayer support via Java's TCP networking API. In fact, multiplayer is an integral 
 part of the engine that influences many design and code structure decisions. It is accounting for multiplayer that
 determines how subsystems should relate to other subsystems. Structuring subsystems carefully in this way allows for a 
 well-contained subset of code to be used as the base for the standalone game engine server program, which is a separate 
